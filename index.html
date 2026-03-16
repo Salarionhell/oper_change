@@ -880,14 +880,36 @@
     }
 
     /* изображение карты в мастере — без "иконок", просто большая картинка */
-    .card-choice-img {
-      display: block;
-      width: 100%;
-      max-width: 320px;   /* все три карты визуально сопоставимы по ширине */
-      height: auto;
+    .card-choice-img,
+    .radio-card > img.card-choice-img,
+    .radio-card img.card-choice-img {
+      display: block !important;
+      width: 100% !important;
+      min-width: 260px !important;
+      max-width: 320px !important;
+      height: auto !important;
       margin-bottom: 6px;
       border-radius: 8px;
       object-fit: contain;
+    }
+    /* если где-то осталась обёртка .card-type-img — не даём ей сжимать картинку */
+    .radio-card .card-type-img {
+      width: 100% !important;
+      max-width: 320px !important;
+      min-width: 260px !important;
+      height: auto !important;
+      min-height: 80px !important;
+      background: transparent !important;
+      padding: 0 !important;
+    }
+    .radio-card .card-type-img img {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100% !important;
+      display: block !important;
+    }
+    .options-list .radio-card {
+      min-width: 280px;
     }
 
     .radio-card-text {
