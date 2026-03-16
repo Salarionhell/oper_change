@@ -310,11 +310,22 @@
     }
 
     .dropdown-transaction-group .transaction-detail {
+      display: flex;
+      justify-content: space-between;
       font-size: 11px;
       color: var(--text-muted);
-      display: block;
       padding-left: 8px;
       margin-bottom: 2px;
+    }
+
+    .dropdown-transaction-group .detail-amount {
+      font-weight: 600;
+    }
+    .dropdown-transaction-group .detail-amount.amount-positive {
+      color: var(--success);
+    }
+    .dropdown-transaction-group .detail-amount.amount-negative {
+      color: var(--error);
     }
 
     .dropdown-more {
@@ -1710,7 +1721,13 @@
             return `
               <div class="dropdown-transaction-group">
                 <div class="transaction-date">${date}</div>
-                ${items.map((t) => `<div class="transaction-detail">${t.card} ${t.amount}</div>`).join("")}
+                ${items.map((t) => {
+                  const amountClass = t.amount.startsWith('+') ? 'amount-positive' : 'amount-negative';
+                  return `<div class="transaction-detail">
+                    <span class="detail-card">${t.card}</span>
+                    <span class="detail-amount ${amountClass}">${t.amount}</span>
+                  </div>`;
+                }).join("")}
               </div>`;
           })
           .join("") +
