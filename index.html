@@ -864,8 +864,9 @@
     .radio-card {
       border-radius: 10px;
       border: 1px solid var(--border-soft);
-      padding: 6px 8px;
+      padding: 8px;
       display: flex;
+      flex-direction: column; /* картинка сверху, текст снизу */
       gap: 6px;
       align-items: flex-start;
       cursor: pointer;
@@ -907,6 +908,7 @@
     .radio-desc {
       font-size: 12px;
       color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .document-block {
