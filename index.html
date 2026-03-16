@@ -247,7 +247,7 @@
       position: absolute;
       top: 34px;
       left: 0;
-      min-width: 200px;
+      min-width: 260px;
       background-color: #ffffff;
       border-radius: 10px;
       box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
@@ -260,6 +260,11 @@
 
     .dropdown.open {
       display: block;
+    }
+
+    /* Только для дропдауна транзакций – уменьшенная ширина */
+    #dropdown-transactions {
+      min-width: 200px;
     }
 
     /* Строка с иконкой и текстом */
@@ -326,7 +331,6 @@
     }
     .dropdown-transaction-group .detail-amount.amount-negative {
       color: var(--error);
-    }
     }
 
     .dropdown-more {
