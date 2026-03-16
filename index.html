@@ -879,36 +879,29 @@
     }
 
     .card-type-img {
-      width: 48px;
-      height: 48px;
+      width: 120px;       /* единый увеличенный фрейм под карту */
+      height: 72px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
-      font-size: 24px;
+      border-radius: 8px;
+      background: #f5f5f5; /* нейтральный фон */
+      overflow: hidden;   /* ничего не вылезает за рамки */
     }
 
-    .card-type-img.classic {
-      background: linear-gradient(135deg, #78909c, #546e7a);
-      color: #fff;
-    }
-
-    .card-type-img.gold {
-      background: linear-gradient(135deg, #ffd54f, #ff8f00);
-      color: #5d4037;
-    }
-
+    .card-type-img.classic,
+    .card-type-img.gold,
     .card-type-img.platinum {
-      background: linear-gradient(135deg, #b0bec5, #78909c);
-      color: #263238;
+      background: #f5f5f5; /* убираем цветные градиенты, чтобы не мешали картинкам */
+      color: inherit;
     }
 
     .card-type-img .card-type-img-img {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      border-radius: 8px;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* сохраняем пропорции, вписываем в рамку */
+      display: block;
     }
 
     .radio-desc {
