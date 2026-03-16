@@ -880,29 +880,26 @@
     }
 
     .card-type-img {
-      width: 120px;       /* единый увеличенный фрейм под карту */
-      height: 72px;
+      width: 100%;          /* картинка растягивается по ширине карточки */
+      max-width: 260px;     /* ограничиваем максимальную ширину, чтобы все были сопоставимы */
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
       border-radius: 8px;
-      background: #f5f5f5; /* нейтральный фон */
-      overflow: hidden;   /* ничего не вылезает за рамки */
+      overflow: hidden;
+      background: transparent;
     }
 
     .card-type-img.classic,
     .card-type-img.gold,
     .card-type-img.platinum {
-      background: #f5f5f5; /* убираем цветные градиенты, чтобы не мешали картинкам */
-      color: inherit;
+      background: transparent;
     }
 
     .card-type-img .card-type-img-img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain; /* сохраняем пропорции, вписываем в рамку */
+      width: 100%;
+      height: auto;
       display: block;
+      object-fit: contain;
     }
 
     .radio-card-text {
