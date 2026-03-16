@@ -879,26 +879,14 @@
       background-color: #ffebee;
     }
 
-    .card-type-img {
-      width: 100%;          /* картинка растягивается по ширине карточки */
-      max-width: 260px;     /* ограничиваем максимальную ширину, чтобы все были сопоставимы */
-      flex-shrink: 0;
+    /* изображение карты в мастере — без "иконок", просто большая картинка */
+    .card-choice-img {
       display: block;
-      border-radius: 8px;
-      overflow: hidden;
-      background: transparent;
-    }
-
-    .card-type-img.classic,
-    .card-type-img.gold,
-    .card-type-img.platinum {
-      background: transparent;
-    }
-
-    .card-type-img .card-type-img-img {
       width: 100%;
+      max-width: 320px;   /* все три карты визуально сопоставимы по ширине */
       height: auto;
-      display: block;
+      margin-bottom: 6px;
+      border-radius: 8px;
       object-fit: contain;
     }
 
@@ -2815,10 +2803,10 @@
 
     function renderCardRadio(value, label, desc, selected) {
       const imgUrl = CARD_IMAGE_URLS[value];
-      const imgContent = `<img src="${imgUrl}" alt="${label}" class="card-type-img-img" />`;
+      const imgContent = `<img src="${imgUrl}" alt="${label}" class="card-choice-img" />`;
       return `
         <label class="radio-card" data-card-type="${value}">
-          <div class="card-type-img ${value}">${imgContent}</div>
+          ${imgContent}
           <div class="radio-card-text">
             <div class="radio-card-text-header">
               <input type="radio" name="cardType" value="${value}" ${selected ? "checked" : ""} />
