@@ -81,23 +81,23 @@
       flex: 1;
     }
 
-    .tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 3px 5px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 13px;
-      cursor: pointer;
-      background-color: #f1f1f1;
-      color: var(--text-main);
-      transition: var(--transition-fast);
-      min-width: 0;
-      flex: 0 1 auto;
-      max-width: 110px;
-      overflow: hidden;
-    }
+	.tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 10px;        /* было 3px 5px */
+	border-radius: 999px;
+	border: 1px solid transparent;
+	font-size: 12px;           /* было 11px */
+	cursor: pointer;
+	background-color: #f1f1f1;
+	color: var(--text-main);
+	transition: var(--transition-fast);
+	min-width: 0;
+	flex: 0 1 auto;
+	max-width: 140px;          /* было 110px */
+	overflow: hidden;
+	}
 
     .tab span {
       overflow: hidden;
