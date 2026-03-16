@@ -905,6 +905,18 @@
       display: block;
     }
 
+    .radio-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .radio-card-text-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .radio-desc {
       font-size: 12px;
       color: var(--text-muted);
@@ -2817,12 +2829,12 @@
         : `<i class="fa-solid ${iconClass}"></i>`;
       return `
         <label class="radio-card" data-card-type="${value}">
-          <input type="radio" name="cardType" value="${value}" ${
-        selected ? "checked" : ""
-      } style="margin-top:4px;" />
           <div class="card-type-img ${value}">${imgContent}</div>
-          <div>
-            <div>${label}</div>
+          <div class="radio-card-text">
+            <div class="radio-card-text-header">
+              <input type="radio" name="cardType" value="${value}" ${selected ? "checked" : ""} />
+              <div>${label}</div>
+            </div>
             <div class="radio-desc">${desc}</div>
           </div>
         </label>
