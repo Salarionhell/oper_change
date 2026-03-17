@@ -3289,7 +3289,7 @@
       el.innerHTML = chatBotState.messages.map(m => {
         const cls = m.role === 'user' ? 'chat-msg user' : 'chat-msg bot' + (m.typing ? ' typing' : '');
         // Переносы строк сохраняются через CSS white-space: pre-wrap
-        return `<div class="${cls}">${escapeHtml(m.content)}</div>`;
+        return `<div class="${cls}">${formatChatContent(m.content)}</div>`;
       }).join('');
       el.scrollTop = el.scrollHeight;
     }
@@ -3298,6 +3298,15 @@
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    function formatChatContent(text) {
+      // Безопасно экранируем HTML, затем применяем минимальный markdown для жирного.
+      // Поддержка: **bold** и __bold__
+      const safe = escapeHtml(text);
+      return safe
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(.+?)__/g, '<strong>$1</strong>');
     }
 
     function addChatMessage(role, content, typing) {
