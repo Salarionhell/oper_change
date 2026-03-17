@@ -1329,8 +1329,14 @@
     //   CHAT_BOT_API_URL = 'https://api.openai.com/v1/chat/completions'
     //   CHAT_BOT_API_KEY = 'sk-...'
     const CHAT_BOT_CONFIG = {
-      apiUrl: 'https://api.mistral.ai/v1/chat/completions',        // URL вашего backend или OpenAI-совместимого API
-      apiKey: '1Q9swKUAcOGo7ryPSX39EIklif1BACZa',        // если нужна авторизация (для backend часто не нужен)
+      // Для Mistral:
+      // apiUrl: 'https://api.mistral.ai/v1/chat/completions'
+      // model: 'mistral-small-latest' (или другой)
+      provider: 'mistral', // 'mistral' | 'backend' | 'openai_compat'
+      apiUrl: 'https://api.mistral.ai/v1/chat/completions', // URL вашего backend или AI API
+      apiKey: '1Q9swKUAcOGo7ryPSX39EIklif1BACZa', // ВАЖНО: ключ на фронте — только для прототипа
+      model: 'mistral-small-latest',
+      temperature: 0.2,
       systemPrompt: 'Ты помощник менеджера в банковской операционной панели. Отвечай кратко и по делу: подсказывай по продуктам, регламентам и типовым вопросам клиентов.'
     };
 
@@ -3302,23 +3308,50 @@
         return 'Настройте CHAT_BOT_CONFIG.apiUrl (ваш backend или AI API). Сейчас бот работает без подключения.';
       }
       const history = chatBotState.messages
-        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .filter(m => (m.role === 'user' || m.role === 'assistant') && !m.typing)
         .map(m => ({ role: m.role, content: m.content }));
-      const body = {
-        message: userText,
-        history,
-        context: getChatContext()
-      };
+
+      let body;
+      if ((cfg.provider || '').toLowerCase() === 'mistral' || cfg.apiUrl.includes('api.mistral.ai')) {
+        // Mistral API expects OpenAI-like schema: { model, messages: [{role, content}], ... }
+        const messages = [];
+        if (cfg.systemPrompt && cfg.systemPrompt.trim()) {
+          messages.push({ role: 'system', content: cfg.systemPrompt.trim() });
+        }
+        history.forEach(m => messages.push({ role: m.role, content: m.content }));
+        messages.push({ role: 'user', content: userText });
+
+        body = {
+          model: cfg.model || 'mistral-small-latest',
+          messages,
+          temperature: cfg.temperature ?? 0.2
+        };
+      } else {
+        // Backend/proxy schema (ваш сервер)
+        body = {
+          message: userText,
+          history,
+          context: getChatContext(),
+          systemPrompt: cfg.systemPrompt || ''
+        };
+      }
       const headers = {
         'Content-Type': 'application/json'
       };
       if (cfg.apiKey && cfg.apiKey.trim()) headers['Authorization'] = 'Bearer ' + cfg.apiKey.trim();
 
-      const res = await fetch(cfg.apiUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-      });
+      let res;
+      try {
+        res = await fetch(cfg.apiUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body)
+        });
+      } catch (e) {
+        // Частая причина при прямом вызове из браузера: CORS
+        const msg = (e && e.message) ? e.message : String(e);
+        return 'Не удалось выполнить запрос (возможен CORS). Рекомендуется вызывать Mistral через ваш backend-прокси. Детали: ' + msg;
+      }
       if (!res.ok) {
         const err = await res.text();
         return 'Ошибка запроса: ' + (err || res.status);
