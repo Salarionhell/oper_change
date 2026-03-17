@@ -1117,8 +1117,49 @@
       border-radius: 10px;
       line-height: 1.4;
       word-break: break-word;
-      white-space: pre-wrap; /* сохраняем переносы строк от AI */
+      white-space: normal;
       overflow-wrap: anywhere;
+    }
+
+    .chat-msg p { margin: 0 0 6px; }
+    .chat-msg p:last-child { margin-bottom: 0; }
+    .chat-msg ul, .chat-msg ol { margin: 6px 0 6px 18px; padding: 0; }
+    .chat-msg li { margin: 2px 0; }
+    .chat-msg h1, .chat-msg h2, .chat-msg h3, .chat-msg h4, .chat-msg h5, .chat-msg h6 {
+      margin: 6px 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .chat-msg pre {
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.06);
+      overflow: auto;
+      white-space: pre;
+    }
+    .chat-msg code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+    .chat-msg table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 6px 0;
+      font-size: 12px;
+      display: block;
+      overflow-x: auto;
+    }
+    .chat-msg th, .chat-msg td {
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    .chat-msg thead th {
+      background: rgba(0,0,0,0.04);
+      font-weight: 700;
     }
     .chat-msg.user {
       align-self: flex-end;
@@ -1321,6 +1362,10 @@
     </form>
   </div>
 
+  <!-- Markdown renderer (safe) for chat messages -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+
   <script>
     // ---------------- CHAT BOT CONFIG (подключение AI) ----------------
     // Вариант 1: свой backend (рекомендуется — API-ключ не светится в клиенте)
@@ -1339,7 +1384,8 @@
       apiKey: '1Q9swKUAcOGo7ryPSX39EIklif1BACZa', // ВАЖНО: ключ на фронте — только для прототипа
       model: 'mistral-small-latest',
       temperature: 0.2,
-      systemPrompt: `Ты — внутренний помощник менеджера банковского отделения, работающий внутри операционной панели.
+      maxTokens: 380,
+      systemPrompt: `Ты — внутренний помощник менеджера банковского отделения Альфа‑Банка, работающий внутри операционной панели.
 
 ГЛАВНОЕ ПРАВИЛО: отвечай ТОЛЬКО на вопросы, связанные с рабочими задачами банка и обслуживанием клиентов (продукты, тарифы, условия, регламенты, комплаенс, KYC/AML, скрипты общения, оформление заявок, типовые ошибки/сценарии в системе).
 
@@ -3343,13 +3389,25 @@
     }
 
     function formatChatContent(text) {
-      // Безопасно экранируем HTML, затем применяем минимальный markdown.
-      // Поддержка: **bold**, __bold__, *italic*, _italic_
-      const safe = escapeHtml(text);
+      const raw = String(text ?? '');
+      // Prefer full markdown rendering (lists, headings, tables, code), but keep it safe.
+      if (window.marked && window.DOMPurify) {
+        window.marked.setOptions({
+          gfm: true,
+          breaks: true,
+          headerIds: false,
+          mangle: false
+        });
+        const html = window.marked.parse(raw);
+        return window.DOMPurify.sanitize(html, {
+          USE_PROFILES: { html: true }
+        });
+      }
+      // Fallback: escape HTML + minimal bold/italic
+      const safe = escapeHtml(raw);
       return safe
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/__(.+?)__/g, '<strong>$1</strong>')
-        // Италики: одинарные маркеры, не цепляем ** и __
         .replace(/(^|[^*])\*(?!\*)([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>')
         .replace(/(^|[^_])_(?!_)([^_\n]+?)_(?!_)/g, '$1<em>$2</em>');
     }
@@ -3385,7 +3443,8 @@
         body = {
           model: cfg.model || 'mistral-small-latest',
           messages,
-          temperature: cfg.temperature ?? 0.2
+          temperature: cfg.temperature ?? 0.2,
+          max_tokens: cfg.maxTokens ?? 380
         };
       } else {
         // Backend/proxy schema (ваш сервер)
@@ -3393,7 +3452,8 @@
           message: limitedUserText,
           history,
           context: getChatContext(),
-          systemPrompt: limitedSystemPrompt
+          systemPrompt: limitedSystemPrompt,
+          maxTokens: cfg.maxTokens ?? 380
         };
       }
       const headers = {
