@@ -1117,6 +1117,8 @@
       border-radius: 10px;
       line-height: 1.4;
       word-break: break-word;
+      white-space: pre-wrap; /* сохраняем переносы строк от AI */
+      overflow-wrap: anywhere;
     }
     .chat-msg.user {
       align-self: flex-end;
@@ -3286,6 +3288,7 @@
       const el = qs('#chat-messages');
       el.innerHTML = chatBotState.messages.map(m => {
         const cls = m.role === 'user' ? 'chat-msg user' : 'chat-msg bot' + (m.typing ? ' typing' : '');
+        // Переносы строк сохраняются через CSS white-space: pre-wrap
         return `<div class="${cls}">${escapeHtml(m.content)}</div>`;
       }).join('');
       el.scrollTop = el.scrollHeight;
