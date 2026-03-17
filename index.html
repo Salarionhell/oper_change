@@ -3301,12 +3301,15 @@
     }
 
     function formatChatContent(text) {
-      // Безопасно экранируем HTML, затем применяем минимальный markdown для жирного.
-      // Поддержка: **bold** и __bold__
+      // Безопасно экранируем HTML, затем применяем минимальный markdown.
+      // Поддержка: **bold**, __bold__, *italic*, _italic_
       const safe = escapeHtml(text);
       return safe
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/__(.+?)__/g, '<strong>$1</strong>');
+        .replace(/__(.+?)__/g, '<strong>$1</strong>')
+        // Италики: одинарные маркеры, не цепляем ** и __
+        .replace(/(^|[^*])\*(?!\*)([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>')
+        .replace(/(^|[^_])_(?!_)([^_\n]+?)_(?!_)/g, '$1<em>$2</em>');
     }
 
     function addChatMessage(role, content, typing) {
