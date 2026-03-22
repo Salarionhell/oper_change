@@ -1445,7 +1445,7 @@
       temperature: 0.2,
       maxTokens: 380,
       /** Краткое саммари вкладки «Обращения и коммуникации» (отдельный запрос без истории чата) */
-      communicationsSummaryMaxTokens: 220,
+      communicationsSummaryMaxTokens: 480,
       systemPrompt: `Ты — внутренний помощник менеджера банковского отделения Альфа‑Банка, работающий внутри операционной панели.
 
 ГЛАВНОЕ ПРАВИЛО: отвечай ТОЛЬКО на вопросы, связанные с рабочими задачами банка и обслуживанием клиентов (продукты, тарифы, условия, регламенты, комплаенс, KYC/AML, скрипты общения, оформление заявок, типовые ошибки/сценарии в системе).
@@ -2273,6 +2273,7 @@
         "Правила:\n" +
         "- Только факты из переданных данных; не выдумывай.\n" +
         "- 2–5 коротких предложений ИЛИ маркированный список из 3–7 пунктов.\n" +
+        "- Каждый пункт и предложение завершай полностью (не обрывай на середине слова). Если не хватает места — уменьши число пунктов, но последний оставшийся пункт должен быть закончен.\n" +
         "- Выдели: что требует действия (оформить, в обработке), отклонения, риски/сроки при наличии.\n" +
         "- Не дублируй таблицу; дай суть для менеджера.\n" +
         "- Пиши по-русски, деловым тоном без воды.";
@@ -2284,7 +2285,7 @@
           { role: "user", content: "Данные для саммари:\n\n" + limitedContext },
         ],
         temperature: 0.15,
-        max_tokens: cfg.communicationsSummaryMaxTokens ?? 220,
+        max_tokens: cfg.communicationsSummaryMaxTokens ?? 480,
       };
       const headers = { "Content-Type": "application/json" };
       if (cfg.apiKey && cfg.apiKey.trim())
@@ -2304,13 +2305,32 @@
         return buildFallbackCommunicationsSummary();
       }
       const data = await res.json();
+      const choice0 = data.choices && data.choices[0];
       const text =
-        data.choices && data.choices[0] && data.choices[0].message
-          ? data.choices[0].message.content
-          : null;
+        choice0 && choice0.message ? choice0.message.content : null;
+      const finishReason = choice0 && choice0.finish_reason;
       if (!text || !String(text).trim())
         return buildFallbackCommunicationsSummary();
-      return String(text).trim();
+      return trimCommunicationsSummaryIfTruncated(
+        String(text).trim(),
+        finishReason
+      );
+    }
+
+    /**
+     * Если модель уперлась в max_tokens (finish_reason: length), ответ часто обрывается на середине слова.
+     * Основное решение — достаточный max_tokens; здесь лёгкая подчистка хвоста.
+     */
+    function trimCommunicationsSummaryIfTruncated(text, finishReason) {
+      let s = String(text || "").trim();
+      if (!s || finishReason !== "length") return s;
+      if (/[.!?…]\s*$/.test(s)) return s;
+      // Удаляем подозрительно короткий последний «хвост» (часто обломок слова при обрезке по токенам)
+      const m = s.match(/(?:^|[\s])([А-Яа-яЁёA-Za-z-]{1,4})\s*$/);
+      if (m && m[1] && m[1].length <= 4) {
+        s = s.slice(0, s.length - m[1].length).replace(/\s+$/, "");
+      }
+      return s ? s + "…" : text.trim();
     }
 
     function initCommunicationsSummaryBlock(options) {
