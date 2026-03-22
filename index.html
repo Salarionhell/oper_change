@@ -779,68 +779,6 @@
       margin-bottom: 4px;
     }
 
-    .personal-data-change {
-      max-width: 560px;
-    }
-    .personal-data-lead {
-      font-size: 13px;
-      color: var(--text-main);
-      margin-bottom: 12px;
-      line-height: 1.45;
-    }
-    .personal-data-lead strong {
-      color: var(--primary-dark);
-    }
-    .personal-data-fieldset {
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-card);
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      background: #fafafa;
-    }
-    .personal-data-fieldset legend {
-      font-size: 13px;
-      font-weight: 600;
-      padding: 0 6px;
-    }
-    .personal-data-option {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border-soft);
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .personal-data-option:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .personal-data-option input {
-      margin-top: 3px;
-      flex-shrink: 0;
-    }
-    .personal-data-option.disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-    .personal-data-option-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-    .personal-data-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-    .personal-data-note {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
     /* Card wizard */
 
     .wizard-layout {
@@ -1770,7 +1708,7 @@
       "Самозанятость": "Услуги для самозанятых",
       "Счета": "Открытие и ведение счетов",
       "ИБС": "Интернет-банк для бизнеса",
-      "Изменение персональных данных": "Смена данных; при смене фамилии — перевыпуск кредитной карты",
+      "Изменение персональных данных": "Смена данных клиента",
       "Пакет услуг": "Подключение пакетов",
       "Справки и выписки": "Документы по счёту",
       "УКД": "Удалённое кассовое обслуживание",
@@ -1863,9 +1801,11 @@
         "Отправка инструкций клиенту",
       ],
       "Изменение персональных данных": [
-        "Проверка документа клиента",
-        "Внесение изменений",
-        "Подтверждение изменений",
+        "Проверка документа",
+        "Новая фамилия и основание",
+        "Проверка в системе",
+        "Подтверждение",
+        "Перевыпуск карты",
       ],
       "Пакет услуг": [
         "Выбор пакета",
@@ -1945,6 +1885,9 @@
       cardWizardFinished: false,
       /** Сохранённый прогресс мастера «Карты» после «Сохранить прогресс» */
       savedCardWizard: null,
+      personalDataWizard: null,
+      personalDataWizardFinished: false,
+      savedPersonalDataWizard: null,
     };
 
     // ---------------- CUSTOM CONFIRM ----------------
@@ -2228,6 +2171,14 @@
             if (tab.payload.operationName === "Карты" && !state.cardWizardFinished) {
               state.savedCardWizard = JSON.parse(JSON.stringify(state.cardWizard));
             }
+            if (
+              tab.payload.operationName === "Изменение персональных данных" &&
+              !state.personalDataWizardFinished
+            ) {
+              state.savedPersonalDataWizard = JSON.parse(
+                JSON.stringify(state.personalDataWizard),
+              );
+            }
             closeTab(tab.id);
           },
           () => {
@@ -2236,6 +2187,11 @@
               state.cardWizard = null;
               state.cardWizardFinished = false;
               state.savedCardWizard = null;
+            }
+            if (tab.payload.operationName === "Изменение персональных данных") {
+              state.personalDataWizard = null;
+              state.personalDataWizardFinished = false;
+              state.savedPersonalDataWizard = null;
             }
             closeTab(tab.id);
           }
@@ -2543,8 +2499,8 @@
           host.innerHTML = renderCardOperationHTML();
           initCardWizardHandlers();
         } else if (tab.payload.operationName === "Изменение персональных данных") {
-          host.innerHTML = renderPersonalDataChangeHTML();
-          requestAnimationFrame(() => initPersonalDataChangeHandlers());
+          host.innerHTML = renderPersonalDataWizardHTML();
+          initPersonalDataWizardHandlers();
         } else {
           host.innerHTML = renderSimpleOperationHTML(tab.payload.operationName);
         }
@@ -2925,6 +2881,23 @@
           createTab("Оформление кредитной карты", "operation", {
             operationName: "Карты",
           });
+        } else if (name === "Изменение персональных данных") {
+          if (state.savedPersonalDataWizard) {
+            state.personalDataWizard = JSON.parse(
+              JSON.stringify(state.savedPersonalDataWizard),
+            );
+            state.personalDataWizardFinished = false;
+            state.savedPersonalDataWizard = null;
+          } else if (
+            !state.personalDataWizard ||
+            state.personalDataWizardFinished
+          ) {
+            state.personalDataWizard = createPersonalDataWizardState();
+            state.personalDataWizardFinished = false;
+          }
+          createTab("Изменение персональных данных", "operation", {
+            operationName: "Изменение персональных данных",
+          });
         } else {
           createTab(name, "operation", { operationName: name });
         }
@@ -2940,64 +2913,16 @@
 
     // ---------------- SIMPLE OPERATION TAB ----------------
 
-    function renderPersonalDataChangeHTML() {
-      return `
-        <div class="card personal-data-change">
-          <div class="op-simple-title">Изменение персональных данных</div>
-          <p class="personal-data-lead">
-            Выберите, какие данные меняются. При <strong>смене фамилии</strong> на пластике кредитной карты остаётся старая фамилия — требуется <strong>перевыпуск карты</strong> (оформление в операции «Карты» для кредитной карты).
-          </p>
-          <form id="personal-data-change-form" class="personal-data-fieldset">
-            <legend>Что изменяется</legend>
-            <label class="personal-data-option">
-              <input type="radio" name="pd-change-type" value="surname" checked />
-              <span>
-                Фамилия
-                <div class="personal-data-option-desc">Связанная операция: перевыпуск кредитной карты</div>
-              </span>
-            </label>
-            <label class="personal-data-option disabled">
-              <input type="radio" name="pd-change-type" value="name" disabled />
-              <span>
-                Имя
-                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
-              </span>
-            </label>
-            <label class="personal-data-option disabled">
-              <input type="radio" name="pd-change-type" value="patronymic" disabled />
-              <span>
-                Отчество
-                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
-              </span>
-            </label>
-            <label class="personal-data-option disabled">
-              <input type="radio" name="pd-change-type" value="birthdate" disabled />
-              <span>
-                Дата рождения
-                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
-              </span>
-            </label>
-          </form>
-          <div class="personal-data-actions">
-            <button type="button" class="btn" id="personal-data-go-cards">
-              <i class="fa-solid fa-credit-card"></i> Перейти к перевыпуску кредитной карты
-            </button>
-          </div>
-          <p class="personal-data-note">
-            Откроется операция «Оформление кредитной карты» (тот же мастер, что при выборе «Карты» на главной). Текущая вкладка закроется.
-          </p>
-        </div>
-      `;
-    }
-
     function goToCardReissueFromPersonalData() {
       const personalTab = findTabByType(
         "operation",
         "Изменение персональных данных"
       );
       if (!personalTab) return;
-      const personalTabId = personalTab.id;
-      closeTab(personalTabId);
+      closeTab(personalTab.id);
+      state.personalDataWizard = null;
+      state.personalDataWizardFinished = true;
+      state.savedPersonalDataWizard = null;
 
       if (!state.sessionActive) {
         pendingOperationAfterSms = "Карты";
@@ -3007,28 +2932,76 @@
       handleOperationClick("Карты");
     }
 
-    function initPersonalDataChangeHandlers() {
-      const btn = qs("#personal-data-go-cards");
-      const form = qs("#personal-data-change-form");
-      if (!btn || !form) return;
+    function initPersonalDataWizardHandlers() {
+      const w = state.personalDataWizard;
+      if (!w) return;
+      const d = w.data;
+      const step = w.currentStep;
+      const total = personalDataWizardStepTitles.length;
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        btn.click();
+      if (step === 1) {
+        const el = qs("#pd-document-verified");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.documentVerified = e.target.checked),
+          );
+      } else if (step === 2) {
+        const sn = qs("#pd-new-surname");
+        if (sn)
+          sn.addEventListener(
+            "input",
+            (e) => (d.newSurname = e.target.value),
+          );
+        const sel = qs("#pd-reason");
+        if (sel) {
+          sel.value = d.reason || "";
+          sel.addEventListener("change", (e) => (d.reason = e.target.value));
+        }
+      } else if (step === 3) {
+        const el = qs("#pd-checks-ok");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.checksOk = e.target.checked),
+          );
+      } else if (step === 4) {
+        const el = qs("#pd-confirm-change");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.confirmChange = e.target.checked),
+          );
+      }
+
+      const btnPrev = qs("#pd-btn-prev");
+      const btnNext = qs("#pd-btn-next");
+      if (!btnPrev || !btnNext) return;
+
+      btnPrev.addEventListener("click", () => {
+        if (w.currentStep > 1) {
+          w.currentStep -= 1;
+          renderActiveTabContent();
+        }
       });
 
-      btn.addEventListener("click", () => {
-        const sel = form.querySelector(
-          'input[name="pd-change-type"]:checked'
-        );
-        if (!sel || sel.value !== "surname" || sel.disabled) {
-          showAlert(
-            "Для перехода к перевыпуску карты выберите тип изменения «Фамилия».",
-            null
-          );
+      btnNext.addEventListener("click", () => {
+        if (w.currentStep === total) {
+          goToCardReissueFromPersonalData();
           return;
         }
-        goToCardReissueFromPersonalData();
+        const ok = validatePersonalDataWizardStep();
+        if (!ok) {
+          renderActiveTabContent();
+          return;
+        }
+        if (w.currentStep === 4) {
+          w.applicationNumber =
+            w.applicationNumber ||
+            "PD-2026-" + String(Date.now()).slice(-8);
+        }
+        w.currentStep += 1;
+        renderActiveTabContent();
       });
     }
 
@@ -3132,6 +3105,79 @@
       "Дозаполнение заявки",
       "Выдача карты",
     ];
+
+    /** Мастер «Изменение персональных данных» (смена фамилии) — тот же каркас, что у «Карты». */
+    const personalDataWizardStepTitles = [
+      "Проверка документа",
+      "Новая фамилия",
+      "Проверка в системе",
+      "Подтверждение изменений",
+      "Перевыпуск карты",
+    ];
+
+    function createPersonalDataWizardState() {
+      const fio = clientInfoFull.fio || "";
+      const parts = fio.trim().split(/\s+/);
+      const surname = parts[0] || "";
+      const name = parts[1] || "";
+      const patronymic = parts.slice(2).join(" ") || "";
+      return {
+        currentStep: 1,
+        applicationNumber: null,
+        data: {
+          oldSurname: surname,
+          newSurname: "",
+          name,
+          patronymic,
+          passportSeries: clientInfoFull.passportSeries || "",
+          passportNumber: clientInfoFull.passportNumber || "",
+          passportIssuer: clientInfoFull.passportIssuer || "",
+          passportIssueDate: clientInfoFull.passportIssueDate || "",
+          reason: "",
+          documentVerified: false,
+          checksOk: false,
+          confirmChange: false,
+        },
+        errors: {},
+      };
+    }
+
+    function validatePersonalDataWizardStep() {
+      const w = state.personalDataWizard;
+      if (!w) return false;
+      const d = w.data;
+      const errors = {};
+      switch (w.currentStep) {
+        case 1:
+          if (!d.documentVerified)
+            errors.documentVerified =
+              "Необходимо подтвердить сверку документа с клиентом";
+          break;
+        case 2:
+          if (!String(d.newSurname || "").trim())
+            errors.newSurname = "Укажите новую фамилию";
+          else if (
+            String(d.newSurname).trim().toLowerCase() ===
+            String(d.oldSurname || "").trim().toLowerCase()
+          )
+            errors.newSurname = "Новая фамилия должна отличаться от текущей";
+          if (!d.reason) errors.reason = "Выберите основание изменения";
+          break;
+        case 3:
+          if (!d.checksOk)
+            errors.checksOk = "Подтвердите завершение проверок в системе";
+          break;
+        case 4:
+          if (!d.confirmChange)
+            errors.confirmChange =
+              "Необходимо подтвердить регистрацию изменения фамилии";
+          break;
+        default:
+          break;
+      }
+      w.errors = errors;
+      return Object.keys(errors).length === 0;
+    }
 
     function validateCurrentWizardStep() {
       const w = state.cardWizard;
@@ -3539,6 +3585,192 @@
       `;
     }
 
+    function renderPersonalDataWizardHTML() {
+      const w = state.personalDataWizard || createPersonalDataWizardState();
+      state.personalDataWizard = w;
+      const step = w.currentStep;
+      const total = personalDataWizardStepTitles.length;
+      const d = w.data;
+
+      const stepsHTML = personalDataWizardStepTitles
+        .map((t, idx) => {
+          const stepNum = idx + 1;
+          const completed =
+            stepNum < step || state.personalDataWizardFinished;
+          const current = stepNum === step;
+          return `
+          <li class="wizard-step-item ${
+            completed ? "completed" : ""
+          } ${current ? "current" : ""}">
+            <div class="wizard-step-index">
+              ${
+                completed ? '<i class="fa-solid fa-check"></i>' : stepNum
+              }
+            </div>
+            <div class="wizard-step-title-main">${t}</div>
+          </li>`;
+        })
+        .join("");
+
+      const formContent = (() => {
+        switch (step) {
+          case 1:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Сверьте паспорт клиента с данными в системе. При смене фамилии на пластике кредитной карты останется старая фамилия — потребуется перевыпуск карты (шаг в конце мастера).
+              </p>
+              <table class="summary-table">
+                <tr><td>Фамилия</td><td>${d.oldSurname || "—"}</td></tr>
+                <tr><td>Имя</td><td>${d.name || "—"}</td></tr>
+                <tr><td>Отчество</td><td>${d.patronymic || "—"}</td></tr>
+                <tr><td>Серия и номер паспорта</td><td>${d.passportSeries || ""} ${d.passportNumber || ""}</td></tr>
+                <tr><td>Кем выдан</td><td>${d.passportIssuer || "—"}</td></tr>
+                <tr><td>Дата выдачи</td><td>${d.passportIssueDate || "—"}</td></tr>
+              </table>
+              <div class="form-group" style="margin-top:10px;">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-document-verified" ${d.documentVerified ? "checked" : ""} />
+                  <span>Документ проверен, данные в системе совпадают с оригиналом</span>
+                </label>
+                ${
+                  w.errors.documentVerified
+                    ? `<div class="form-error">${w.errors.documentVerified}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          case 2:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Укажите новую фамилию и основание изменения (в демо доступна только смена фамилии).
+              </p>
+              <div class="form-grid">
+                ${renderInputGroup(
+                  "pd-new-surname",
+                  "Новая фамилия",
+                  d.newSurname,
+                  w.errors.newSurname,
+                  "text",
+                )}
+                <div class="form-group">
+                  <label class="form-label">Основание изменения</label>
+                  <select class="form-select" id="pd-reason">
+                    <option value="">Выберите...</option>
+                    <option value="marriage" ${d.reason === "marriage" ? "selected" : ""}>Брак / развод</option>
+                    <option value="court" ${d.reason === "court" ? "selected" : ""}>Решение суда / смена по документу</option>
+                    <option value="fix" ${d.reason === "fix" ? "selected" : ""}>Исправление ошибки в данных</option>
+                    <option value="other" ${d.reason === "other" ? "selected" : ""}>Иное</option>
+                  </select>
+                  ${
+                    w.errors.reason
+                      ? `<div class="form-error">${w.errors.reason}</div>`
+                      : ""
+                  }
+                </div>
+              </div>
+            `;
+          case 3:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Выполняются автоматические проверки (ФМ, списки, связь с продуктами). В демо — имитация.
+              </p>
+              <div class="document-block" style="margin-bottom:12px;">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Статус: проверки завершены, критичных замечаний нет</span>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-checks-ok" ${d.checksOk ? "checked" : ""} />
+                  <span>Проверки в системе завершены, можно фиксировать изменение</span>
+                </label>
+                ${
+                  w.errors.checksOk
+                    ? `<div class="form-error">${w.errors.checksOk}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          case 4: {
+            const reasonLabel =
+              {
+                marriage: "Брак / развод",
+                court: "Решение суда / смена по документу",
+                fix: "Исправление ошибки",
+                other: "Иное",
+              }[d.reason] || "—";
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">Проверьте данные перед регистрацией в системе.</p>
+              <table class="summary-table">
+                <tr><td>Текущая фамилия</td><td>${d.oldSurname || "—"}</td></tr>
+                <tr><td>Новая фамилия</td><td>${String(d.newSurname || "").trim() || "—"}</td></tr>
+                <tr><td>Имя, отчество (без изменений)</td><td>${d.name || ""} ${d.patronymic || ""}</td></tr>
+                <tr><td>Основание</td><td>${reasonLabel}</td></tr>
+              </table>
+              <div class="form-group" style="margin-top:10px;">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-confirm-change" ${d.confirmChange ? "checked" : ""} />
+                  <span>Зарегистрировать изменение фамилии в системе</span>
+                </label>
+                ${
+                  w.errors.confirmChange
+                    ? `<div class="form-error">${w.errors.confirmChange}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          }
+          case 5: {
+            if (!w.applicationNumber) {
+              w.applicationNumber =
+                "PD-2026-" + String(Date.now()).slice(-8);
+            }
+            return `
+              <p style="font-size:13px;margin-bottom:8px;">
+                Изменение фамилии зарегистрировано. Номер заявки: <strong>#${w.applicationNumber}</strong>.
+              </p>
+              <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted);">
+                На пластике кредитной карты по-прежнему старая фамилия — для выпуска нового пластика перейдите к операции перевыпуска кредитной карты (тот же мастер, что при выборе «Карты» на главной).
+              </p>
+            `;
+          }
+          default:
+            return "";
+        }
+      })();
+
+      const lastStep = step === total;
+      const nextLabel = lastStep
+        ? '<i class="fa-solid fa-credit-card"></i> Перейти к перевыпуску кредитной карты'
+        : 'Далее <i class="fa-solid fa-arrow-right"></i>';
+
+      return `
+        <div class="card">
+          <div class="wizard-layout">
+            <div class="wizard-form-section">
+              <div class="wizard-form-header">
+                <div class="wizard-form-title">Изменение персональных данных</div>
+                <div class="wizard-form-sub">Смена фамилии</div>
+              </div>
+              ${formContent}
+              <div class="wizard-actions">
+                <button class="btn secondary" type="button" id="pd-btn-prev" ${
+                  step === 1 ? "disabled" : ""
+                }>
+                  <i class="fa-solid fa-arrow-left"></i> Назад
+                </button>
+                <button class="btn" type="button" id="pd-btn-next">${nextLabel}</button>
+              </div>
+            </div>
+            <div>
+              <ul class="wizard-steps-list">
+                ${stepsHTML}
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderInputGroup(
       id,
       label,
@@ -3798,10 +4030,18 @@
     // ---------------- BEFOREUNLOAD ----------------
 
     window.addEventListener("beforeunload", (e) => {
-      const hasCardWizardInProgress = state.tabs.some(
-        (t) => t.type === "operation" && t.payload.operationName === "Карты"
-      ) && !state.cardWizardFinished;
-      if (hasCardWizardInProgress) {
+      const hasCardWizardInProgress =
+        state.tabs.some(
+          (t) =>
+            t.type === "operation" && t.payload.operationName === "Карты",
+        ) && !state.cardWizardFinished;
+      const hasPersonalWizardInProgress =
+        state.tabs.some(
+          (t) =>
+            t.type === "operation" &&
+            t.payload.operationName === "Изменение персональных данных",
+        ) && !state.personalDataWizardFinished;
+      if (hasCardWizardInProgress || hasPersonalWizardInProgress) {
         e.preventDefault();
         e.returnValue = "";
       }
