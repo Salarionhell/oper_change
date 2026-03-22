@@ -2290,7 +2290,7 @@
       );
       lines.push("");
       const needAction = casesFull.filter((c) => c.status === "оформить");
-      lines.push("=== Оформить (за весь период) ===");
+      lines.push("=== Оформить ===");
       if (needAction.length === 0) {
         lines.push("(нет записей)");
       } else {
@@ -2298,7 +2298,7 @@
       }
       lines.push("");
       const inProgress = casesFull.filter((c) => c.status === "в обработке");
-      lines.push("=== В ОБРАБОТКЕ (за весь период) ===");
+      lines.push("=== В ОБРАБОТКЕ ===");
       if (inProgress.length === 0) {
         lines.push("(нет записей)");
       } else {
