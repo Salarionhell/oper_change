@@ -692,6 +692,65 @@
       text-align: left;
       font-size: 12px;
     }
+
+    /* Саммари обращений и коммуникаций (вкладка info / cases) */
+    .cases-summary-card {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+    .cases-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .cases-summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cases-summary-refresh {
+      flex-shrink: 0;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+    }
+    .cases-summary-body {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+    .cases-summary-body p {
+      margin: 0 0 6px;
+    }
+    .cases-summary-body p:last-child {
+      margin-bottom: 0;
+    }
+    .cases-summary-body ul,
+    .cases-summary-body ol {
+      margin: 4px 0 4px 18px;
+      padding: 0;
+    }
+    .cases-summary-body li {
+      margin: 2px 0;
+    }
+    .cases-summary-loading {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .cases-summary-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
     .sms-table th {
       background-color: #f5f5f5;
     }
@@ -1385,6 +1444,8 @@
       model: 'mistral-small-latest',
       temperature: 0.2,
       maxTokens: 380,
+      /** Краткое саммари вкладки «Обращения и коммуникации» (отдельный запрос без истории чата) */
+      communicationsSummaryMaxTokens: 220,
       systemPrompt: `Ты — внутренний помощник менеджера банковского отделения Альфа‑Банка, работающий внутри операционной панели.
 
 ГЛАВНОЕ ПРАВИЛО: отвечай ТОЛЬКО на вопросы, связанные с рабочими задачами банка и обслуживанием клиентов (продукты, тарифы, условия, регламенты, комплаенс, KYC/AML, скрипты общения, оформление заявок, типовые ошибки/сценарии в системе).
@@ -2122,6 +2183,180 @@
       }
     }
 
+    // ---------------- COMMUNICATIONS SUMMARY (вкладка «Обращения и коммуникации») ----------------
+    const communicationsSummaryCache = {
+      sourceHash: null,
+      summaryText: null,
+      forceNext: false,
+    };
+
+    /** Вызовите после обновления данных обращений/SMS из API — саммари пересчитается при следующем открытии вкладки. */
+    function invalidateCommunicationsSummaryCache() {
+      communicationsSummaryCache.sourceHash = null;
+      communicationsSummaryCache.summaryText = null;
+      communicationsSummaryCache.forceNext = true;
+    }
+    window.invalidateCommunicationsSummaryCache = invalidateCommunicationsSummaryCache;
+
+    function hashCommunicationsSource(s) {
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return String(h >>> 0);
+    }
+
+    function buildCommunicationsContextForSummary() {
+      const lines = [];
+      lines.push("=== ОБРАЩЕНИЯ / ЗАЯВКИ ===");
+      casesFull.forEach((c, i) => {
+        lines.push(
+          `${i + 1}. ${c.title} | дата ${c.date} | статус: ${c.status} | менеджер: ${c.manager || "—"} | канал: ${c.source || "—"}`
+        );
+        if (c.extra) lines.push(`   дополнительно: ${c.extra}`);
+        if (c.place) lines.push(`   место выдачи/отделение: ${c.place}`);
+      });
+      lines.push("");
+      lines.push("=== КОММУНИКАЦИИ (SMS / уведомления, последние) ===");
+      smsFull.slice(0, 10).forEach((s, i) => {
+        lines.push(`${i + 1}. [${s.date}] ${s.type}: ${s.text}`);
+      });
+      return lines.join("\n");
+    }
+
+    function buildFallbackCommunicationsSummary() {
+      const n = casesFull.length;
+      const pending = casesFull.filter(
+        (c) => c.status === "оформить" || c.status === "в обработке"
+      );
+      const rejected = casesFull.filter((c) => c.status === "отклонено");
+      const done = casesFull.filter((c) => c.status === "выполнено");
+      return [
+        `Всего обращений: ${n}.`,
+        `Требуют внимания (оформить / в обработке): ${pending.length}.`,
+        `Отклонено: ${rejected.length}; выполнено: ${done.length}.`,
+        "При необходимости уточните у клиента детали по отклонённым заявкам.",
+      ].join(" ");
+    }
+
+    function renderCommunicationsSummaryHtml(container, text) {
+      if (!container) return;
+      const raw = String(text || "").trim();
+      if (!raw) {
+        container.innerHTML =
+          '<span class="cases-summary-loading">Нет данных для саммари.</span>';
+        return;
+      }
+      if (window.marked && window.DOMPurify) {
+        window.marked.setOptions({
+          gfm: true,
+          breaks: true,
+          headerIds: false,
+          mangle: false,
+        });
+        const html = window.marked.parse(raw);
+        container.innerHTML = window.DOMPurify.sanitize(html, {
+          USE_PROFILES: { html: true },
+        });
+      } else {
+        container.textContent = raw;
+      }
+    }
+
+    async function fetchCommunicationsSummaryFromAi(contextText) {
+      const cfg = CHAT_BOT_CONFIG;
+      if (!cfg.apiUrl || !cfg.apiUrl.trim()) {
+        return buildFallbackCommunicationsSummary();
+      }
+      const limitedContext =
+        contextText.length > 12000
+          ? contextText.slice(0, 11999) + "…"
+          : contextText;
+      const systemPrompt =
+        "Ты — помощник менеджера отделения Альфа‑Банка. Сделай краткое саммари по фактам из данных об обращениях и коммуникациях клиента.\n" +
+        "Правила:\n" +
+        "- Только факты из переданных данных; не выдумывай.\n" +
+        "- 2–5 коротких предложений ИЛИ маркированный список из 3–7 пунктов.\n" +
+        "- Выдели: что требует действия (оформить, в обработке), отклонения, риски/сроки при наличии.\n" +
+        "- Не дублируй таблицу; дай суть для менеджера.\n" +
+        "- Пиши по-русски, деловым тоном без воды.";
+
+      const body = {
+        model: cfg.model || "mistral-small-latest",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: "Данные для саммари:\n\n" + limitedContext },
+        ],
+        temperature: 0.15,
+        max_tokens: cfg.communicationsSummaryMaxTokens ?? 220,
+      };
+      const headers = { "Content-Type": "application/json" };
+      if (cfg.apiKey && cfg.apiKey.trim())
+        headers["Authorization"] = "Bearer " + cfg.apiKey.trim();
+
+      let res;
+      try {
+        res = await fetch(cfg.apiUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+        });
+      } catch (e) {
+        return buildFallbackCommunicationsSummary();
+      }
+      if (!res.ok) {
+        return buildFallbackCommunicationsSummary();
+      }
+      const data = await res.json();
+      const text =
+        data.choices && data.choices[0] && data.choices[0].message
+          ? data.choices[0].message.content
+          : null;
+      if (!text || !String(text).trim())
+        return buildFallbackCommunicationsSummary();
+      return String(text).trim();
+    }
+
+    function initCommunicationsSummaryBlock(options) {
+      const force = options && options.force;
+      const bodyEl = qs("#cases-summary-body");
+      const btn = qs("#cases-summary-refresh");
+      if (!bodyEl) return;
+
+      const ctx = buildCommunicationsContextForSummary();
+      const hash = hashCommunicationsSource(ctx);
+
+      if (
+        !force &&
+        !communicationsSummaryCache.forceNext &&
+        communicationsSummaryCache.sourceHash === hash &&
+        communicationsSummaryCache.summaryText
+      ) {
+        renderCommunicationsSummaryHtml(bodyEl, communicationsSummaryCache.summaryText);
+        if (btn) {
+          btn.disabled = false;
+          btn.onclick = () => initCommunicationsSummaryBlock({ force: true });
+        }
+        return;
+      }
+      communicationsSummaryCache.forceNext = false;
+
+      bodyEl.innerHTML =
+        '<span class="cases-summary-loading">Формирую краткий пересказ…</span>';
+      if (btn) btn.disabled = true;
+
+      fetchCommunicationsSummaryFromAi(ctx).then((text) => {
+        communicationsSummaryCache.sourceHash = hash;
+        communicationsSummaryCache.summaryText = text;
+        renderCommunicationsSummaryHtml(bodyEl, text);
+        if (btn) {
+          btn.disabled = false;
+          btn.onclick = () => initCommunicationsSummaryBlock({ force: true });
+        }
+      });
+    }
+
     // ---------------- TAB CONTENT ----------------
 
     function renderActiveTabContent() {
@@ -2136,6 +2371,9 @@
         initMainTabInteractions();
       } else if (tab.type === "info") {
         host.innerHTML = renderInfoTabHTML(tab.payload.infoType);
+        if (tab.payload.infoType === "cases") {
+          requestAnimationFrame(() => initCommunicationsSummaryBlock());
+        }
       } else if (tab.type === "operation") {
         if (tab.payload.operationName === "Карты") {
           host.innerHTML = renderCardOperationHTML();
@@ -2417,6 +2655,21 @@
       if (infoType === "cases") {
         return `
           <div class="card">
+            <div class="cases-summary-card" id="cases-summary-root">
+              <div class="cases-summary-head">
+                <div class="cases-summary-title">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  Краткое саммари
+                </div>
+                <button type="button" class="btn secondary cases-summary-refresh" id="cases-summary-refresh" title="Пересоздать саммари по текущим данным">
+                  Обновить
+                </button>
+              </div>
+              <div class="cases-summary-body" id="cases-summary-body">
+                <span class="cases-summary-loading">Формирую краткий пересказ…</span>
+              </div>
+              <div class="cases-summary-hint">Саммари строится по списку обращений и последним SMS/уведомлениям. При смене данных пересчитывается автоматически.</div>
+            </div>
             <div class="info-title">
               <i class="fa-solid fa-comments"></i>
               <span>Обращения и коммуникации</span>
