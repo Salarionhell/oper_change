@@ -779,6 +779,68 @@
       margin-bottom: 4px;
     }
 
+    .personal-data-change {
+      max-width: 560px;
+    }
+    .personal-data-lead {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .personal-data-lead strong {
+      color: var(--primary-dark);
+    }
+    .personal-data-fieldset {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-card);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      background: #fafafa;
+    }
+    .personal-data-fieldset legend {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 6px;
+    }
+    .personal-data-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .personal-data-option:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .personal-data-option input {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .personal-data-option.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .personal-data-option-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .personal-data-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .personal-data-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
     /* Card wizard */
 
     .wizard-layout {
@@ -1708,7 +1770,7 @@
       "Самозанятость": "Услуги для самозанятых",
       "Счета": "Открытие и ведение счетов",
       "ИБС": "Интернет-банк для бизнеса",
-      "Изменение персональных данных": "Смена данных клиента",
+      "Изменение персональных данных": "Смена данных; при смене фамилии — перевыпуск кредитной карты",
       "Пакет услуг": "Подключение пакетов",
       "Справки и выписки": "Документы по счёту",
       "УКД": "Удалённое кассовое обслуживание",
@@ -2480,6 +2542,9 @@
         if (tab.payload.operationName === "Карты") {
           host.innerHTML = renderCardOperationHTML();
           initCardWizardHandlers();
+        } else if (tab.payload.operationName === "Изменение персональных данных") {
+          host.innerHTML = renderPersonalDataChangeHTML();
+          requestAnimationFrame(() => initPersonalDataChangeHandlers());
         } else {
           host.innerHTML = renderSimpleOperationHTML(tab.payload.operationName);
         }
@@ -2874,6 +2939,98 @@
     }
 
     // ---------------- SIMPLE OPERATION TAB ----------------
+
+    function renderPersonalDataChangeHTML() {
+      return `
+        <div class="card personal-data-change">
+          <div class="op-simple-title">Изменение персональных данных</div>
+          <p class="personal-data-lead">
+            Выберите, какие данные меняются. При <strong>смене фамилии</strong> на пластике кредитной карты остаётся старая фамилия — требуется <strong>перевыпуск карты</strong> (оформление в операции «Карты» для кредитной карты).
+          </p>
+          <form id="personal-data-change-form" class="personal-data-fieldset">
+            <legend>Что изменяется</legend>
+            <label class="personal-data-option">
+              <input type="radio" name="pd-change-type" value="surname" checked />
+              <span>
+                Фамилия
+                <div class="personal-data-option-desc">Связанная операция: перевыпуск кредитной карты</div>
+              </span>
+            </label>
+            <label class="personal-data-option disabled">
+              <input type="radio" name="pd-change-type" value="name" disabled />
+              <span>
+                Имя
+                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
+              </span>
+            </label>
+            <label class="personal-data-option disabled">
+              <input type="radio" name="pd-change-type" value="patronymic" disabled />
+              <span>
+                Отчество
+                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
+              </span>
+            </label>
+            <label class="personal-data-option disabled">
+              <input type="radio" name="pd-change-type" value="birthdate" disabled />
+              <span>
+                Дата рождения
+                <div class="personal-data-option-desc">Сценарий в демо не подключён</div>
+              </span>
+            </label>
+          </form>
+          <div class="personal-data-actions">
+            <button type="button" class="btn" id="personal-data-go-cards">
+              <i class="fa-solid fa-credit-card"></i> Перейти к перевыпуску кредитной карты
+            </button>
+          </div>
+          <p class="personal-data-note">
+            Откроется операция «Оформление кредитной карты» (тот же мастер, что при выборе «Карты» на главной). Текущая вкладка закроется.
+          </p>
+        </div>
+      `;
+    }
+
+    function goToCardReissueFromPersonalData() {
+      const personalTab = findTabByType(
+        "operation",
+        "Изменение персональных данных"
+      );
+      if (!personalTab) return;
+      const personalTabId = personalTab.id;
+      closeTab(personalTabId);
+
+      if (!state.sessionActive) {
+        pendingOperationAfterSms = "Карты";
+        openSmsModal();
+        return;
+      }
+      handleOperationClick("Карты");
+    }
+
+    function initPersonalDataChangeHandlers() {
+      const btn = qs("#personal-data-go-cards");
+      const form = qs("#personal-data-change-form");
+      if (!btn || !form) return;
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        btn.click();
+      });
+
+      btn.addEventListener("click", () => {
+        const sel = form.querySelector(
+          'input[name="pd-change-type"]:checked'
+        );
+        if (!sel || sel.value !== "surname" || sel.disabled) {
+          showAlert(
+            "Для перехода к перевыпуску карты выберите тип изменения «Фамилия».",
+            null
+          );
+          return;
+        }
+        goToCardReissueFromPersonalData();
+      });
+    }
 
     function renderSimpleOperationHTML(name) {
       const steps =
