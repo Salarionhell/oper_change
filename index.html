@@ -2190,7 +2190,7 @@
       forceNext: false,
     };
 
-    /** Вызовите после обновления данных обращений/SMS из API — саммари пересчитается при следующем открытии вкладки. */
+    /** Вызовите после обновления данных обращений из API — саммари пересчитается при следующем открытии вкладки. */
     function invalidateCommunicationsSummaryCache() {
       communicationsSummaryCache.sourceHash = null;
       communicationsSummaryCache.summaryText = null;
@@ -2216,11 +2216,6 @@
         );
         if (c.extra) lines.push(`   дополнительно: ${c.extra}`);
         if (c.place) lines.push(`   место выдачи/отделение: ${c.place}`);
-      });
-      lines.push("");
-      lines.push("=== КОММУНИКАЦИИ (SMS / уведомления, последние) ===");
-      smsFull.slice(0, 10).forEach((s, i) => {
-        lines.push(`${i + 1}. [${s.date}] ${s.type}: ${s.text}`);
       });
       return lines.join("\n");
     }
@@ -2274,7 +2269,7 @@
           ? contextText.slice(0, 11999) + "…"
           : contextText;
       const systemPrompt =
-        "Ты — помощник менеджера отделения Альфа‑Банка. Сделай краткое саммари по фактам из данных об обращениях и коммуникациях клиента.\n" +
+        "Ты — помощник менеджера отделения Альфа‑Банка. Сделай краткое саммари по фактам из списка обращений клиента (таблица «Обращения и коммуникации»). Не используй данные из других источников.\n" +
         "Правила:\n" +
         "- Только факты из переданных данных; не выдумывай.\n" +
         "- 2–5 коротких предложений ИЛИ маркированный список из 3–7 пунктов.\n" +
@@ -2668,7 +2663,7 @@
               <div class="cases-summary-body" id="cases-summary-body">
                 <span class="cases-summary-loading">Формирую краткий пересказ…</span>
               </div>
-              <div class="cases-summary-hint">Саммари строится по списку обращений и последним SMS/уведомлениям. При смене данных пересчитывается автоматически.</div>
+              <div class="cases-summary-hint">Саммари строится только по данным этой вкладки (список обращений). При смене данных пересчитывается автоматически.</div>
             </div>
             <div class="info-title">
               <i class="fa-solid fa-comments"></i>
