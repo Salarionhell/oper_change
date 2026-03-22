@@ -750,6 +750,14 @@
       font-size: 11px;
       color: var(--text-muted);
       margin-top: 6px;
+      line-height: 1.4;
+    }
+    .cases-summary-state-hint {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-soft);
+      color: var(--text-main);
+      font-size: 11px;
     }
     .sms-table th {
       background-color: #f5f5f5;
@@ -2438,6 +2446,38 @@
       return s ? s + "…" : text.trim();
     }
 
+    function setCommunicationsSummaryUiMode(mode) {
+      const stateEl = qs("#cases-summary-state-hint");
+      const btn = qs("#cases-summary-refresh");
+      if (stateEl) {
+        if (mode === "cached") {
+          stateEl.textContent =
+            "Содержание саммари зафиксировано для текущего набора обращений в панели. Кнопка «Обновить» — если список на сервере уже обновился с задержкой, а здесь вы ещё видите старые строки: после появления актуальных данных нажмите, чтобы пересоздать саммари.";
+        } else if (mode === "fresh") {
+          stateEl.textContent =
+            "Саммари построено по данным в панели. Повторный запрос к ИИ — по «Обновить» (например, при задержке обновления данных или сбое ответа).";
+        } else if (mode === "loading") {
+          stateEl.textContent =
+            "Запрашиваем саммари…";
+        } else {
+          stateEl.textContent = "";
+        }
+      }
+      if (btn) {
+        if (mode === "cached") {
+          btn.title =
+            "Пересоздать саммари вручную, если обращения на сервере уже обновились, а в панели отображение ещё не успело смениться.";
+        } else if (mode === "fresh") {
+          btn.title =
+            "Принудительно пересоздать саммари (повторный запрос к ИИ), например если данные обновились с задержкой или нужен новый текст.";
+        } else if (mode === "loading") {
+          btn.title = "";
+        } else {
+          btn.title = "";
+        }
+      }
+    }
+
     function initCommunicationsSummaryBlock(options) {
       const force = options && options.force;
       const bodyEl = qs("#cases-summary-body");
@@ -2454,6 +2494,7 @@
         communicationsSummaryCache.summaryText
       ) {
         renderCommunicationsSummaryHtml(bodyEl, communicationsSummaryCache.summaryText);
+        setCommunicationsSummaryUiMode("cached");
         if (btn) {
           btn.disabled = false;
           btn.onclick = () => initCommunicationsSummaryBlock({ force: true });
@@ -2462,14 +2503,19 @@
       }
       communicationsSummaryCache.forceNext = false;
 
+      setCommunicationsSummaryUiMode("loading");
       bodyEl.innerHTML =
         '<span class="cases-summary-loading">Формирую краткий пересказ…</span>';
-      if (btn) btn.disabled = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.title = "";
+      }
 
       fetchCommunicationsSummaryFromAi(ctx).then((text) => {
         communicationsSummaryCache.sourceHash = hash;
         communicationsSummaryCache.summaryText = text;
         renderCommunicationsSummaryHtml(bodyEl, text);
+        setCommunicationsSummaryUiMode("fresh");
         if (btn) {
           btn.disabled = false;
           btn.onclick = () => initCommunicationsSummaryBlock({ force: true });
@@ -2784,14 +2830,17 @@
                   <i class="fa-solid fa-wand-magic-sparkles"></i>
                   Саммари
                 </div>
-                <button type="button" class="btn secondary cases-summary-refresh" id="cases-summary-refresh" title="Пересоздать саммари по текущим данным">
+                <button type="button" class="btn secondary cases-summary-refresh" id="cases-summary-refresh">
                   Обновить
                 </button>
               </div>
               <div class="cases-summary-body" id="cases-summary-body">
                 <span class="cases-summary-loading">Формирую краткий пересказ…</span>
               </div>
-              <div class="cases-summary-hint">Саммари: «оформить» и «в обработке» — за весь период; «отклонено» / «выполнено» / «одобрено» — за последние 30 дней по дате заявки. При смене данных пересчитывается автоматически.</div>
+              <div class="cases-summary-hint">
+                <div>Саммари: «оформить» и «в обработке» — за весь период; «отклонено» / «выполнено» / «одобрено» — за последние 30 дней по дате заявки. При изменении списка обращений в панели саммари пересчитывается само.</div>
+                <div id="cases-summary-state-hint" class="cases-summary-state-hint" aria-live="polite"></div>
+              </div>
             </div>
             <div class="info-title">
               <i class="fa-solid fa-comments"></i>
