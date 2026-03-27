@@ -1537,98 +1537,123 @@
       { icon: "fa-folder-open", text: "Изменение лимита, 10.02, одобрено" },
     ];
 
-    const casesFull = [
-      {
-        title: "Заявка на открытие дебетовой карты",
-        date: "12.01.2026",
-        status: "оформить",
-        place: "отделение «Центральный»",
-        manager: "Петрова А.С.",
-        extra: "Желаемое место получения: отделение «Центральный»",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на получение кредита",
-        date: "28.12.2025",
-        status: "отклонено",
-        place: "",
-        manager: "Сидоров И.П.",
-        extra: "причина: недостаточный доход",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на закрытие счета",
-        date: "05.02.2026",
-        status: "в обработке",
-        place: "",
-        manager: "Иванова Е.А.",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на перевыпуск карты",
-        date: "01.03.2026",
-        status: "выполнено",
-        place: "отделение «Северный»",
-        manager: "Васильев Д.Д.",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на изменение лимита",
-        date: "10.02.2026",
-        status: "одобрено",
-        place: "",
-        manager: "Петрова А.С.",
-        extra: "новый лимит: 1 500 000 ₽",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на открытие вклада",
-        date: "15.03.2026",
-        status: "оформить",
-        place: "отделение «Южный»",
-        manager: "",
-        extra: "Желаемое отделение: «Южный»",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на подключение SMS-информирования",
-        date: "20.01.2026",
-        status: "выполнено",
-        place: "",
-        manager: "Сидоров И.П.",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на блокировку карты",
-        date: "05.03.2026",
-        status: "в обработке",
-        place: "",
-        manager: "Васильев Д.Д.",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на смену тарифа",
-        date: "12.02.2026",
-        status: "одобрено",
-        place: "",
-        manager: "",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на восстановление доступа",
-        date: "28.02.2026",
-        status: "выполнено",
-        place: "",
-        manager: "",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-    ];
+	const casesFull = [
+	  {
+		title: "Заявка на получение кредита",
+		date: "28.12.2025",
+		status: "отклонено",
+		place: "",
+		manager: "Сидоров И.П.",
+		extra: "причина: недостаточный доход",
+		source: "Мобильное приложение",
+		productType: "account",
+		productNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на открытие дебетовой карты",
+		date: "12.01.2026",
+		status: "оформить",
+		place: "отделение «Центральный»",
+		manager: "Петрова А.С.",
+		extra: "Желаемое место получения: отделение «Центральный»",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1052 6753 0601 1254",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на подключение SMS-информирования",
+		date: "20.01.2026",
+		status: "выполнено",
+		place: "",
+		manager: "Сидоров И.П.",
+		extra: "",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1052 6753 0601 1254",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на закрытие счета",
+		date: "05.02.2026",
+		status: "в обработке",
+		place: "",
+		manager: "Иванова Е.А.",
+		extra: "",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на изменение лимита",
+		date: "10.02.2026",
+		status: "одобрено",
+		place: "",
+		manager: "Петрова А.С.",
+		extra: "новый лимит: 1 500 000 ₽",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на смену тарифа",
+		date: "12.02.2026",
+		status: "одобрено",
+		place: "",
+		manager: "",
+		extra: "",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на восстановление доступа",
+		date: "28.02.2026",
+		status: "выполнено",
+		place: "",
+		manager: "",
+		extra: "",
+		source: "Мобильное приложение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на перевыпуск карты",
+		date: "01.03.2026",
+		status: "выполнено",
+		place: "отделение «Северный»",
+		manager: "Васильев Д.Д.",
+		extra: "",
+		source: "Мобильное приложение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на блокировку карты",
+		date: "05.03.2026",
+		status: "в обработке",
+		place: "",
+		manager: "Васильев Д.Д.",
+		extra: "",
+		source: "Мобильное приложение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на открытие вклада",
+		date: "15.03.2026",
+		status: "оформить",
+		place: "отделение «Южный»",
+		manager: "",
+		extra: "Желаемое отделение: «Южный»",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910005678",
+	  },
+	];
 
     const smsDropdown = [
       { date: "24.02.2026", text: "Покупка *1254: 550 ₽ в SPORTKORT. Баланс: 5805.35 ₽", type: "sms" },
@@ -1678,7 +1703,7 @@
       "Доверенности",
       "Заявления",
       "Заказ наличных",
-      "Сбор биометрики",
+      "Сбор биометрии",
       "Лимиты",
       "Операции в УКД",
       "Регулярные зачисления",
@@ -2632,31 +2657,42 @@
     }
 
     // open request modal
-    function showRequestModal(req) {
-      const backdrop = qs("#modal-backdrop");
-      const titleEl = qs("#modal-title");
-      const bodyEl = qs("#modal-body");
-      const actionsEl = qs("#modal-actions");
-      titleEl.innerHTML = `<i class="fa-solid fa-inbox"></i><span>${req.title}</span>`;
-      bodyEl.innerHTML = `
-        <div style="font-size:13px;">
-          <p><strong>Дата:</strong> ${req.date}</p>
-          <p><strong>Статус:</strong> ${req.status}</p>
-          <p><strong>Место оформления:</strong> ${req.place || '—'}</p>
-          <p><strong>Менеджер:</strong> ${req.manager || '—'}</p>
-          <p>${req.extra || ''}</p>
-        </div>
-      `;
-      actionsEl.innerHTML = "";
-      const btn = document.createElement("button");
-      btn.className = "btn secondary";
-      btn.textContent = "Закрыть";
-      btn.addEventListener("click", () => {
-        backdrop.style.display = "none";
-      });
-      actionsEl.appendChild(btn);
-      backdrop.style.display = "flex";
-    }
+	function showRequestModal(req) {
+	  const backdrop = qs("#modal-backdrop");
+	  const titleEl = qs("#modal-title");
+	  const bodyEl = qs("#modal-body");
+	  const actionsEl = qs("#modal-actions");
+	  titleEl.innerHTML = `<i class="fa-solid fa-inbox"></i><span>${req.title}</span>`;
+
+	  let productInfo = "";
+	  if (req.productType === "card") {
+		productInfo = `<p><strong>Карта:</strong> ${req.productNumber}</p>`;
+		if (req.accountNumber) productInfo += `<p><strong>Счёт карты:</strong> ${req.accountNumber}</p>`;
+	  } else if (req.productType === "account") {
+		productInfo = `<p><strong>Счёт:</strong> ${req.productNumber}</p>`;
+	  }
+
+	  bodyEl.innerHTML = `
+		<div style="font-size:13px;">
+		  <p><strong>Дата:</strong> ${req.date}</p>
+		  <p><strong>Статус:</strong> ${req.status}</p>
+		  <p><strong>Место оформления:</strong> ${req.place || '—'}</p>
+		  <p><strong>Менеджер:</strong> ${req.manager || '—'}</p>
+		  ${productInfo}
+		  <p>${req.extra || ''}</p>
+		</div>
+	  `;
+
+	  actionsEl.innerHTML = "";
+	  const btn = document.createElement("button");
+	  btn.className = "btn secondary";
+	  btn.textContent = "Закрыть";
+	  btn.addEventListener("click", () => {
+		backdrop.style.display = "none";
+	  });
+	  actionsEl.appendChild(btn);
+	  backdrop.style.display = "flex";
+	}
 
     // ---------------- INFO TABS ----------------
 
@@ -2755,73 +2791,53 @@
         `;
       }
       if (infoType === "cases") {
-        return `
-          <div class="card">
-            <div class="cases-summary-card" id="cases-summary-root">
-              <div class="cases-summary-head">
-                <div class="cases-summary-title">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i>
-                  Саммари
-                </div>
-              </div>
-              <div class="cases-summary-body" id="cases-summary-body">
-                <span class="cases-summary-loading">Формирую краткий пересказ…</span>
-              </div>
-              <div class="cases-summary-hint">
-                Саммари: «оформить» и «в обработке» — за весь период; «отклонено» / «выполнено» / «одобрено» — за последние 30 дней по дате заявки. При изменении списка обращений в панели саммари пересчитывается само.
-              </div>
-            </div>
-            <div class="info-title">
-              <i class="fa-solid fa-comments"></i>
-              <span>Обращения и коммуникации</span>
-            </div>
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th>Дата</th>
-                  <th>Статус</th>
-                  <th>Менеджер</th>
-                  <th>Место заявки</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${casesFull.map(c => `
-                  <tr>
-                    <td>${c.title}</td>
-                    <td>${c.date}</td>
-                    <td><span class="badge ${c.status === 'оформить' ? 'badge-success' : c.status === 'отклонено' ? 'badge-error' : c.status === 'в обработке' ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
-                    <td>${c.manager || '—'}</td>
-                    <td>${c.source || '—'}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
-      }
-      if (infoType === "sms") {
-        return `
-          <div class="card">
-            <div class="info-title">
-              <i class="fa-solid fa-mobile-screen-button"></i>
-              <span>SMS и уведомления</span>
-            </div>
-            <table class="sms-table">
-              <thead><tr><th>Дата</th><th>Тип</th><th>Сообщение</th></tr></thead>
-              <tbody>
-                ${smsFull.map(s => `
-                  <tr>
-                    <td>${s.date}</td>
-                    <td><i class="fa-solid ${s.type === 'sms' ? 'fa-sms' : 'fa-bell'}"></i></td>
-                    <td>${s.text}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
-      }
+		  return `
+			<div class="card">
+			  <div class="cases-summary-card" id="cases-summary-root">
+				<div class="cases-summary-head">
+				  <div class="cases-summary-title">
+					<i class="fa-solid fa-wand-magic-sparkles"></i>
+					Саммари
+				  </div>
+				</div>
+				<div class="cases-summary-body" id="cases-summary-body">
+				  <span class="cases-summary-loading">Формирую краткий пересказ…</span>
+				</div>
+				<div class="cases-summary-hint">
+				  Саммари: «оформить» и «в обработке» — за весь период; «отклонено» / «выполнено» / «одобрено» — за последние 30 дней по дате заявки. При изменении списка обращений в панели саммари пересчитывается само.
+				</div>
+			  </div>
+			  <div class="info-title">
+				<i class="fa-solid fa-comments"></i>
+				<span>Обращения и коммуникации</span>
+			  </div>
+			  <table class="transactions-table">
+				<thead>
+				  <tr>
+					<th>Название</th>
+					<th>Дата</th>
+					<th>Статус</th>
+					<th>Менеджер</th>
+					<th>Место заявки</th>
+					<th>Продукт</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  ${casesFull.map(c => `
+					<tr>
+					  <td>${c.title}</td>
+					  <td>${c.date}</td>
+					  <td><span class="badge ${c.status === 'оформить' ? 'badge-success' : c.status === 'отклонено' ? 'badge-error' : c.status === 'в обработке' ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
+					  <td>${c.manager || '—'}</td>
+					  <td>${c.source || '—'}</td>
+					  <td>${c.productType === 'card' ? 'Карта ' + c.productNumber : (c.productType === 'account' ? 'Счёт ' + c.productNumber : '—')}</td>
+					</tr>
+				  `).join('')}
+				</tbody>
+			  </table>
+			</div>
+		  `;
+		}
       return "";
     }
 
