@@ -81,23 +81,23 @@
       flex: 1;
     }
 
-    .tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 12px;
-      cursor: pointer;
-      background-color: #f1f1f1;
-      color: var(--text-main);
-      transition: var(--transition-fast);
-      min-width: 0;
-      flex: 0 1 auto;
-      max-width: 140px;
-      overflow: hidden;
-    }
+	.tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 10px;        /* было 3px 5px */
+	border-radius: 999px;
+	border: 1px solid transparent;
+	font-size: 12px;           /* было 11px */
+	cursor: pointer;
+	background-color: #f1f1f1;
+	color: var(--text-main);
+	transition: var(--transition-fast);
+	min-width: 0;
+	flex: 0 1 auto;
+	max-width: 220px;          /* увеличили видимую длину названий вкладок */
+	overflow: hidden;
+	}
 
     .tab span {
       overflow: hidden;
@@ -121,7 +121,7 @@
       padding: 0;
       cursor: pointer;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: 10px;
       flex-shrink: 0;
     }
 
@@ -180,15 +180,18 @@
     .sticky-inner {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .client-fio {
       font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-right: 4px;
+      font-weight: 700;
+      gap: 6px;
+      color: var(--primary-dark);
+      background-color: var(--primary-soft);
+      padding: 4px 12px;
+      border-radius: 999px;
       flex-shrink: 0;
     }
 
@@ -262,6 +265,11 @@
       display: block;
     }
 
+    /* Только для дропдауна транзакций – уменьшенная ширина */
+    #dropdown-transactions {
+      min-width: 200px;
+    }
+
     /* Строка с иконкой и текстом */
     .dropdown-line {
       display: grid;
@@ -310,11 +318,22 @@
     }
 
     .dropdown-transaction-group .transaction-detail {
-      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
       color: var(--text-muted);
-      display: block;
       padding-left: 8px;
       margin-bottom: 2px;
+    }
+
+    .dropdown-transaction-group .detail-amount {
+      font-weight: 600;
+    }
+    .dropdown-transaction-group .detail-amount.amount-positive {
+      color: var(--success);
+    }
+    .dropdown-transaction-group .detail-amount.amount-negative {
+      color: var(--error);
     }
 
     .dropdown-more {
@@ -673,6 +692,56 @@
       text-align: left;
       font-size: 12px;
     }
+
+    /* Саммари обращений и коммуникаций (вкладка info / cases) */
+    .cases-summary-card {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+    .cases-summary-head {
+      margin-bottom: 6px;
+    }
+    .cases-summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cases-summary-body {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+    .cases-summary-body p {
+      margin: 0 0 6px;
+    }
+    .cases-summary-body p:last-child {
+      margin-bottom: 0;
+    }
+    .cases-summary-body ul,
+    .cases-summary-body ol {
+      margin: 4px 0 4px 18px;
+      padding: 0;
+    }
+    .cases-summary-body li {
+      margin: 2px 0;
+    }
+    .cases-summary-loading {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .cases-summary-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
     .sms-table th {
       background-color: #f5f5f5;
     }
@@ -845,8 +914,9 @@
     .radio-card {
       border-radius: 10px;
       border: 1px solid var(--border-soft);
-      padding: 6px 8px;
+      padding: 8px;
       display: flex;
+      flex-direction: column; /* картинка сверху, текст снизу */
       gap: 6px;
       align-items: flex-start;
       cursor: pointer;
@@ -859,42 +929,56 @@
       background-color: #ffebee;
     }
 
-    .card-type-img {
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
+    /* изображение карты в мастере — без "иконок", просто картинка сопоставимого размера */
+    .card-choice-img,
+    .radio-card > img.card-choice-img,
+    .radio-card img.card-choice-img {
+      display: block !important;
+      width: 100% !important;
+      min-width: 260px !important;
+      max-width: 320px !important;
+      max-height: 190px !important; /* чтобы высокая первая карта не была слишком большой */
+      height: auto !important;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    /* если где-то осталась обёртка .card-type-img — не даём ей сжимать картинку */
+    .radio-card .card-type-img {
+      width: 100% !important;
+      max-width: 320px !important;
+      min-width: 260px !important;
+      height: auto !important;
+      min-height: 80px !important;
+      background: transparent !important;
+      padding: 0 !important;
+    }
+    .radio-card .card-type-img img {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100% !important;
+      display: block !important;
+    }
+    .options-list .radio-card {
+      min-width: 280px;
+    }
+
+    .radio-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .radio-card-text-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      font-size: 24px;
-    }
-
-    .card-type-img.classic {
-      background: linear-gradient(135deg, #78909c, #546e7a);
-      color: #fff;
-    }
-
-    .card-type-img.gold {
-      background: linear-gradient(135deg, #ffd54f, #ff8f00);
-      color: #5d4037;
-    }
-
-    .card-type-img.platinum {
-      background: linear-gradient(135deg, #b0bec5, #78909c);
-      color: #263238;
-    }
-
-    .card-type-img .card-type-img-img {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      border-radius: 8px;
+      gap: 6px;
     }
 
     .radio-desc {
       font-size: 12px;
       color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .document-block {
@@ -1001,6 +1085,182 @@
       gap: 8px;
       justify-content: flex-end;
       margin-top: 10px;
+    }
+
+    /* Чат-бот помощник */
+    .chat-bot-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 180;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(198, 40, 40, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: var(--transition-fast);
+    }
+    .chat-bot-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(198, 40, 40, 0.5);
+    }
+    .chat-bot-panel {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      z-index: 181;
+      width: 360px;
+      max-width: calc(100vw - 40px);
+      height: 420px;
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+    }
+    .chat-bot-panel.open {
+      display: flex;
+    }
+    .chat-bot-header {
+      padding: 10px 12px;
+      background: var(--primary-soft);
+      border-bottom: 1px solid #f4c4c4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--primary-dark);
+    }
+    .chat-bot-close {
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 16px;
+    }
+    .chat-bot-close:hover {
+      color: var(--primary-dark);
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .chat-msg {
+      max-width: 85%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      line-height: 1.4;
+      word-break: break-word;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .chat-msg p { margin: 0 0 6px; }
+    .chat-msg p:last-child { margin-bottom: 0; }
+    .chat-msg ul, .chat-msg ol { margin: 6px 0 6px 18px; padding: 0; }
+    .chat-msg li { margin: 2px 0; }
+    .chat-msg h1, .chat-msg h2, .chat-msg h3, .chat-msg h4, .chat-msg h5, .chat-msg h6 {
+      margin: 6px 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .chat-msg pre {
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.06);
+      overflow: auto;
+      white-space: pre;
+    }
+    .chat-msg code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+    .chat-msg table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 6px 0;
+      font-size: 12px;
+      display: block;
+      overflow-x: auto;
+    }
+    .chat-msg th, .chat-msg td {
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    .chat-msg thead th {
+      background: rgba(0,0,0,0.04);
+      font-weight: 700;
+    }
+    .chat-msg.user {
+      align-self: flex-end;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border-bottom-right-radius: 2px;
+    }
+    .chat-msg.bot {
+      align-self: flex-start;
+      background: #f0f0f0;
+      color: var(--text-main);
+      border-bottom-left-radius: 2px;
+    }
+    .chat-msg.bot.typing {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .chat-bot-form {
+      padding: 8px 10px 10px;
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .chat-bot-form input {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 13px;
+      outline: none;
+    }
+    .chat-bot-form input:focus {
+      border-color: var(--primary);
+    }
+    .chat-bot-form button {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-bot-form button:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
 
     /* Responsive */
@@ -1136,7 +1396,59 @@
     </div>
   </div>
 
+  <!-- Чат-бот помощник менеджера -->
+  <button type="button" class="chat-bot-toggle" id="chat-bot-toggle" title="Помощник">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+  <div class="chat-bot-panel" id="chat-bot-panel">
+    <div class="chat-bot-header">
+      <span><i class="fa-solid fa-robot"></i> Помощник</span>
+      <button type="button" class="chat-bot-close" id="chat-bot-close" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <form class="chat-bot-form" id="chat-bot-form">
+      <input type="text" id="chat-bot-input" placeholder="Введите вопрос..." autocomplete="off" />
+      <button type="submit" id="chat-bot-send" aria-label="Отправить"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+
+  <!-- Markdown renderer (safe) for chat messages -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+
   <script>
+    // ---------------- CHAT BOT CONFIG (подключение AI) ----------------
+    // Вариант 1: свой backend (рекомендуется — API-ключ не светится в клиенте)
+    //   CHAT_BOT_API_URL = 'https://ваш-сервер.com/api/chat'
+    //   Тело POST: JSON { message: string, history: [{ role: 'user'|'assistant', content: string }], context?: { clientName, currentTab } }
+    //   Ответ: JSON { reply: string } или { text: string }
+    // Вариант 2: прямой вызов OpenAI-совместимого API (ключ в коде — только для прототипа)
+    //   CHAT_BOT_API_URL = 'https://api.openai.com/v1/chat/completions'
+    //   CHAT_BOT_API_KEY = 'sk-...'
+    const CHAT_BOT_CONFIG = {
+      // Для Mistral:
+      // apiUrl: 'https://api.mistral.ai/v1/chat/completions'
+      // model: 'mistral-small-latest' (или другой)
+      provider: 'mistral', // 'mistral' | 'backend' | 'openai_compat'
+      apiUrl: 'https://api.mistral.ai/v1/chat/completions', // URL вашего backend или AI API
+      apiKey: '1Q9swKUAcOGo7ryPSX39EIklif1BACZa', // ВАЖНО: ключ на фронте — только для прототипа
+      model: 'mistral-small-latest',
+      temperature: 0.2,
+      maxTokens: 380,
+      /** Краткое саммари вкладки «Обращения и коммуникации» (отдельный запрос без истории чата) */
+      communicationsSummaryMaxTokens: 480,
+      systemPrompt: `Ты — внутренний помощник менеджера банковского отделения Альфа‑Банка, работающий внутри операционной панели.
+
+ГЛАВНОЕ ПРАВИЛО: отвечай ТОЛЬКО на вопросы, связанные с рабочими задачами банка и обслуживанием клиентов (продукты, тарифы, условия, регламенты, комплаенс, KYC/AML, скрипты общения, оформление заявок, типовые ошибки/сценарии в системе).
+
+Если вопрос НЕ относится к работе менеджера банка, вежливо откажись и предложи задать рабочий вопрос. Не пытайся "быть полезным" на посторонние темы.
+
+Требования к ответам:
+- Кратко, по делу, с чёткими шагами/вариантами.
+- Если данных не хватает — задай 1–2 уточняющих вопроса.
+- Не выдумывай факты/регламенты. Если не уверен — скажи, что нужно уточнение/ссылка на внутренний документ.`
+    };
+
     // ---------------- DATA ----------------
 
     const CLIENT_SHORT_NAME = "Иванов И.И.";
@@ -1169,20 +1481,20 @@
     };
 
     const portfolioDropdown = [
-      { icon: "fa-credit-card", text: "Alfa Only: 1052 6753 0601 254 (выпуск 15.01.2024, активна)" },
-      { icon: "fa-credit-card", text: "Кредитная карта: 1895 7678 4138 552 (лимит 1 000 000 ₽, задолженность 0 ₽)" },
+      { icon: "fa-credit-card", text: "Alfa Only: 1052 6753 0601 1254 (выпуск 15.01.2024, активна)" },
+      { icon: "fa-credit-card", text: "Кредитная карта: 1895 7678 4138 5520 (лимит 1 000 000 ₽, задолженность 0 ₽)" },
     ];
 
     const portfolioFull = {
       alfaOnly: {
-        number: "1052 6753 0601 254",
+        number: "1052 6753 0601 1254",
         expiry: "01/28",
         system: "Мир",
         issueDate: "15.01.2024",
         status: "активна",
       },
       creditCard: {
-        number: "1895 7678 4138 552",
+        number: "1895 7678 4138 5520",
         limit: "1 000 000 ₽",
         rate: "20%",
         issueDate: "10.03.2024",
@@ -1196,8 +1508,8 @@
     const transactionsDropdown = [
       { date: "24.02", card: "1052 6753 0601 1254", amount: "+550 ₽" },
       { date: "24.02", card: "1052 6753 0601 1254", amount: "-1 200 ₽" },
-      { date: "23.02", card: "1895 7678 4138 1385", amount: "-3 500 ₽" },
-      { date: "23.02", card: "1895 7678 4138 1385", amount: "+2 300 ₽" },
+      { date: "23.02", card: "1895 7678 4138 5520", amount: "-3 500 ₽" },
+      { date: "23.02", card: "1052 6753 0601 1254", amount: "+2 300 ₽" },
       { date: "22.02", card: "1895 7678 4138 5520", amount: "-850 ₽" },
       { date: "22.02", card: "1895 7678 4138 5520", amount: "+1 500 ₽" },
       { date: "21.02", card: "1052 6753 0601 1254", amount: "-2 100 ₽" },
@@ -1205,118 +1517,153 @@
     ];
 
     const transactionsFull = [
-      { date: "24.02.2026", time: "14:23", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+550 ₽", desc: "SPORTKORT" },
-      { date: "24.02.2026", time: "10:15", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "-1 200 ₽", desc: "KFC" },
-      { date: "23.02.2026", time: "18:40", account: "40817810099910005678", card: "1895 7678 4138 1385", amount: "-3 500 ₽", desc: "Перевод" },
-      { date: "23.02.2026", time: "09:30", account: "40817810099910005678", card: "1895 7678 4138 1385", amount: "+2 300 ₽", desc: "Возврат" },
-      { date: "22.02.2026", time: "11:30", account: "40817810099910009999", card: "1895 7678 4138 5520", amount: "-850 ₽", desc: "АЗС" },
-      { date: "22.02.2026", time: "16:20", account: "40817810099910009999", card: "1895 7678 4138 5520", amount: "+1 500 ₽", desc: "Кешбэк" },
+      { date: "24.02.2026", time: "14:23", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+550 ₽", desc: "Спорттовары" },
+      { date: "24.02.2026", time: "10:15", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "-1 200 ₽", desc: "Фастфуд" },
+      { date: "23.02.2026", time: "18:40", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-3 500 ₽", desc: "Перевод, А.В.Суворов" },
+      { date: "23.02.2026", time: "09:30", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+2 300 ₽", desc: "Возврат товара" },
+      { date: "22.02.2026", time: "11:30", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-850 ₽", desc: "АЗС" },
+      { date: "22.02.2026", time: "16:20", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "+1 500 ₽", desc: "Кешбэк" },
       { date: "21.02.2026", time: "19:50", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "-2 100 ₽", desc: "Ресторан" },
-      { date: "21.02.2026", time: "13:35", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+3 200 ₽", desc: "Зачисление" },
-      { date: "20.02.2026", time: "10:25", account: "40817810099910005678", card: "1895 7678 4138 1385", amount: "-4 200 ₽", desc: "ЖКХ" },
-      { date: "20.02.2026", time: "22:15", account: "40817810099910005678", card: "1895 7678 4138 1385", amount: "-1 800 ₽", desc: "Такси" },
+      { date: "21.02.2026", time: "13:35", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+3 200 ₽", desc: "Зарплата" },
+      { date: "20.02.2026", time: "10:25", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-4 200 ₽", desc: "ЖКХ" },
+      { date: "20.02.2026", time: "22:15", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-1 800 ₽", desc: "Такси" },
     ];
 
-    const casesDropdown = [
-      { icon: "fa-folder-open", text: "Открытие дебетовой карты, 12.01, оформить" },
-      { icon: "fa-folder-open", text: "Получение кредита, 28.12, отклонено" },
-      { icon: "fa-folder-open", text: "Закрытие счета, 05.02, в обработке" },
-      { icon: "fa-folder-open", text: "Перевыпуск карты, 01.03, выполнено" },
-      { icon: "fa-folder-open", text: "Изменение лимита, 10.02, одобрено" },
-    ];
+	const casesDropdown = [
+	  { icon: "fa-folder-open", text: "Открытие вклада, 15.03, оформить" },
+	  { icon: "fa-folder-open", text: "Смена тарифа, 12.03, одобрено" },
+	  { icon: "fa-folder-open", text: "Перевыпуск карты, 26.02, выполнено" },
+	  { icon: "fa-folder-open", text: "Блокировка карты, 25.02, выполнено" },
+	  { icon: "fa-folder-open", text: "Восстановление доступа, 22.02, выполнено" },
+	  { icon: "fa-folder-open", text: "Изменение лимита, 10.02, одобрено" },
+	  { icon: "fa-folder-open", text: "Закрытие счета, 05.02, в обработке" },
+	  { icon: "fa-folder-open", text: "SMS-информирование, 20.01, выполнено" },
+	  { icon: "fa-folder-open", text: "Открытие дебетовой карты, 12.01, выполнено" },
+	  { icon: "fa-folder-open", text: "Получение кредита, 28.12, отклонено" },
+	];
 
-    const casesFull = [
-      {
-        title: "Заявка на открытие дебетовой карты",
-        date: "12.01.2026",
-        status: "оформить",
-        place: "отделение «Центральный»",
-        manager: "Петрова А.С.",
-        extra: "Желаемое место получения: отделение «Центральный»",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на получение кредита",
-        date: "28.12.2025",
-        status: "отклонено",
-        place: "",
-        manager: "Сидоров И.П.",
-        extra: "причина: недостаточный доход",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на закрытие счета",
-        date: "05.02.2026",
-        status: "в обработке",
-        place: "",
-        manager: "Иванова Е.А.",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на перевыпуск карты",
-        date: "01.03.2026",
-        status: "выполнено",
-        place: "отделение «Северный»",
-        manager: "Васильев Д.Д.",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на изменение лимита",
-        date: "10.02.2026",
-        status: "одобрено",
-        place: "",
-        manager: "Петрова А.С.",
-        extra: "новый лимит: 1 500 000 ₽",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на открытие вклада",
-        date: "15.03.2026",
-        status: "оформить",
-        place: "отделение «Южный»",
-        manager: "",
-        extra: "Желаемое отделение: «Южный»",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на подключение SMS-информирования",
-        date: "20.01.2026",
-        status: "выполнено",
-        place: "",
-        manager: "Сидоров И.П.",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на блокировку карты",
-        date: "05.03.2026",
-        status: "в обработке",
-        place: "",
-        manager: "Васильев Д.Д.",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-      {
-        title: "Заявка на смену тарифа",
-        date: "12.02.2026",
-        status: "одобрено",
-        place: "",
-        manager: "",
-        extra: "",
-        source: "Отделение",
-      },
-      {
-        title: "Заявка на восстановление доступа",
-        date: "28.02.2026",
-        status: "выполнено",
-        place: "",
-        manager: "",
-        extra: "",
-        source: "Мобильное приложение",
-      },
-    ];
+	const casesFull = [
+	  {
+		title: "Заявка на открытие вклада",
+		date: "15.03.2026",
+		status: "оформить",
+		place: "отделение «Южный»",
+		manager: "",
+		extra: "клиент планирует разместить накопления",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910005678",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на смену тарифа",
+		date: "12.03.2026",
+		status: "одобрено",
+		place: "",
+		manager: "",
+		extra: "переход на более выгодный тариф",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на перевыпуск карты",
+		date: "26.02.2026",
+		status: "выполнено",
+		place: "отделение «Северный»",
+		manager: "Васильев Д.Д.",
+		extra: "перевыпуск после блокировки",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на блокировку карты",
+		date: "25.02.2026",
+		status: "выполнено",
+		place: "",
+		manager: "Васильев Д.Д.",
+		extra: "подозрение на компрометацию",
+		source: "Мобильное приложение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на восстановление доступа",
+		date: "22.02.2026",
+		status: "выполнено",
+		place: "",
+		manager: "",
+		extra: "вход с нового устройства",
+		source: "Мобильное приложение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на изменение лимита",
+		date: "10.02.2026",
+		status: "одобрено",
+		place: "",
+		manager: "Петрова А.С.",
+		extra: "новый лимит: 1 500 000 ₽",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1895 7678 4138 5520",
+		accountNumber: "40817810099910005678",
+	  },
+	  {
+		title: "Заявка на закрытие счета",
+		date: "05.02.2026",
+		status: "в обработке",
+		place: "",
+		manager: "Иванова Е.А.",
+		extra: "клиент планирует закрытие, но продолжает пользоваться счетом",
+		source: "Отделение",
+		productType: "account",
+		productNumber: "40817810099910001234",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на подключение SMS-информирования",
+		date: "20.01.2026",
+		status: "выполнено",
+		place: "",
+		manager: "Сидоров И.П.",
+		extra: "",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1052 6753 0601 1254",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на открытие дебетовой карты",
+		date: "12.01.2026",
+		status: "выполнено",
+		place: "отделение «Центральный»",
+		manager: "Петрова А.С.",
+		extra: "оформление дополнительной карты для повседневных расходов",
+		source: "Отделение",
+		productType: "card",
+		productNumber: "1052 6753 0601 1254",
+		accountNumber: "40817810099910001234",
+	  },
+	  {
+		title: "Заявка на получение кредита",
+		date: "28.12.2025",
+		status: "отклонено",
+		place: "",
+		manager: "Сидоров И.П.",
+		extra: "причина: недостаточный доход",
+		source: "Мобильное приложение",
+		productType: "account",
+		productNumber: "40817810099910005678",
+		accountNumber: "40817810099910005678",
+	  },
+	];
 
     const smsDropdown = [
       { date: "24.02.2026", text: "Покупка *1254: 550 ₽ в SPORTKORT. Баланс: 5805.35 ₽", type: "sms" },
@@ -1366,7 +1713,7 @@
       "Доверенности",
       "Заявления",
       "Заказ наличных",
-      "Сбор биометрики",
+      "Сбор биометрии",
       "Лимиты",
       "Операции в УКД",
       "Регулярные зачисления",
@@ -1480,9 +1827,11 @@
         "Отправка инструкций клиенту",
       ],
       "Изменение персональных данных": [
-        "Проверка документа клиента",
-        "Внесение изменений",
-        "Подтверждение изменений",
+        "Проверка документа",
+        "Новая фамилия и основание",
+        "Проверка в системе",
+        "Подтверждение",
+        "Перевыпуск карты",
       ],
       "Пакет услуг": [
         "Выбор пакета",
@@ -1562,6 +1911,9 @@
       cardWizardFinished: false,
       /** Сохранённый прогресс мастера «Карты» после «Сохранить прогресс» */
       savedCardWizard: null,
+      personalDataWizard: null,
+      personalDataWizardFinished: false,
+      savedPersonalDataWizard: null,
     };
 
     // ---------------- CUSTOM CONFIRM ----------------
@@ -1710,7 +2062,13 @@
             return `
               <div class="dropdown-transaction-group">
                 <div class="transaction-date">${date}</div>
-                ${items.map((t) => `<div class="transaction-detail">${t.card} ${t.amount}</div>`).join("")}
+                ${items.map((t) => {
+                  const amountClass = t.amount.startsWith('+') ? 'amount-positive' : 'amount-negative';
+                  return `<div class="transaction-detail">
+                    <span class="detail-card">${t.card}</span>
+                    <span class="detail-amount ${amountClass}">${t.amount}</span>
+                  </div>`;
+                }).join("")}
               </div>`;
           })
           .join("") +
@@ -1839,6 +2197,14 @@
             if (tab.payload.operationName === "Карты" && !state.cardWizardFinished) {
               state.savedCardWizard = JSON.parse(JSON.stringify(state.cardWizard));
             }
+            if (
+              tab.payload.operationName === "Изменение персональных данных" &&
+              !state.personalDataWizardFinished
+            ) {
+              state.savedPersonalDataWizard = JSON.parse(
+                JSON.stringify(state.personalDataWizard),
+              );
+            }
             closeTab(tab.id);
           },
           () => {
@@ -1848,12 +2214,281 @@
               state.cardWizardFinished = false;
               state.savedCardWizard = null;
             }
+            if (tab.payload.operationName === "Изменение персональных данных") {
+              state.personalDataWizard = null;
+              state.personalDataWizardFinished = false;
+              state.savedPersonalDataWizard = null;
+            }
             closeTab(tab.id);
           }
         );
       } else {
         closeTab(tab.id);
       }
+    }
+
+    // ---------------- COMMUNICATIONS SUMMARY (вкладка «Обращения и коммуникации») ----------------
+    const communicationsSummaryCache = {
+      sourceHash: null,
+      summaryText: null,
+      forceNext: false,
+    };
+
+    /** Вызовите после обновления данных обращений из API — саммари пересчитается при следующем открытии вкладки. */
+    function invalidateCommunicationsSummaryCache() {
+      communicationsSummaryCache.sourceHash = null;
+      communicationsSummaryCache.summaryText = null;
+      communicationsSummaryCache.forceNext = true;
+    }
+    window.invalidateCommunicationsSummaryCache = invalidateCommunicationsSummaryCache;
+
+    function hashCommunicationsSource(s) {
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return String(h >>> 0);
+    }
+
+    /** «Последний месяц» для саммари: последние 30 дней включительно (по дате заявки). */
+    const COMMUNICATIONS_SUMMARY_LAST_DAYS = 30;
+
+    function parseCaseDateDDMMYYYY(str) {
+      if (!str || typeof str !== "string") return null;
+      const m = str.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (!m) return null;
+      const d = parseInt(m[1], 10);
+      const mo = parseInt(m[2], 10) - 1;
+      const y = parseInt(m[3], 10);
+      const dt = new Date(y, mo, d);
+      if (
+        dt.getFullYear() !== y ||
+        dt.getMonth() !== mo ||
+        dt.getDate() !== d
+      )
+        return null;
+      return dt;
+    }
+
+    function isDateWithinLastMonthForSummary(date) {
+      if (!date) return false;
+      const now = new Date();
+      const end = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59,
+        999
+      );
+      const start = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+      start.setDate(start.getDate() - (COMMUNICATIONS_SUMMARY_LAST_DAYS - 1));
+      start.setHours(0, 0, 0, 0);
+      return date >= start && date <= end;
+    }
+
+    function pushCaseLines(lines, arr, startIndex) {
+      arr.forEach((c, j) => {
+        const i = startIndex + j;
+        lines.push(
+          `${i}. ${c.title} | дата ${c.date} | статус: ${c.status} | менеджер: ${c.manager || "—"} | канал: ${c.source || "—"}`
+        );
+        if (c.extra) lines.push(`   дополнительно: ${c.extra}`);
+        if (c.place) lines.push(`   место выдачи/отделение: ${c.place}`);
+      });
+    }
+
+    function buildCommunicationsContextForSummary() {
+      const lines = [];
+      const needAction = casesFull.filter((c) => c.status === "оформить");
+      lines.push("=== Оформить ===");
+      if (needAction.length === 0) {
+        lines.push("(нет записей)");
+      } else {
+        pushCaseLines(lines, needAction, 1);
+      }
+      lines.push("");
+      const inProgress = casesFull.filter((c) => c.status === "в обработке");
+      lines.push("=== В обработке ===");
+      if (inProgress.length === 0) {
+        lines.push("(нет записей)");
+      } else {
+        pushCaseLines(lines, inProgress, 1);
+      }
+      lines.push("");
+      const terminalRecent = casesFull.filter((c) => {
+        if (!["отклонено", "выполнено", "одобрено"].includes(c.status))
+          return false;
+        const d = parseCaseDateDDMMYYYY(c.date);
+        return isDateWithinLastMonthForSummary(d);
+      });
+      lines.push("=== Отклонено / Выполнено / Одобрено ===");
+      if (terminalRecent.length === 0) {
+        lines.push("(нет записей)");
+      } else {
+        pushCaseLines(lines, terminalRecent, 1);
+      }
+      return lines.join("\n");
+    }
+
+    function buildFallbackCommunicationsSummary() {
+      const needAction = casesFull.filter((c) => c.status === "оформить");
+      const inProgress = casesFull.filter((c) => c.status === "в обработке");
+      const rejected = casesFull.filter((c) => {
+        if (c.status !== "отклонено") return false;
+        return isDateWithinLastMonthForSummary(
+          parseCaseDateDDMMYYYY(c.date)
+        );
+      });
+      const done = casesFull.filter((c) => {
+        if (c.status !== "выполнено") return false;
+        return isDateWithinLastMonthForSummary(
+          parseCaseDateDDMMYYYY(c.date)
+        );
+      });
+      const approved = casesFull.filter((c) => {
+        if (c.status !== "одобрено") return false;
+        return isDateWithinLastMonthForSummary(
+          parseCaseDateDDMMYYYY(c.date)
+        );
+      });
+      return [
+        `За весь период — оформить: ${needAction.length}; в обработке: ${inProgress.length}.`,
+        `За последние ${COMMUNICATIONS_SUMMARY_LAST_DAYS} дн.: отклонено ${rejected.length}, выполнено ${done.length}, одобрено ${approved.length}.`,
+        "При необходимости уточните у клиента детали по отклонённым заявкам.",
+      ].join(" ");
+    }
+
+    function renderCommunicationsSummaryHtml(container, text) {
+      if (!container) return;
+      const raw = String(text || "").trim();
+      if (!raw) {
+        container.innerHTML =
+          '<span class="cases-summary-loading">Нет данных для саммари.</span>';
+        return;
+      }
+      if (window.marked && window.DOMPurify) {
+        window.marked.setOptions({
+          gfm: true,
+          breaks: true,
+          headerIds: false,
+          mangle: false,
+        });
+        const html = window.marked.parse(raw);
+        container.innerHTML = window.DOMPurify.sanitize(html, {
+          USE_PROFILES: { html: true },
+        });
+      } else {
+        container.textContent = raw;
+      }
+    }
+
+    async function fetchCommunicationsSummaryFromAi(contextText) {
+      const cfg = CHAT_BOT_CONFIG;
+      if (!cfg.apiUrl || !cfg.apiUrl.trim()) {
+        return buildFallbackCommunicationsSummary();
+      }
+      const limitedContext =
+        contextText.length > 12000
+          ? contextText.slice(0, 11999) + "…"
+          : contextText;
+      const systemPrompt =
+        "Ты — помощник менеджера отделения Альфа‑Банка. Сделай краткое саммари по фактам из списка обращений клиента (таблица «Обращения и коммуникации»). Не используй данные из других источников.\n" +
+        "Структура данных: три блока — «Оформить», «В обработке», «Отклонено / Выполнено / Одобрено». В третьем блоке перечислены только заявки со статусами отклонено/выполнено/одобрено и датой заявки за последние 30 дней; первые два блока — все текущие записи с соответствующим статусом. Не смешивай блоки между собой.\n" +
+        "Правила:\n" +
+        "- Только факты из переданных данных; не выдумывай.\n" +
+        "- 2–5 коротких предложений ИЛИ маркированный список из 3–7 пунктов.\n" +
+        "- Каждый пункт и предложение завершай полностью (не обрывай на середине слова). Если не хватает места — уменьши число пунктов, но последний оставшийся пункт должен быть закончен.\n" +
+        "- Сначала кратко по блоку «Оформить», затем по «В обработке», затем по финальным статусам из третьего блока (если он не пуст).\n" +
+        "- Не дублируй таблицу; дай суть для менеджера.\n" +
+        "- Пиши по-русски, деловым тоном без воды.";
+
+      const body = {
+        model: cfg.model || "mistral-small-latest",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: "Данные для саммари:\n\n" + limitedContext },
+        ],
+        temperature: 0.15,
+        max_tokens: cfg.communicationsSummaryMaxTokens ?? 480,
+      };
+      const headers = { "Content-Type": "application/json" };
+      if (cfg.apiKey && cfg.apiKey.trim())
+        headers["Authorization"] = "Bearer " + cfg.apiKey.trim();
+
+      let res;
+      try {
+        res = await fetch(cfg.apiUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+        });
+      } catch (e) {
+        return buildFallbackCommunicationsSummary();
+      }
+      if (!res.ok) {
+        return buildFallbackCommunicationsSummary();
+      }
+      const data = await res.json();
+      const choice0 = data.choices && data.choices[0];
+      const text =
+        choice0 && choice0.message ? choice0.message.content : null;
+      const finishReason = choice0 && choice0.finish_reason;
+      if (!text || !String(text).trim())
+        return buildFallbackCommunicationsSummary();
+      return trimCommunicationsSummaryIfTruncated(
+        String(text).trim(),
+        finishReason
+      );
+    }
+
+    /**
+     * Если модель уперлась в max_tokens (finish_reason: length), ответ часто обрывается на середине слова.
+     * Основное решение — достаточный max_tokens; здесь лёгкая подчистка хвоста.
+     */
+    function trimCommunicationsSummaryIfTruncated(text, finishReason) {
+      let s = String(text || "").trim();
+      if (!s || finishReason !== "length") return s;
+      if (/[.!?…]\s*$/.test(s)) return s;
+      // Удаляем подозрительно короткий последний «хвост» (часто обломок слова при обрезке по токенам)
+      const m = s.match(/(?:^|[\s])([А-Яа-яЁёA-Za-z-]{1,4})\s*$/);
+      if (m && m[1] && m[1].length <= 4) {
+        s = s.slice(0, s.length - m[1].length).replace(/\s+$/, "");
+      }
+      return s ? s + "…" : text.trim();
+    }
+
+    function initCommunicationsSummaryBlock() {
+      const bodyEl = qs("#cases-summary-body");
+      if (!bodyEl) return;
+
+      const ctx = buildCommunicationsContextForSummary();
+      const hash = hashCommunicationsSource(ctx);
+
+      if (
+        !communicationsSummaryCache.forceNext &&
+        communicationsSummaryCache.sourceHash === hash &&
+        communicationsSummaryCache.summaryText
+      ) {
+        renderCommunicationsSummaryHtml(bodyEl, communicationsSummaryCache.summaryText);
+        return;
+      }
+      communicationsSummaryCache.forceNext = false;
+
+      bodyEl.innerHTML =
+        '<span class="cases-summary-loading">Формирую краткий пересказ…</span>';
+
+      fetchCommunicationsSummaryFromAi(ctx).then((text) => {
+        communicationsSummaryCache.sourceHash = hash;
+        communicationsSummaryCache.summaryText = text;
+        renderCommunicationsSummaryHtml(bodyEl, text);
+      });
     }
 
     // ---------------- TAB CONTENT ----------------
@@ -1870,10 +2505,16 @@
         initMainTabInteractions();
       } else if (tab.type === "info") {
         host.innerHTML = renderInfoTabHTML(tab.payload.infoType);
+        if (tab.payload.infoType === "cases") {
+          requestAnimationFrame(() => initCommunicationsSummaryBlock());
+        }
       } else if (tab.type === "operation") {
         if (tab.payload.operationName === "Карты") {
           host.innerHTML = renderCardOperationHTML();
           initCardWizardHandlers();
+        } else if (tab.payload.operationName === "Изменение персональных данных") {
+          host.innerHTML = renderPersonalDataWizardHTML();
+          initPersonalDataWizardHandlers();
         } else {
           host.innerHTML = renderSimpleOperationHTML(tab.payload.operationName);
         }
@@ -2026,31 +2667,42 @@
     }
 
     // open request modal
-    function showRequestModal(req) {
-      const backdrop = qs("#modal-backdrop");
-      const titleEl = qs("#modal-title");
-      const bodyEl = qs("#modal-body");
-      const actionsEl = qs("#modal-actions");
-      titleEl.innerHTML = `<i class="fa-solid fa-inbox"></i><span>${req.title}</span>`;
-      bodyEl.innerHTML = `
-        <div style="font-size:13px;">
-          <p><strong>Дата:</strong> ${req.date}</p>
-          <p><strong>Статус:</strong> ${req.status}</p>
-          <p><strong>Место оформления:</strong> ${req.place || '—'}</p>
-          <p><strong>Менеджер:</strong> ${req.manager || '—'}</p>
-          <p>${req.extra || ''}</p>
-        </div>
-      `;
-      actionsEl.innerHTML = "";
-      const btn = document.createElement("button");
-      btn.className = "btn secondary";
-      btn.textContent = "Закрыть";
-      btn.addEventListener("click", () => {
-        backdrop.style.display = "none";
-      });
-      actionsEl.appendChild(btn);
-      backdrop.style.display = "flex";
-    }
+	function showRequestModal(req) {
+	  const backdrop = qs("#modal-backdrop");
+	  const titleEl = qs("#modal-title");
+	  const bodyEl = qs("#modal-body");
+	  const actionsEl = qs("#modal-actions");
+	  titleEl.innerHTML = `<i class="fa-solid fa-inbox"></i><span>${req.title}</span>`;
+
+	  let productInfo = "";
+	  if (req.productType === "card") {
+		productInfo = `<p><strong>Карта:</strong> ${req.productNumber}</p>`;
+		if (req.accountNumber) productInfo += `<p><strong>Счёт карты:</strong> ${req.accountNumber}</p>`;
+	  } else if (req.productType === "account") {
+		productInfo = `<p><strong>Счёт:</strong> ${req.productNumber}</p>`;
+	  }
+
+	  bodyEl.innerHTML = `
+		<div style="font-size:13px;">
+		  <p><strong>Дата:</strong> ${req.date}</p>
+		  <p><strong>Статус:</strong> ${req.status}</p>
+		  <p><strong>Место оформления:</strong> ${req.place || '—'}</p>
+		  <p><strong>Менеджер:</strong> ${req.manager || '—'}</p>
+		  ${productInfo}
+		  <p>${req.extra || ''}</p>
+		</div>
+	  `;
+
+	  actionsEl.innerHTML = "";
+	  const btn = document.createElement("button");
+	  btn.className = "btn secondary";
+	  btn.textContent = "Закрыть";
+	  btn.addEventListener("click", () => {
+		backdrop.style.display = "none";
+	  });
+	  actionsEl.appendChild(btn);
+	  backdrop.style.display = "flex";
+	}
 
     // ---------------- INFO TABS ----------------
 
@@ -2149,54 +2801,76 @@
         `;
       }
       if (infoType === "cases") {
-        return `
-          <div class="card">
-            <div class="info-title">
-              <i class="fa-solid fa-comments"></i>
-              <span>Обращения и коммуникации</span>
-            </div>
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th>Дата</th>
-                  <th>Статус</th>
-                  <th>Менеджер</th>
-                  <th>Место заявки</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${casesFull.map(c => `
-                  <tr>
-                    <td>${c.title}</td>
-                    <td>${c.date}</td>
-                    <td><span class="badge ${c.status === 'оформить' ? 'badge-success' : c.status === 'отклонено' ? 'badge-error' : c.status === 'в обработке' ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
-                    <td>${c.manager || '—'}</td>
-                    <td>${c.source || '—'}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
-      }
+		  return `
+			<div class="card">
+			  <div class="cases-summary-card" id="cases-summary-root">
+				<div class="cases-summary-head">
+				  <div class="cases-summary-title">
+					<i class="fa-solid fa-wand-magic-sparkles"></i>
+					Саммари
+				  </div>
+				</div>
+				<div class="cases-summary-body" id="cases-summary-body">
+				  <span class="cases-summary-loading">Формирую краткий пересказ…</span>
+				</div>
+				<div class="cases-summary-hint">
+				  Саммари: «оформить» и «в обработке» — за весь период; «отклонено» / «выполнено» / «одобрено» — за последние 30 дней по дате заявки. При изменении списка обращений в панели саммари пересчитывается само.
+				</div>
+			  </div>
+			  <div class="info-title">
+				<i class="fa-solid fa-comments"></i>
+				<span>Обращения и коммуникации</span>
+			  </div>
+			  <table class="transactions-table">
+				<thead>
+				  <tr>
+					<th>Название</th>
+					<th>Дата</th>
+					<th>Статус</th>
+					<th>Менеджер</th>
+					<th>Место заявки</th>
+					<th>Продукт</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  ${casesFull.map(c => `
+					<tr>
+					  <td>${c.title}</td>
+					  <td>${c.date}</td>
+					  <td><span class="badge ${c.status === 'оформить' ? 'badge-success' : c.status === 'отклонено' ? 'badge-error' : c.status === 'в обработке' ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
+					  <td>${c.manager || '—'}</td>
+					  <td>${c.source || '—'}</td>
+					  <td>${c.productType === 'card' ? 'Карта ' + c.productNumber : (c.productType === 'account' ? 'Счёт ' + c.productNumber : '—')}</td>
+					</tr>
+				  `).join('')}
+				</tbody>
+			  </table>
+			</div>
+		  `;
+		}
       if (infoType === "sms") {
         return `
           <div class="card">
             <div class="info-title">
-              <i class="fa-solid fa-mobile-screen-button"></i>
+              <i class="fa-solid fa-comment-dots"></i>
               <span>SMS и уведомления</span>
             </div>
             <table class="sms-table">
-              <thead><tr><th>Дата</th><th>Тип</th><th>Сообщение</th></tr></thead>
+              <thead>
+                <tr><th>Дата</th><th>Тип</th><th>Текст</th></tr>
+              </thead>
               <tbody>
-                ${smsFull.map(s => `
-                  <tr>
-                    <td>${s.date}</td>
-                    <td><i class="fa-solid ${s.type === 'sms' ? 'fa-sms' : 'fa-bell'}"></i></td>
-                    <td>${s.text}</td>
-                  </tr>
-                `).join('')}
+                ${smsFull
+                  .map(
+                    (s) => `
+                      <tr>
+                        <td>${s.date}</td>
+                        <td>${s.type === "sms" ? "SMS" : "Уведомление"}</td>
+                        <td>${s.text}</td>
+                      </tr>
+                    `,
+                  )
+                  .join("")}
               </tbody>
             </table>
           </div>
@@ -2239,6 +2913,23 @@
           createTab("Оформление кредитной карты", "operation", {
             operationName: "Карты",
           });
+        } else if (name === "Изменение персональных данных") {
+          if (state.savedPersonalDataWizard) {
+            state.personalDataWizard = JSON.parse(
+              JSON.stringify(state.savedPersonalDataWizard),
+            );
+            state.personalDataWizardFinished = false;
+            state.savedPersonalDataWizard = null;
+          } else if (
+            !state.personalDataWizard ||
+            state.personalDataWizardFinished
+          ) {
+            state.personalDataWizard = createPersonalDataWizardState();
+            state.personalDataWizardFinished = false;
+          }
+          createTab("Изменение персональных данных", "operation", {
+            operationName: "Изменение персональных данных",
+          });
         } else {
           createTab(name, "operation", { operationName: name });
         }
@@ -2253,6 +2944,98 @@
     }
 
     // ---------------- SIMPLE OPERATION TAB ----------------
+
+    function goToCardReissueFromPersonalData() {
+      const personalTab = findTabByType(
+        "operation",
+        "Изменение персональных данных"
+      );
+      if (!personalTab) return;
+      closeTab(personalTab.id);
+      state.personalDataWizard = null;
+      state.personalDataWizardFinished = true;
+      state.savedPersonalDataWizard = null;
+
+      if (!state.sessionActive) {
+        pendingOperationAfterSms = "Карты";
+        openSmsModal();
+        return;
+      }
+      handleOperationClick("Карты");
+    }
+
+    function initPersonalDataWizardHandlers() {
+      const w = state.personalDataWizard;
+      if (!w) return;
+      const d = w.data;
+      const step = w.currentStep;
+      const total = personalDataWizardStepTitles.length;
+
+      if (step === 1) {
+        const el = qs("#pd-document-verified");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.documentVerified = e.target.checked),
+          );
+      } else if (step === 2) {
+        const sn = qs("#pd-new-surname");
+        if (sn)
+          sn.addEventListener(
+            "input",
+            (e) => (d.newSurname = e.target.value),
+          );
+        const sel = qs("#pd-reason");
+        if (sel) {
+          sel.value = d.reason || "";
+          sel.addEventListener("change", (e) => (d.reason = e.target.value));
+        }
+      } else if (step === 3) {
+        const el = qs("#pd-checks-ok");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.checksOk = e.target.checked),
+          );
+      } else if (step === 4) {
+        const el = qs("#pd-confirm-change");
+        if (el)
+          el.addEventListener(
+            "change",
+            (e) => (d.confirmChange = e.target.checked),
+          );
+      }
+
+      const btnPrev = qs("#pd-btn-prev");
+      const btnNext = qs("#pd-btn-next");
+      if (!btnPrev || !btnNext) return;
+
+      btnPrev.addEventListener("click", () => {
+        if (w.currentStep > 1) {
+          w.currentStep -= 1;
+          renderActiveTabContent();
+        }
+      });
+
+      btnNext.addEventListener("click", () => {
+        if (w.currentStep === total) {
+          goToCardReissueFromPersonalData();
+          return;
+        }
+        const ok = validatePersonalDataWizardStep();
+        if (!ok) {
+          renderActiveTabContent();
+          return;
+        }
+        if (w.currentStep === 4) {
+          w.applicationNumber =
+            w.applicationNumber ||
+            "PD-2026-" + String(Date.now()).slice(-8);
+        }
+        w.currentStep += 1;
+        renderActiveTabContent();
+      });
+    }
 
     function renderSimpleOperationHTML(name) {
       const steps =
@@ -2354,6 +3137,79 @@
       "Дозаполнение заявки",
       "Выдача карты",
     ];
+
+    /** Мастер «Изменение персональных данных» (смена фамилии) — тот же каркас, что у «Карты». */
+    const personalDataWizardStepTitles = [
+      "Проверка документа",
+      "Новая фамилия",
+      "Проверка в системе",
+      "Подтверждение изменений",
+      "Перевыпуск карты",
+    ];
+
+    function createPersonalDataWizardState() {
+      const fio = clientInfoFull.fio || "";
+      const parts = fio.trim().split(/\s+/);
+      const surname = parts[0] || "";
+      const name = parts[1] || "";
+      const patronymic = parts.slice(2).join(" ") || "";
+      return {
+        currentStep: 1,
+        applicationNumber: null,
+        data: {
+          oldSurname: surname,
+          newSurname: "",
+          name,
+          patronymic,
+          passportSeries: clientInfoFull.passportSeries || "",
+          passportNumber: clientInfoFull.passportNumber || "",
+          passportIssuer: clientInfoFull.passportIssuer || "",
+          passportIssueDate: clientInfoFull.passportIssueDate || "",
+          reason: "",
+          documentVerified: false,
+          checksOk: false,
+          confirmChange: false,
+        },
+        errors: {},
+      };
+    }
+
+    function validatePersonalDataWizardStep() {
+      const w = state.personalDataWizard;
+      if (!w) return false;
+      const d = w.data;
+      const errors = {};
+      switch (w.currentStep) {
+        case 1:
+          if (!d.documentVerified)
+            errors.documentVerified =
+              "Необходимо подтвердить сверку документа с клиентом";
+          break;
+        case 2:
+          if (!String(d.newSurname || "").trim())
+            errors.newSurname = "Укажите новую фамилию";
+          else if (
+            String(d.newSurname).trim().toLowerCase() ===
+            String(d.oldSurname || "").trim().toLowerCase()
+          )
+            errors.newSurname = "Новая фамилия должна отличаться от текущей";
+          if (!d.reason) errors.reason = "Выберите основание изменения";
+          break;
+        case 3:
+          if (!d.checksOk)
+            errors.checksOk = "Подтвердите завершение проверок в системе";
+          break;
+        case 4:
+          if (!d.confirmChange)
+            errors.confirmChange =
+              "Необходимо подтвердить регистрацию изменения фамилии";
+          break;
+        default:
+          break;
+      }
+      w.errors = errors;
+      return Object.keys(errors).length === 0;
+    }
 
     function validateCurrentWizardStep() {
       const w = state.cardWizard;
@@ -2761,6 +3617,192 @@
       `;
     }
 
+    function renderPersonalDataWizardHTML() {
+      const w = state.personalDataWizard || createPersonalDataWizardState();
+      state.personalDataWizard = w;
+      const step = w.currentStep;
+      const total = personalDataWizardStepTitles.length;
+      const d = w.data;
+
+      const stepsHTML = personalDataWizardStepTitles
+        .map((t, idx) => {
+          const stepNum = idx + 1;
+          const completed =
+            stepNum < step || state.personalDataWizardFinished;
+          const current = stepNum === step;
+          return `
+          <li class="wizard-step-item ${
+            completed ? "completed" : ""
+          } ${current ? "current" : ""}">
+            <div class="wizard-step-index">
+              ${
+                completed ? '<i class="fa-solid fa-check"></i>' : stepNum
+              }
+            </div>
+            <div class="wizard-step-title-main">${t}</div>
+          </li>`;
+        })
+        .join("");
+
+      const formContent = (() => {
+        switch (step) {
+          case 1:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Сверьте паспорт клиента с данными в системе. При смене фамилии на пластике кредитной карты останется старая фамилия — потребуется перевыпуск карты (шаг в конце мастера).
+              </p>
+              <table class="summary-table">
+                <tr><td>Фамилия</td><td>${d.oldSurname || "—"}</td></tr>
+                <tr><td>Имя</td><td>${d.name || "—"}</td></tr>
+                <tr><td>Отчество</td><td>${d.patronymic || "—"}</td></tr>
+                <tr><td>Серия и номер паспорта</td><td>${d.passportSeries || ""} ${d.passportNumber || ""}</td></tr>
+                <tr><td>Кем выдан</td><td>${d.passportIssuer || "—"}</td></tr>
+                <tr><td>Дата выдачи</td><td>${d.passportIssueDate || "—"}</td></tr>
+              </table>
+              <div class="form-group" style="margin-top:10px;">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-document-verified" ${d.documentVerified ? "checked" : ""} />
+                  <span>Документ проверен, данные в системе совпадают с оригиналом</span>
+                </label>
+                ${
+                  w.errors.documentVerified
+                    ? `<div class="form-error">${w.errors.documentVerified}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          case 2:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Укажите новую фамилию и основание изменения (в демо доступна только смена фамилии).
+              </p>
+              <div class="form-grid">
+                ${renderInputGroup(
+                  "pd-new-surname",
+                  "Новая фамилия",
+                  d.newSurname,
+                  w.errors.newSurname,
+                  "text",
+                )}
+                <div class="form-group">
+                  <label class="form-label">Основание изменения</label>
+                  <select class="form-select" id="pd-reason">
+                    <option value="">Выберите...</option>
+                    <option value="marriage" ${d.reason === "marriage" ? "selected" : ""}>Брак / развод</option>
+                    <option value="court" ${d.reason === "court" ? "selected" : ""}>Решение суда / смена по документу</option>
+                    <option value="fix" ${d.reason === "fix" ? "selected" : ""}>Исправление ошибки в данных</option>
+                    <option value="other" ${d.reason === "other" ? "selected" : ""}>Иное</option>
+                  </select>
+                  ${
+                    w.errors.reason
+                      ? `<div class="form-error">${w.errors.reason}</div>`
+                      : ""
+                  }
+                </div>
+              </div>
+            `;
+          case 3:
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">
+                Выполняются автоматические проверки (ФМ, списки, связь с продуктами). В демо — имитация.
+              </p>
+              <div class="document-block" style="margin-bottom:12px;">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Статус: проверки завершены, критичных замечаний нет</span>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-checks-ok" ${d.checksOk ? "checked" : ""} />
+                  <span>Проверки в системе завершены, можно фиксировать изменение</span>
+                </label>
+                ${
+                  w.errors.checksOk
+                    ? `<div class="form-error">${w.errors.checksOk}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          case 4: {
+            const reasonLabel =
+              {
+                marriage: "Брак / развод",
+                court: "Решение суда / смена по документу",
+                fix: "Исправление ошибки",
+                other: "Иное",
+              }[d.reason] || "—";
+            return `
+              <p class="wizard-form-sub" style="margin-bottom:10px;">Проверьте данные перед регистрацией в системе.</p>
+              <table class="summary-table">
+                <tr><td>Текущая фамилия</td><td>${d.oldSurname || "—"}</td></tr>
+                <tr><td>Новая фамилия</td><td>${String(d.newSurname || "").trim() || "—"}</td></tr>
+                <tr><td>Имя, отчество (без изменений)</td><td>${d.name || ""} ${d.patronymic || ""}</td></tr>
+                <tr><td>Основание</td><td>${reasonLabel}</td></tr>
+              </table>
+              <div class="form-group" style="margin-top:10px;">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="pd-confirm-change" ${d.confirmChange ? "checked" : ""} />
+                  <span>Зарегистрировать изменение фамилии в системе</span>
+                </label>
+                ${
+                  w.errors.confirmChange
+                    ? `<div class="form-error">${w.errors.confirmChange}</div>`
+                    : ""
+                }
+              </div>
+            `;
+          }
+          case 5: {
+            if (!w.applicationNumber) {
+              w.applicationNumber =
+                "PD-2026-" + String(Date.now()).slice(-8);
+            }
+            return `
+              <p style="font-size:13px;margin-bottom:8px;">
+                Изменение фамилии зарегистрировано. Номер заявки: <strong>#${w.applicationNumber}</strong>.
+              </p>
+              <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted);">
+                На пластике кредитной карты по-прежнему старая фамилия — для выпуска нового пластика перейдите к операции перевыпуска кредитной карты (тот же мастер, что при выборе «Карты» на главной).
+              </p>
+            `;
+          }
+          default:
+            return "";
+        }
+      })();
+
+      const lastStep = step === total;
+      const nextLabel = lastStep
+        ? '<i class="fa-solid fa-credit-card"></i> Перейти к перевыпуску кредитной карты'
+        : 'Далее <i class="fa-solid fa-arrow-right"></i>';
+
+      return `
+        <div class="card">
+          <div class="wizard-layout">
+            <div class="wizard-form-section">
+              <div class="wizard-form-header">
+                <div class="wizard-form-title">Изменение персональных данных</div>
+                <div class="wizard-form-sub">Смена фамилии</div>
+              </div>
+              ${formContent}
+              <div class="wizard-actions">
+                <button class="btn secondary" type="button" id="pd-btn-prev" ${
+                  step === 1 ? "disabled" : ""
+                }>
+                  <i class="fa-solid fa-arrow-left"></i> Назад
+                </button>
+                <button class="btn" type="button" id="pd-btn-next">${nextLabel}</button>
+              </div>
+            </div>
+            <div>
+              <ul class="wizard-steps-list">
+                ${stepsHTML}
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderInputGroup(
       id,
       label,
@@ -2786,23 +3828,15 @@
 
     function renderCardRadio(value, label, desc, selected) {
       const imgUrl = CARD_IMAGE_URLS[value];
-      const iconClass =
-        value === "classic"
-          ? "fa-credit-card"
-          : value === "gold"
-          ? "fa-crown"
-          : "fa-gem";
-      const imgContent = imgUrl
-        ? `<img src="${imgUrl}" alt="${label}" class="card-type-img-img" />`
-        : `<i class="fa-solid ${iconClass}"></i>`;
+      const imgContent = `<img src="${imgUrl}" alt="${label}" class="card-choice-img" />`;
       return `
         <label class="radio-card" data-card-type="${value}">
-          <input type="radio" name="cardType" value="${value}" ${
-        selected ? "checked" : ""
-      } style="margin-top:4px;" />
-          <div class="card-type-img ${value}">${imgContent}</div>
-          <div>
-            <div>${label}</div>
+          ${imgContent}
+          <div class="radio-card-text">
+            <div class="radio-card-text-header">
+              <input type="radio" name="cardType" value="${value}" ${selected ? "checked" : ""} />
+              <div>${label}</div>
+            </div>
             <div class="radio-desc">${desc}</div>
           </div>
         </label>
@@ -3028,10 +4062,18 @@
     // ---------------- BEFOREUNLOAD ----------------
 
     window.addEventListener("beforeunload", (e) => {
-      const hasCardWizardInProgress = state.tabs.some(
-        (t) => t.type === "operation" && t.payload.operationName === "Карты"
-      ) && !state.cardWizardFinished;
-      if (hasCardWizardInProgress) {
+      const hasCardWizardInProgress =
+        state.tabs.some(
+          (t) =>
+            t.type === "operation" && t.payload.operationName === "Карты",
+        ) && !state.cardWizardFinished;
+      const hasPersonalWizardInProgress =
+        state.tabs.some(
+          (t) =>
+            t.type === "operation" &&
+            t.payload.operationName === "Изменение персональных данных",
+        ) && !state.personalDataWizardFinished;
+      if (hasCardWizardInProgress || hasPersonalWizardInProgress) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -3063,6 +4105,206 @@
           }
         });
       });
+
+      initChatBot();
+    }
+
+    // ---------------- CHAT BOT ----------------
+    const chatBotState = {
+      messages: [],
+      loading: false
+    };
+
+    const CHAT_BOT_LIMITS = {
+      maxHistoryMessages: 12,     // сколько последних сообщений слать в модель
+      maxMessageChars: 2000,      // максимум символов в одном сообщении (user/assistant)
+      maxSystemPromptChars: 2000  // ограничение системного промпта на клиенте
+    };
+
+    function clampText(text, maxChars) {
+      const s = String(text ?? '');
+      if (!maxChars || s.length <= maxChars) return s;
+      return s.slice(0, Math.max(0, maxChars - 1)) + '…';
+    }
+
+    function buildLimitedHistory(messages) {
+      const maxN = CHAT_BOT_LIMITS.maxHistoryMessages;
+      const sliced = maxN ? messages.slice(-maxN) : messages.slice();
+      return sliced.map(m => ({
+        role: m.role,
+        content: clampText(m.content, CHAT_BOT_LIMITS.maxMessageChars)
+      }));
+    }
+
+    function isObviouslyNonWorkQuestion(text) {
+      const t = (text || '').toLowerCase();
+      // Блокируем только явно "бытовое/развлекательное". Всё пограничное — пропускаем (решит system prompt).
+      const nonWorkKeywords = [
+        'анекдот', 'шутк', 'мем', 'стих', 'песня', 'фильм', 'сериал', 'игр', 'рецепт',
+        'погода', 'гороскоп', 'сонник', 'таро', 'астрол', 'полит', 'выбор', 'религ',
+        'знакомств', 'отношен', 'психолог', 'медицин', 'симптом', 'диагноз', 'лечение',
+        'спорт', 'тренировк', 'диет', 'похуд', 'крипто', 'биткоин'
+      ];
+      return nonWorkKeywords.some(k => t.includes(k));
+    }
+
+    function getChatContext() {
+      const tab = state.tabs.find(t => t.id === state.activeTabId);
+      return {
+        clientName: clientInfoFull.fio,
+        currentTab: tab ? tab.title : 'Главная'
+      };
+    }
+
+    function renderChatMessages() {
+      const el = qs('#chat-messages');
+      el.innerHTML = chatBotState.messages.map(m => {
+        const cls = m.role === 'user' ? 'chat-msg user' : 'chat-msg bot' + (m.typing ? ' typing' : '');
+        // Переносы строк сохраняются через CSS white-space: pre-wrap
+        return `<div class="${cls}">${formatChatContent(m.content)}</div>`;
+      }).join('');
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatChatContent(text) {
+      const raw = String(text ?? '');
+      // Prefer full markdown rendering (lists, headings, tables, code), but keep it safe.
+      if (window.marked && window.DOMPurify) {
+        window.marked.setOptions({
+          gfm: true,
+          breaks: true,
+          headerIds: false,
+          mangle: false
+        });
+        const html = window.marked.parse(raw);
+        return window.DOMPurify.sanitize(html, {
+          USE_PROFILES: { html: true }
+        });
+      }
+      // Fallback: escape HTML + minimal bold/italic
+      const safe = escapeHtml(raw);
+      return safe
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(.+?)__/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*(?!\*)([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>')
+        .replace(/(^|[^_])_(?!_)([^_\n]+?)_(?!_)/g, '$1<em>$2</em>');
+    }
+
+    function addChatMessage(role, content, typing) {
+      chatBotState.messages.push({ role, content, typing: !!typing });
+      renderChatMessages();
+    }
+
+    async function sendChatToApi(userText) {
+      const cfg = CHAT_BOT_CONFIG;
+      if (!cfg.apiUrl || !cfg.apiUrl.trim()) {
+        return 'Настройте CHAT_BOT_CONFIG.apiUrl (ваш backend или AI API). Сейчас бот работает без подключения.';
+      }
+      const rawHistory = chatBotState.messages
+        .filter(m => (m.role === 'user' || m.role === 'assistant') && !m.typing)
+        .map(m => ({ role: m.role, content: m.content }));
+      const history = buildLimitedHistory(rawHistory);
+
+      const limitedUserText = clampText(userText, CHAT_BOT_LIMITS.maxMessageChars);
+      const limitedSystemPrompt = clampText(cfg.systemPrompt || '', CHAT_BOT_LIMITS.maxSystemPromptChars);
+
+      let body;
+      if ((cfg.provider || '').toLowerCase() === 'mistral' || cfg.apiUrl.includes('api.mistral.ai')) {
+        // Mistral API expects OpenAI-like schema: { model, messages: [{role, content}], ... }
+        const messages = [];
+        if (limitedSystemPrompt && limitedSystemPrompt.trim()) {
+          messages.push({ role: 'system', content: limitedSystemPrompt.trim() });
+        }
+        history.forEach(m => messages.push({ role: m.role, content: m.content }));
+        messages.push({ role: 'user', content: limitedUserText });
+
+        body = {
+          model: cfg.model || 'mistral-small-latest',
+          messages,
+          temperature: cfg.temperature ?? 0.2,
+          max_tokens: cfg.maxTokens ?? 380
+        };
+      } else {
+        // Backend/proxy schema (ваш сервер)
+        body = {
+          message: limitedUserText,
+          history,
+          context: getChatContext(),
+          systemPrompt: limitedSystemPrompt,
+          maxTokens: cfg.maxTokens ?? 380
+        };
+      }
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (cfg.apiKey && cfg.apiKey.trim()) headers['Authorization'] = 'Bearer ' + cfg.apiKey.trim();
+
+      let res;
+      try {
+        res = await fetch(cfg.apiUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body)
+        });
+      } catch (e) {
+        // Частая причина при прямом вызове из браузера: CORS
+        const msg = (e && e.message) ? e.message : String(e);
+        return 'Не удалось выполнить запрос (возможен CORS). Рекомендуется вызывать Mistral через ваш backend-прокси. Детали: ' + msg;
+      }
+      if (!res.ok) {
+        const err = await res.text();
+        const brief = (err || '').toString().slice(0, 600);
+        return 'Ошибка запроса (' + res.status + '): ' + (brief || res.statusText || 'unknown');
+      }
+      const data = await res.json();
+      return data.reply != null ? data.reply : (data.text != null ? data.text : (data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : 'Нет ответа'));
+    }
+
+    async function handleChatSend(e) {
+      e.preventDefault();
+      const input = qs('#chat-bot-input');
+      const sendBtn = qs('#chat-bot-send');
+      const text = (input.value || '').trim();
+      if (!text || chatBotState.loading) return;
+      input.value = '';
+      addChatMessage('user', text);
+      addChatMessage('assistant', '…', true);
+      chatBotState.loading = true;
+      sendBtn.disabled = true;
+      let reply;
+      try {
+        if (isObviouslyNonWorkQuestion(text)) {
+          reply = 'Я помогаю только по рабочим вопросам отделения (продукты, регламенты, операции, сценарии в системе). Сформулируйте, пожалуйста, вопрос по работе — и я подскажу.';
+        } else {
+          reply = await sendChatToApi(text);
+        }
+      } catch (err) {
+        reply = 'Ошибка: ' + (err.message || String(err));
+      }
+      chatBotState.loading = false;
+      sendBtn.disabled = false;
+      const lastBot = chatBotState.messages[chatBotState.messages.length - 1];
+      if (lastBot && lastBot.role === 'assistant') {
+        lastBot.content = reply;
+        lastBot.typing = false;
+      }
+      renderChatMessages();
+    }
+
+    function initChatBot() {
+      addChatMessage('assistant', 'Здравствуйте! Задайте вопрос по продуктам, регламенту или работе с клиентом.');
+      qs('#chat-bot-toggle').addEventListener('click', () => {
+        qs('#chat-bot-panel').classList.toggle('open');
+        if (qs('#chat-bot-panel').classList.contains('open')) qs('#chat-bot-input').focus();
+      });
+      qs('#chat-bot-close').addEventListener('click', () => qs('#chat-bot-panel').classList.remove('open'));
+      qs('#chat-bot-form').addEventListener('submit', handleChatSend);
     }
 
     document.addEventListener("DOMContentLoaded", init);
