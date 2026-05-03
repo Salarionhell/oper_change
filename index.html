@@ -2848,6 +2848,34 @@
 			</div>
 		  `;
 		}
+      if (infoType === "sms") {
+        return `
+          <div class="card">
+            <div class="info-title">
+              <i class="fa-solid fa-comment-dots"></i>
+              <span>SMS и уведомления</span>
+            </div>
+            <table class="sms-table">
+              <thead>
+                <tr><th>Дата</th><th>Тип</th><th>Текст</th></tr>
+              </thead>
+              <tbody>
+                ${smsFull
+                  .map(
+                    (s) => `
+                      <tr>
+                        <td>${s.date}</td>
+                        <td>${s.type === "sms" ? "SMS" : "Уведомление"}</td>
+                        <td>${s.text}</td>
+                      </tr>
+                    `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
       return "";
     }
 
