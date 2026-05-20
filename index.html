@@ -194,7 +194,7 @@
       align-items: center;
       justify-content: flex-end;
       align-self: center;
-      padding: 4px 4px 4px 2px;
+      padding: 4px 2px 4px 0;
       background: linear-gradient(145deg, #ffebee 0%, #ffffff 60%);
       border-right: 1px solid var(--border-soft);
       border-radius: 12px 0 0 12px;
@@ -208,6 +208,7 @@
       border: 1px solid #fff;
       box-shadow: 0 2px 10px rgba(198, 40, 40, 0.15);
       flex-shrink: 0;
+      margin-right: -2px;
     }
 
     .sticky-col {
@@ -407,7 +408,32 @@
     }
 
     #dropdown-transactions {
-      min-width: 248px;
+      width: 200px;
+      max-width: 200px;
+      padding: 8px 10px;
+    }
+
+    #dropdown-transactions .dropdown-transaction-group {
+      margin-bottom: 6px;
+    }
+
+    #dropdown-transactions .transaction-date {
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+
+    #dropdown-transactions .transaction-detail {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px;
+      align-items: center;
+      font-size: 10px;
+      padding-left: 0;
+      margin-bottom: 2px;
+    }
+
+    #dropdown-transactions .detail-card {
+      max-width: none;
     }
 
     #dropdown-sms {
@@ -2408,7 +2434,7 @@
               s.text.length > 52 ? s.text.slice(0, 52) + "…" : s.text;
             return `<div class="dropdown-line"><i class="fa-solid ${
               s.type === "sms" ? "fa-sms" : "fa-bell"
-            }"></i><span>${s.date.slice(0, 5)} — ${short}</span></div>`;
+            }"></i><span>${s.date.slice(0, 5)} · ${short}</span></div>`;
           })
           .join("") +
         `<div class="dropdown-more"><a data-open-info="sms">…</a></div>`;
