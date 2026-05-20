@@ -192,9 +192,9 @@
       flex: 0 0 80px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       align-self: center;
-      padding: 4px 6px;
+      padding: 4px 4px 4px 2px;
       background: linear-gradient(145deg, #ffebee 0%, #ffffff 60%);
       border-right: 1px solid var(--border-soft);
       border-radius: 12px 0 0 12px;
@@ -301,27 +301,29 @@
       width: 100%;
     }
 
-    .passport-sticky-type {
+    .passport-sticky-line {
       font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.25;
-    }
-
-    .passport-sticky-series {
-      font-size: 12px;
+      line-height: 1.3;
       color: var(--text-main);
-      font-weight: 500;
     }
 
-    .passport-sticky-number {
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+    .passport-sticky-line.muted {
+      color: var(--text-muted);
+    }
+
+    .passport-sticky-line.passport-id {
+      font-weight: 600;
+      letter-spacing: 0.03em;
       font-variant-numeric: tabular-nums;
       user-select: all;
-      cursor: text;
-      margin-top: 2px;
-      color: var(--primary-dark);
+    }
+
+    .passport-sticky-line.issuer {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
     }
 
     .sticky-products-grid {
@@ -469,9 +471,9 @@
 
     .dropdown-transaction-group .transaction-detail {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: baseline;
-      gap: 8px;
+      gap: 4px;
       font-size: 10px;
       color: var(--text-muted);
       padding-left: 4px;
@@ -479,8 +481,9 @@
     }
 
     .dropdown-transaction-group .detail-card {
-      flex: 1;
+      flex: 0 1 auto;
       min-width: 0;
+      max-width: 58%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -488,7 +491,7 @@
 
     .dropdown-transaction-group .detail-amount {
       font-weight: 600;
-      flex-shrink: 0;
+      flex: 0 0 auto;
       white-space: nowrap;
       font-size: 10px;
     }
@@ -1672,6 +1675,10 @@
       { icon: "fa-id-card", text: "Паспорт РФ: 6518 482731" },
       { icon: "fa-calendar", text: "Дата выдачи: 21.09.2018" },
       { icon: "fa-hashtag", text: "Код подразделения: 660-021" },
+      {
+        icon: "fa-building",
+        text: "Кем выдан: УМВД России по Свердловской области, г. Екатеринбург",
+      },
     ];
 
     const clientInfoFull = {
@@ -1686,6 +1693,8 @@
       passportNumber: "482731",
       passportIssueDate: "21.09.2018",
       passportDeptCode: "660-021",
+      passportIssuer:
+        "УМВД России по Свердловской области, г. Екатеринбург",
       identityVerified: "Подтверждено через Госуслуги",
       mainChannel: "Мобильное приложение",
       commChannel: "Push + SMS",
@@ -1777,12 +1786,12 @@
     ];
 
 	const casesDropdown = [
-	  { icon: "fa-sim-card", text: "18.05 — Заявка на Альфа-Сим, в обработке" },
-	  { icon: "fa-mobile-screen", text: "16.05 — Альфа-Стикер, ожидает подтверждения" },
-	  { icon: "fa-credit-card", text: "15.05 — Увеличение кредитного лимита, требуется действие" },
-	  { icon: "fa-shield-halved", text: "13.05 — Подтверждение нового устройства, завершено" },
-	  { icon: "fa-ban", text: "12.05 — Попытка Alfa Only, отклонено" },
-	  { icon: "fa-headset", text: "09.05 — Обращение в поддержку, завершено" },
+	  { icon: "fa-sim-card", date: "18.05", text: "Заявка на Альфа-Сим, в обработке" },
+	  { icon: "fa-mobile-screen", date: "16.05", text: "Альфа-Стикер, ожидает подтверждения" },
+	  { icon: "fa-credit-card", date: "15.05", text: "Увеличение кредитного лимита, требуется действие" },
+	  { icon: "fa-shield-halved", date: "13.05", text: "Подтверждение нового устройства, завершено" },
+	  { icon: "fa-ban", date: "12.05", text: "Попытка Alfa Only, отклонено" },
+	  { icon: "fa-headset", date: "09.05", text: "Обращение в поддержку, завершено" },
 	];
 
 	const casesFull = [
@@ -2384,7 +2393,10 @@
       const dropdownCases = qs("#dropdown-cases");
       dropdownCases.innerHTML =
         casesDropdown
-          .map((item) => `<div class="dropdown-line"><i class="fa-solid ${item.icon}"></i><span>${item.text}</span></div>`)
+          .map(
+            (item) =>
+              `<div class="dropdown-line"><i class="fa-solid ${item.icon}"></i><span>${item.date} · ${item.text}</span></div>`,
+          )
           .join("") +
         `<div class="dropdown-more"><a data-open-info="cases">…</a></div>`;
 
@@ -4412,9 +4424,10 @@
 
       qs("#sticky-document-preview").innerHTML = `
         <div class="passport-sticky">
-          <span class="passport-sticky-type">${c.docType}</span>
-          <span class="passport-sticky-series">Серия ${c.passportSeries}</span>
-          <span class="passport-sticky-number" title="Номер паспорта">${c.passportNumber}</span>
+          <span class="passport-sticky-line muted">${c.docType}</span>
+          <span class="passport-sticky-line passport-id">${c.passportSeries} ${c.passportNumber}</span>
+          <span class="passport-sticky-line">Код подразделения: ${c.passportDeptCode}</span>
+          <span class="passport-sticky-line issuer" title="${c.passportIssuer}">Кем выдан: ${c.passportIssuer}</span>
         </div>
       `;
 
@@ -4433,13 +4446,13 @@
         transactionsDropdown,
         (t) => {
           const sign = t.amount.startsWith("+") ? "+" : "";
-          return `${t.date} · ${t.card} · <strong>${sign}${t.amount.replace(/^\+/, "")}</strong>`;
+          return `${t.date} · ${t.card} <strong>${sign}${t.amount.replace(/^\+/, "")}</strong>`;
         },
       );
 
       qs("#sticky-events-preview").innerHTML = renderStickyPreviewList(
         casesDropdown,
-        (e) => e.text,
+        (e) => `${e.date} · ${e.text}`,
       );
 
       qs("#sticky-sms-preview").innerHTML = renderStickyPreviewList(
