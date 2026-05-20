@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Операционная панель — кредитная карта</title>
+  <title>Операционная панель</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Font Awesome -->
   <link
@@ -172,79 +172,111 @@
       top: 46px;
       z-index: 190;
       background-color: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-      padding: 6px 20px 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 10px 20px 12px;
       border-top: 1px solid #f0f0f0;
     }
 
-    .sticky-inner {
+    .sticky-panel {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0;
+      min-height: 88px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-card);
+      overflow: visible;
+      background-color: #fff;
     }
 
-    .client-fio {
-      font-size: 13px;
-      font-weight: 700;
-      gap: 6px;
-      color: var(--primary-dark);
-      background-color: var(--primary-soft);
-      padding: 4px 12px;
-      border-radius: 999px;
-      flex-shrink: 0;
-    }
-
-    .client-avatar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background-color: var(--primary-soft);
-      border-radius: 999px;
-      padding: 4px 10px 4px 4px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .client-circle {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: #fff;
+    .sticky-photo {
+      flex: 0 0 96px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 14px;
+      padding: 10px;
+      border-right: 1px solid var(--border-soft);
+      background-color: #fafafa;
     }
 
-    .sticky-blocks {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .sticky-photo img {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border-soft);
     }
 
-    .sticky-item {
-      font-size: 13px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background-color: #f5f5f5;
-      cursor: pointer;
-      transition: var(--transition-fast);
+    .sticky-col {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 10px 12px;
+      border-right: 1px solid var(--border-soft);
+      font-size: 12px;
+      line-height: 1.45;
       position: relative;
     }
 
+    .sticky-col:last-child {
+      border-right: none;
+    }
+
+    .sticky-col-personal {
+      flex: 1.1 1 140px;
+      cursor: default;
+    }
+
+    .sticky-col-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+
+    .sticky-col-fio {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .sticky-col-line {
+      color: var(--text-main);
+    }
+
+    .sticky-col-preview {
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .sticky-col-products .sticky-product-line {
+      display: block;
+    }
+
+    .sticky-item {
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
     .sticky-item:hover {
-      background-color: var(--primary-soft);
-      color: var(--primary-dark);
+      background-color: #fafafa;
     }
 
     .sticky-item-label {
       pointer-events: none;
     }
 
+    .sticky-col-empty .sticky-col-preview {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     /* Dropdowns */
+
+    .sticky-col .dropdown {
+      top: calc(100% + 6px);
+    }
 
     .dropdown {
       position: absolute;
@@ -380,10 +412,12 @@
     }
 
     .columns-main {
-      display: grid;
-      grid-template-columns: 2fr 1.2fr;
-      gap: 14px;
-      align-items: flex-start;
+      display: block;
+      max-width: 100%;
+    }
+
+    .main-ops-card {
+      max-width: 100%;
     }
 
     .card {
@@ -414,84 +448,115 @@
       color: var(--text-muted);
     }
 
-    /* Recommended operations */
+    /* Recommended panel toggle */
 
-    .recommended-list {
+    .panel-mode-row {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
 
-    .recommended-card {
-      flex: 1 1 150px;
-      min-width: 150px;
-      background: linear-gradient(135deg, #ffffff, #ffebee);
-      border-radius: 10px;
-      padding: 8px 10px;
-      border: 1px solid #f4c4c4;
-      cursor: pointer;
-      font-size: 13px;
-      transition: var(--transition-fast);
-    }
-
-    .recommended-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-1px);
-    }
-
-    /* Open requests */
-
-    .requests-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .request-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border-soft);
-      background-color: #ffffff;
-      margin-bottom: 6px;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-
-    .request-item:hover {
-      background-color: #ffebee;
-    }
-
-    .request-icon {
-      color: var(--primary);
+    .panel-mode-label {
       font-size: 14px;
-      width: 20px;
-      text-align: center;
+      font-weight: 600;
+      color: var(--text-main);
     }
 
-    .request-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
     }
 
-    .request-title {
-      font-weight: 500;
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: var(--transition-fast);
+    }
+
+    .toggle-slider::before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: var(--transition-fast);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #7b1fa2;
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Product-grouped operations */
+
+    .product-ops-section {
+      margin-top: 4px;
+    }
+
+    .product-ops-group {
+      margin-bottom: 14px;
+    }
+
+    .product-ops-group-title {
       font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
     }
 
-    .request-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    .request-date {
+    .product-ops-group-subtitle {
+      font-size: 12px;
       color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .product-op-pill.limited {
+      opacity: 0.55;
+      cursor: not-allowed;
+      border-style: dashed;
+    }
+
+    .product-ops-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .product-op-pill {
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      background-color: #ffffff;
+      transition: var(--transition-fast);
+    }
+
+    .product-op-pill:hover {
+      background-color: var(--primary-soft);
+      border-color: #f8c1c1;
+      color: var(--primary-dark);
     }
 
     .badge {
@@ -520,7 +585,10 @@
     /* Search */
 
     .search-row {
-      margin-top: 12px;
+      margin-top: 0;
+      margin-bottom: 12px;
+      flex: 1;
+      min-width: 220px;
     }
 
     .search-container {
@@ -1278,6 +1346,19 @@
       .sticky-info {
         padding-inline: 10px;
       }
+      .sticky-panel {
+        flex-wrap: wrap;
+      }
+      .sticky-photo {
+        flex: 0 0 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .sticky-col {
+        flex: 1 1 45%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-soft);
+      }
       .app-main {
         padding-inline: 10px;
       }
@@ -1286,6 +1367,13 @@
       }
       .operations-columns {
         grid-template-columns: 1fr;
+      }
+      .panel-mode-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-row {
+        width: 100%;
       }
     }
   </style>
@@ -1307,33 +1395,35 @@
 
   <!-- Sticky info bar -->
   <div class="sticky-info">
-    <div class="sticky-inner">
-      <div class="client-fio" id="client-fio">Иванов Иван Иванович</div>
-      <div class="client-avatar">
-        <div class="client-circle">M</div>
-        <span>47 лет</span>
+    <div class="sticky-panel">
+      <div class="sticky-photo">
+        <img id="client-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=144&h=144&fit=crop" alt="Фото клиента" />
       </div>
-      <div class="sticky-blocks">
-        <div class="sticky-item" data-info="client">
-          <span class="sticky-item-label">Информация о клиенте</span>
-          <div class="dropdown" id="dropdown-client"></div>
-        </div>
-        <div class="sticky-item" data-info="portfolio">
-          <span class="sticky-item-label">Портфель</span>
-          <div class="dropdown" id="dropdown-portfolio"></div>
-        </div>
-        <div class="sticky-item" data-info="transactions">
-          <span class="sticky-item-label">Последние транзакции</span>
-          <div class="dropdown" id="dropdown-transactions"></div>
-        </div>
-        <div class="sticky-item" data-info="cases">
-          <span class="sticky-item-label">Обращения и коммуникации</span>
-          <div class="dropdown" id="dropdown-cases"></div>
-        </div>
-        <div class="sticky-item" data-info="sms">
-          <span class="sticky-item-label">SMS и уведомления</span>
-          <div class="dropdown" id="dropdown-sms"></div>
-        </div>
+      <div class="sticky-col sticky-col-personal" id="sticky-personal"></div>
+      <div class="sticky-col sticky-item" data-info="client">
+        <div class="sticky-col-title">Документ</div>
+        <div class="sticky-col-preview" id="sticky-document-preview"></div>
+        <div class="dropdown" id="dropdown-client"></div>
+      </div>
+      <div class="sticky-col sticky-col-products sticky-item" data-info="portfolio">
+        <div class="sticky-col-title">Продукты</div>
+        <div class="sticky-col-preview" id="sticky-products-preview"></div>
+        <div class="dropdown" id="dropdown-portfolio"></div>
+      </div>
+      <div class="sticky-col sticky-item" data-info="transactions">
+        <div class="sticky-col-title">Транзакции</div>
+        <div class="sticky-col-preview sticky-col-empty" id="sticky-transactions-preview">—</div>
+        <div class="dropdown" id="dropdown-transactions"></div>
+      </div>
+      <div class="sticky-col sticky-item" data-info="cases">
+        <div class="sticky-col-title">События</div>
+        <div class="sticky-col-preview sticky-col-empty" id="sticky-events-preview">—</div>
+        <div class="dropdown" id="dropdown-cases"></div>
+      </div>
+      <div class="sticky-col sticky-item" data-info="sms">
+        <div class="sticky-col-title">СМС и уведомления</div>
+        <div class="sticky-col-preview sticky-col-empty" id="sticky-sms-preview">—</div>
+        <div class="dropdown" id="dropdown-sms"></div>
       </div>
     </div>
   </div>
@@ -1451,245 +1541,325 @@
 
     // ---------------- DATA ----------------
 
-    const CLIENT_SHORT_NAME = "Иванов И.И.";
+    const CLIENT_SHORT_NAME = "Смирнов А.И.";
 
     const clientInfoDropdown = [
-      { icon: "fa-id-card", text: "Паспорт: 52 60 378175" },
-      { icon: "fa-building-columns", text: "Выдан: ОТДЕЛОМ ВНУТРЕННИХ ДЕЛ ОКТЯБРСКОГО ОКРУГА ГОРОДА АРХАНГЕЛЬСКА" },
-      { icon: "fa-calendar", text: "Дата выдачи: 05.09.2024" },
-      { icon: "fa-hashtag", text: "Код подразделения: 292-000" },
-      { icon: "fa-user", text: "ФИО: Иванов Иван Иванович" },
-      { icon: "fa-phone", text: "Телефон: +7 (999) 123-45-67" },
-      { icon: "fa-envelope", text: "Email: ivanov@example.com" },
+      { icon: "fa-id-card", text: "Паспорт РФ: 6518 482731" },
+      { icon: "fa-calendar", text: "Дата выдачи: 21.09.2018" },
+      { icon: "fa-hashtag", text: "Код подразделения: 660-021" },
+      { icon: "fa-shield-halved", text: "Подтверждение: через Госуслуги" },
+      { icon: "fa-user", text: "ФИО: Смирнов Артём Игоревич" },
+      { icon: "fa-location-dot", text: "Город: Екатеринбург" },
     ];
 
     const clientInfoFull = {
-      fio: "Иванов Иван Иванович",
-      age: "47 лет",
+      fio: "Смирнов Артём Игоревич",
+      birthDate: "14.08.1998",
+      age: "27 лет",
       gender: "мужской",
-      passportSeries: "52 60",
-      passportNumber: "378175",
-      passportIssueDate: "05.09.2024",
-      passportIssuer: "ОТДЕЛОМ ВНУТРЕННИХ ДЕЛ ОКТЯБРСКОГО ОКРУГА ГОРОДА АРХАНГЕЛЬСКА",
-      passportDeptCode: "292-000",
-      snils: "123-456-789 01",
-      inn: "770112345678",
-      residence: "г. Москва, ул. Ленина, д. 10, кв. 45",
-      registration: "г. Архангельск, ул. Поморская, д. 5, кв. 12",
-      phone: "+7 (999) 123-45-67",
-      email: "ivanov@example.com",
+      segment: "Mass",
+      city: "Екатеринбург",
+      docType: "Паспорт РФ",
+      passportSeries: "6518",
+      passportNumber: "482731",
+      passportIssueDate: "21.09.2018",
+      passportDeptCode: "660-021",
+      identityVerified: "Подтверждено через Госуслуги",
+      mainChannel: "Мобильное приложение",
+      commChannel: "Push + SMS",
+      riskProfile: "Умеренный",
+      clientStatus: "Активный",
+      snils: "—",
+      inn: "—",
+      residence: "г. Екатеринбург",
+      registration: "г. Екатеринбург",
+      phone: "+7 (912) 000-00-00",
+      email: "smirnov@example.com",
     };
 
+    const productsStickyLines = [
+      "Счёт «Альфа-Счет»",
+      "Альфа-Сим",
+      "Вклад «Максимальный доход»",
+    ];
+
     const portfolioDropdown = [
-      { icon: "fa-credit-card", text: "Alfa Only: 1052 6753 0601 1254 (выпуск 15.01.2024, активна)" },
-      { icon: "fa-credit-card", text: "Кредитная карта: 1895 7678 4138 5520 (лимит 1 000 000 ₽, задолженность 0 ₽)" },
+      { icon: "fa-credit-card", text: "Альфа-Карта Premium — активна" },
+      { icon: "fa-piggy-bank", text: "Альфа-Счет — 412 800 ₽" },
+      { icon: "fa-vault", text: "Вклад «Максимальный доход» — 700 000 ₽" },
+      { icon: "fa-credit-card", text: "Кредитная карта «365 дней без %»" },
+      { icon: "fa-chart-line", text: "Брокерский счет — активен" },
+      { icon: "fa-sim-card", text: "Альфа-Сим — заявка в обработке" },
     ];
 
     const portfolioFull = {
-      alfaOnly: {
-        number: "1052 6753 0601 1254",
-        expiry: "01/28",
-        system: "Мир",
-        issueDate: "15.01.2024",
+      debitCard: {
+        name: "Альфа-Карта Premium",
         status: "активна",
+        issueDate: "12.03.2021",
+        system: "МИР",
+      },
+      savings: {
+        name: "Альфа-Счет",
+        status: "активен",
+        balance: "412 800 ₽",
+        rate: "12%",
+      },
+      deposit: {
+        name: "Максимальный доход",
+        status: "активен",
+        amount: "700 000 ₽",
+        term: "12 месяцев",
       },
       creditCard: {
-        number: "1895 7678 4138 5520",
-        limit: "1 000 000 ₽",
-        rate: "20%",
-        issueDate: "10.03.2024",
-        debt: "0 ₽",
-        available: "1 000 000 ₽",
+        name: "365 дней без %",
+        limit: "280 000 ₽",
+        debt: "41 200 ₽",
         status: "активна",
+      },
+      alfaSim: {
+        name: "Альфа-Сим",
+        status: "заявка в обработке",
+        date: "18.05.2026",
       },
     };
 
-    // Транзакции: дата, карта (полный номер для выпадающего списка), сумма
     const transactionsDropdown = [
-      { date: "24.02", card: "1052 6753 0601 1254", amount: "+550 ₽" },
-      { date: "24.02", card: "1052 6753 0601 1254", amount: "-1 200 ₽" },
-      { date: "23.02", card: "1895 7678 4138 5520", amount: "-3 500 ₽" },
-      { date: "23.02", card: "1052 6753 0601 1254", amount: "+2 300 ₽" },
-      { date: "22.02", card: "1895 7678 4138 5520", amount: "-850 ₽" },
-      { date: "22.02", card: "1895 7678 4138 5520", amount: "+1 500 ₽" },
-      { date: "21.02", card: "1052 6753 0601 1254", amount: "-2 100 ₽" },
-      { date: "21.02", card: "1052 6753 0601 1254", amount: "+3 200 ₽" },
+      { date: "19.05", card: "Яндекс Go", amount: "-742 ₽" },
+      { date: "18.05", card: "Перевод И. Крылову", amount: "-15 000 ₽" },
+      { date: "18.05", card: "Зарплата ТехноЛайн", amount: "+184 000 ₽" },
+      { date: "18.05", card: "Lufthansa", amount: "-48 900 ₽" },
+      { date: "17.05", card: "Steam", amount: "-2 399 ₽" },
     ];
 
     const transactionsFull = [
-      { date: "24.02.2026", time: "14:23", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+550 ₽", desc: "Спорттовары" },
-      { date: "24.02.2026", time: "10:15", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "-1 200 ₽", desc: "Фастфуд" },
-      { date: "23.02.2026", time: "18:40", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-3 500 ₽", desc: "Перевод, А.В.Суворов" },
-      { date: "23.02.2026", time: "09:30", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+2 300 ₽", desc: "Возврат товара" },
-      { date: "22.02.2026", time: "11:30", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-850 ₽", desc: "АЗС" },
-      { date: "22.02.2026", time: "16:20", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "+1 500 ₽", desc: "Кешбэк" },
-      { date: "21.02.2026", time: "19:50", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "-2 100 ₽", desc: "Ресторан" },
-      { date: "21.02.2026", time: "13:35", account: "40817810099910001234", card: "1052 6753 0601 1254", amount: "+3 200 ₽", desc: "Зарплата" },
-      { date: "20.02.2026", time: "10:25", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-4 200 ₽", desc: "ЖКХ" },
-      { date: "20.02.2026", time: "22:15", account: "40817810099910005678", card: "1895 7678 4138 5520", amount: "-1 800 ₽", desc: "Такси" },
+      { date: "19.05.2026", time: "09:14", account: "—", card: "Дебетовая", amount: "-742 ₽", desc: "Яндекс Go" },
+      { date: "18.05.2026", time: "21:14", account: "—", card: "Дебетовая", amount: "-15 000 ₽", desc: "Перевод Ивану Крылову" },
+      { date: "18.05.2026", time: "18:52", account: "—", card: "Дебетовая", amount: "+184 000 ₽", desc: "Зарплата ООО «ТехноЛайн»" },
+      { date: "18.05.2026", time: "14:03", account: "—", card: "Дебетовая", amount: "-48 900 ₽", desc: "Lufthansa" },
+      { date: "17.05.2026", time: "22:16", account: "—", card: "Дебетовая", amount: "-2 399 ₽", desc: "Steam" },
+      { date: "17.05.2026", time: "18:44", account: "—", card: "Дебетовая", amount: "-650 000 ₽", desc: "Отклонено: превышен лимит" },
+      { date: "17.05.2026", time: "16:02", account: "—", card: "Дебетовая", amount: "-20 000 ₽", desc: "Снятие наличных" },
+      { date: "16.05.2026", time: "20:33", account: "—", card: "Брокерский", amount: "-50 000 ₽", desc: "Пополнение брокерского счета" },
+      { date: "16.05.2026", time: "11:12", account: "—", card: "Дебетовая", amount: "-12 480 ₽", desc: "Ozon" },
+      { date: "15.05.2026", time: "19:47", account: "—", card: "Кредитная", amount: "—", desc: "Запрос увеличения лимита" },
     ];
 
 	const casesDropdown = [
-	  { icon: "fa-folder-open", text: "Открытие вклада, 15.03, оформить" },
-	  { icon: "fa-folder-open", text: "Смена тарифа, 12.03, одобрено" },
-	  { icon: "fa-folder-open", text: "Перевыпуск карты, 26.02, выполнено" },
-	  { icon: "fa-folder-open", text: "Блокировка карты, 25.02, выполнено" },
-	  { icon: "fa-folder-open", text: "Восстановление доступа, 22.02, выполнено" },
-	  { icon: "fa-folder-open", text: "Изменение лимита, 10.02, одобрено" },
-	  { icon: "fa-folder-open", text: "Закрытие счета, 05.02, в обработке" },
-	  { icon: "fa-folder-open", text: "SMS-информирование, 20.01, выполнено" },
-	  { icon: "fa-folder-open", text: "Открытие дебетовой карты, 12.01, выполнено" },
-	  { icon: "fa-folder-open", text: "Получение кредита, 28.12, отклонено" },
+	  { icon: "fa-sim-card", text: "18.05 — Заявка на Альфа-Сим, в обработке" },
+	  { icon: "fa-mobile-screen", text: "16.05 — Альфа-Стикер, ожидает подтверждения" },
+	  { icon: "fa-credit-card", text: "15.05 — Увеличение кредитного лимита, требуется действие" },
+	  { icon: "fa-shield-halved", text: "13.05 — Подтверждение нового устройства, завершено" },
+	  { icon: "fa-ban", text: "12.05 — Попытка Alfa Only, отклонено" },
+	  { icon: "fa-headset", text: "09.05 — Обращение в поддержку, завершено" },
 	];
 
 	const casesFull = [
 	  {
-		title: "Заявка на открытие вклада",
-		date: "15.03.2026",
-		status: "оформить",
-		place: "отделение «Южный»",
-		manager: "",
-		extra: "клиент планирует разместить накопления",
-		source: "Отделение",
-		productType: "account",
-		productNumber: "40817810099910005678",
-		accountNumber: "40817810099910005678",
-	  },
-	  {
-		title: "Заявка на смену тарифа",
-		date: "12.03.2026",
-		status: "одобрено",
-		place: "",
-		manager: "",
-		extra: "переход на более выгодный тариф",
-		source: "Отделение",
-		productType: "account",
-		productNumber: "40817810099910001234",
-		accountNumber: "40817810099910001234",
-	  },
-	  {
-		title: "Заявка на перевыпуск карты",
-		date: "26.02.2026",
-		status: "выполнено",
-		place: "отделение «Северный»",
-		manager: "Васильев Д.Д.",
-		extra: "перевыпуск после блокировки",
-		source: "Отделение",
-		productType: "card",
-		productNumber: "1895 7678 4138 5520",
-		accountNumber: "40817810099910005678",
-	  },
-	  {
-		title: "Заявка на блокировку карты",
-		date: "25.02.2026",
-		status: "выполнено",
-		place: "",
-		manager: "Васильев Д.Д.",
-		extra: "подозрение на компрометацию",
-		source: "Мобильное приложение",
-		productType: "card",
-		productNumber: "1895 7678 4138 5520",
-		accountNumber: "40817810099910005678",
-	  },
-	  {
-		title: "Заявка на восстановление доступа",
-		date: "22.02.2026",
-		status: "выполнено",
-		place: "",
-		manager: "",
-		extra: "вход с нового устройства",
-		source: "Мобильное приложение",
-		productType: "account",
-		productNumber: "40817810099910001234",
-		accountNumber: "40817810099910001234",
-	  },
-	  {
-		title: "Заявка на изменение лимита",
-		date: "10.02.2026",
-		status: "одобрено",
-		place: "",
-		manager: "Петрова А.С.",
-		extra: "новый лимит: 1 500 000 ₽",
-		source: "Отделение",
-		productType: "card",
-		productNumber: "1895 7678 4138 5520",
-		accountNumber: "40817810099910005678",
-	  },
-	  {
-		title: "Заявка на закрытие счета",
-		date: "05.02.2026",
+		title: "Заявка на Альфа-Сим",
+		date: "18.05.2026",
 		status: "в обработке",
 		place: "",
-		manager: "Иванова Е.А.",
-		extra: "клиент планирует закрытие, но продолжает пользоваться счетом",
-		source: "Отделение",
-		productType: "account",
-		productNumber: "40817810099910001234",
-		accountNumber: "40817810099910001234",
+		manager: "",
+		extra: "Требуется подтверждение переноса номера от текущего оператора",
+		source: "CRM",
 	  },
 	  {
-		title: "Заявка на подключение SMS-информирования",
-		date: "20.01.2026",
-		status: "выполнено",
+		title: "Выпуск Альфа-Стикера",
+		date: "16.05.2026",
+		status: "ожидает подтверждения",
 		place: "",
-		manager: "Сидоров И.П.",
-		extra: "",
-		source: "Отделение",
-		productType: "card",
-		productNumber: "1052 6753 0601 1254",
-		accountNumber: "40817810099910001234",
+		manager: "",
+		extra: "Не подтвержден адрес доставки",
+		source: "CRM",
 	  },
 	  {
-		title: "Заявка на открытие дебетовой карты",
-		date: "12.01.2026",
-		status: "выполнено",
-		place: "отделение «Центральный»",
-		manager: "Петрова А.С.",
-		extra: "оформление дополнительной карты для повседневных расходов",
-		source: "Отделение",
-		productType: "card",
-		productNumber: "1052 6753 0601 1254",
-		accountNumber: "40817810099910001234",
+		title: "Запрос увеличения кредитного лимита",
+		date: "15.05.2026",
+		status: "требуется действие",
+		place: "",
+		manager: "",
+		extra: "Необходимо загрузить подтверждение дохода",
+		source: "CRM",
 	  },
 	  {
-		title: "Заявка на получение кредита",
-		date: "28.12.2025",
+		title: "Подтверждение нового устройства",
+		date: "13.05.2026",
+		status: "завершено",
+		place: "",
+		manager: "",
+		extra: "Устройство iPhone 15 Pro подтверждено",
+		source: "CRM",
+	  },
+	  {
+		title: "Попытка подключения Alfa Only",
+		date: "12.05.2026",
 		status: "отклонено",
 		place: "",
-		manager: "Сидоров И.П.",
-		extra: "причина: недостаточный доход",
-		source: "Мобильное приложение",
-		productType: "account",
-		productNumber: "40817810099910005678",
-		accountNumber: "40817810099910005678",
+		manager: "",
+		extra: "Клиент не соответствует требованиям сегмента",
+		source: "CRM",
+	  },
+	  {
+		title: "Обращение в поддержку",
+		date: "09.05.2026",
+		status: "завершено",
+		place: "",
+		manager: "",
+		extra: "Вопрос по комиссии за SWIFT-перевод",
+		source: "CRM",
+	  },
+	  {
+		title: "Изменение контактного номера",
+		date: "01.05.2026",
+		status: "завершено",
+		place: "",
+		manager: "",
+		extra: "Номер успешно обновлен",
+		source: "CRM",
 	  },
 	];
 
     const smsDropdown = [
-      { date: "24.02.2026", text: "Покупка *1254: 550 ₽ в SPORTKORT. Баланс: 5805.35 ₽", type: "sms" },
-      { date: "23.02.2026", text: "Зачисление зарплаты: 45 000 ₽. Баланс: 6355.35 ₽", type: "notification" },
-      { date: "21.02.2026", text: "Оплата мобильной связи: 300 ₽, МТС. Баланс: 5805.35 ₽", type: "notification" },
-      { date: "20.02.2026", text: "Покупка *9876: 1 200 ₽ в KFC. Баланс: 6105.35 ₽", type: "sms" },
-      { date: "19.02.2026", text: "Покупка *1254: 2 300 ₽ в Пятёрочка. Баланс: 8505.35 ₽", type: "sms" },
+      { date: "19.05.2026", text: "Поступление 184 000 ₽ от ООО «ТехноЛайн»", type: "notification" },
+      { date: "18.05.2026", text: "Заявка на Альфа-Сим в обработке", type: "notification" },
+      { date: "18.05.2026", text: "Подтвердите перенос номера", type: "sms" },
+      { date: "17.05.2026", text: "Операция отклонена: превышен лимит переводов", type: "notification" },
+      { date: "16.05.2026", text: "Подтвердите адрес доставки Альфа-Стикера", type: "notification" },
     ];
 
     const smsFull = [
-      { date: "24.02.2026", text: "Покупка *1254: 550 ₽ в SPORTKORT. Баланс: 5805.35 ₽", type: "sms" },
-      { date: "23.02.2026", text: "Зачисление зарплаты: 45 000 ₽. Баланс: 6355.35 ₽", type: "notification" },
-      { date: "21.02.2026", text: "Оплата мобильной связи: 300 ₽, МТС. Баланс: 5805.35 ₽", type: "notification" },
-      { date: "20.02.2026", text: "Покупка *9876: 1 200 ₽ в KFC. Баланс: 6105.35 ₽", type: "sms" },
-      { date: "19.02.2026", text: "Покупка *1254: 2 300 ₽ в Пятёрочка. Баланс: 8505.35 ₽", type: "sms" },
-      { date: "18.02.2026", text: "Снятие наличных 5 000 ₽, банкомат. Баланс: 10 805.35 ₽", type: "notification" },
-      { date: "17.02.2026", text: "Покупка *1385: 3 200 ₽ в Лента. Баланс: 15 805.35 ₽", type: "sms" },
-      { date: "16.02.2026", text: "Зачисление кешбэка 150 ₽. Баланс: 19 005.35 ₽", type: "notification" },
-      { date: "15.02.2026", text: "Покупка *1254: 1 800 ₽ в McDonalds. Баланс: 18 855.35 ₽", type: "sms" },
-      { date: "13.02.2026", text: "Покупка *5520: 850 ₽ в АЗС. Баланс: 17 055.35 ₽", type: "sms" },
-      { date: "12.02.2026", text: "Покупка *1254: 4 200 ₽ в М.Видео. Баланс: 16 205.35 ₽", type: "sms" },
-      { date: "11.02.2026", text: "Зачисление зарплаты: 45 000 ₽. Баланс: 20 405.35 ₽", type: "notification" },
-      { date: "10.02.2026", text: "Покупка *1385: 1 500 ₽ в Аптека. Баланс: -25 994.65 ₽ (перерасход)", type: "sms" },
-      { date: "09.02.2026", text: "Оплата ЖКХ: 3 200 ₽. Баланс: 18 505.35 ₽", type: "notification" },
-      { date: "08.02.2026", text: "Покупка *1254: 650 ₽ в Кафе. Баланс: 21 705.35 ₽", type: "sms" },
+      { date: "19.05.2026 09:16", text: "Поступление 184 000 ₽ от ООО «ТехноЛайн». Баланс: 512 441 ₽", type: "notification" },
+      { date: "19.05.2026 09:05", text: "Подключите автопополнение накопительного счета", type: "notification" },
+      { date: "18.05.2026 21:16", text: "Перевод 15 000 ₽ Ивану Крылову выполнен", type: "notification" },
+      { date: "18.05.2026 20:48", text: "Заявка на Альфа-Сим находится в обработке", type: "notification" },
+      { date: "18.05.2026 20:47", text: "Подтвердите перенос номера от текущего оператора", type: "sms" },
+      { date: "18.05.2026 18:55", text: "Покупка: Lufthansa, 48 900 ₽", type: "notification" },
+      { date: "17.05.2026 18:45", text: "Операция отклонена: превышен лимит переводов", type: "notification" },
+      { date: "16.05.2026 17:09", text: "Подтвердите адрес доставки Альфа-Стикера", type: "notification" },
+      { date: "15.05.2026 19:49", text: "Заявка на увеличение кредитного лимита ожидает документов", type: "notification" },
+      { date: "15.05.2026 19:48", text: "Для увеличения лимита загрузите подтверждение дохода", type: "sms" },
     ];
+
+    /** Операции из профиля CRM: после «Доступные операции» + контекстные из рекомендаций */
+    const productOperationsCatalog = [
+      {
+        id: "alfa-sim",
+        category: "Альфа-Сим",
+        productRank: 100,
+        operations: [
+          { name: "Завершить оформление Альфа-Сим", source: "crm", priority: "high", hint: "Заявка 18.05, перенос номера" },
+          { name: "Завершить видеоидентификацию", source: "crm", priority: "high", hint: "Заявка не завершена" },
+          { name: "Выбрать тариф", source: "crm", priority: "medium", limited: true, hint: "После идентификации" },
+          { name: "Выпустить eSIM", source: "crm", priority: "medium", limited: true, hint: "iPhone 15 Pro, после активации SIM" },
+        ],
+      },
+      {
+        id: "alfa-sticker",
+        category: "Альфа-Стикер",
+        productRank: 95,
+        operations: [
+          { name: "Подтвердить выпуск Альфа-Стикера", source: "crm", priority: "high", hint: "Подтвердите адрес доставки" },
+        ],
+      },
+      {
+        id: "credit-card",
+        category: "Кредитная карта «365 дней без %»",
+        productRank: 90,
+        operations: [
+          { name: "Загрузить документы для увеличения лимита", source: "crm", priority: "high", hint: "Запрос банка 15.05" },
+          { name: "Завершить увеличение лимита", source: "crm", priority: "high", hint: "Незавершённая заявка" },
+          { name: "Увеличение лимита", source: "available", priority: "medium", hint: "Крупные покупки, задолженность 41 200 ₽" },
+          { name: "Подключение рассрочки", source: "available", priority: "medium", hint: "Покупки Lufthansa, Booking" },
+          { name: "Выпуск дополнительной карты", source: "available", priority: "low" },
+        ],
+      },
+      {
+        id: "debit-card",
+        category: "Альфа-Карта Premium",
+        productRank: 85,
+        operations: [
+          { name: "Настройка лимитов", source: "available", priority: "high", hint: "Отклонён перевод 650 000 ₽ 17.05" },
+          { name: "Подключение страховки", source: "available", priority: "medium", hint: "Частые travel-операции" },
+          { name: "Перевыпуск карты", source: "available", priority: "low" },
+          { name: "Добавление в Mir Pay", source: "available", priority: "low" },
+          { name: "Смена PIN", source: "available", priority: "low" },
+        ],
+      },
+      {
+        id: "savings",
+        category: "Накопительный счёт «Альфа-Счет»",
+        productRank: 80,
+        operations: [
+          { name: "Настройка автопополнения", source: "available", priority: "high", hint: "Регулярная зарплата 184 000 ₽" },
+          { name: "Повышение ставки при выполнении условий", source: "available", priority: "medium", hint: "Остаток 412 800 ₽" },
+          { name: "Пополнение", source: "available", priority: "medium" },
+          { name: "Вывод средств", source: "available", priority: "low" },
+        ],
+      },
+      {
+        id: "deposit",
+        category: "Вклад «Максимальный доход»",
+        productRank: 70,
+        operations: [
+          { name: "Продление вклада", source: "available", priority: "medium", hint: "Срок 12 мес., открыт 15.01.2026" },
+          { name: "Повышение ставки", source: "available", priority: "medium", hint: "Условия активности выполняются" },
+          { name: "Частичное досрочное закрытие", source: "available", priority: "low" },
+        ],
+      },
+      {
+        id: "broker",
+        category: "Брокерский счёт",
+        productRank: 65,
+        operations: [
+          { name: "Подключение аналитики", source: "available", priority: "medium", hint: "Пополнения 16.05, профиль умеренный" },
+          { name: "Пополнение брокерского счета", source: "available", priority: "medium", hint: "Последнее пополнение 50 000 ₽" },
+          { name: "Покупка активов", source: "available", priority: "low" },
+          { name: "Открыть ИИС", source: "crm", priority: "medium", hint: "Подходит по профилю инвестора" },
+        ],
+      },
+      {
+        id: "personal",
+        category: "Персональные данные",
+        productRank: 40,
+        operations: [
+          { name: "Обновить адрес проживания", source: "crm", priority: "low", hint: "Адрес доставки стикера не подтверждён" },
+          { name: "Проверить контактные данные", source: "crm", priority: "low", hint: "Смена номера 01.05.2026" },
+        ],
+      },
+    ];
+
+    const OP_PRIORITY_SCORE = { high: 30, medium: 20, low: 10 };
+
+    function scoreProductOperation(op, productId) {
+      let score = OP_PRIORITY_SCORE[op.priority] || 10;
+      if (op.source === "crm" && op.priority === "high") score += 15;
+      if (productId === "debit-card" && op.name === "Настройка лимитов") score += 25;
+      if (productId === "savings" && op.name === "Настройка автопополнения") score += 20;
+      if (productId === "credit-card" && op.name.includes("лимит")) score += 10;
+      if (productId === "broker" && op.name === "Пополнение брокерского счета") score += 8;
+      return score;
+    }
+
+    function getRankedProductOperations() {
+      return productOperationsCatalog
+        .map((product) => ({
+          ...product,
+          operations: [...product.operations]
+            .map((op) => ({
+              ...op,
+              rankScore: scoreProductOperation(op, product.id),
+            }))
+            .sort((a, b) => b.rankScore - a.rankScore),
+        }))
+        .sort((a, b) => b.productRank - a.productRank);
+    }
+
+    function getAllProductOperationNames() {
+      return getRankedProductOperations().flatMap((g) =>
+        g.operations.map((o) => o.name),
+      );
+    }
 
     const operationsSales = [
       "Кредиты",
@@ -1749,6 +1919,11 @@
       "Удаленное подписание документов": "Электронная подпись",
       "Годовая комиссия А-Клуб": "Комиссия А-Клуб",
     };
+
+    const allClassicOperations = [
+      ...operationsSales,
+      ...operationsService,
+    ];
 
     const openRequestsData = [
       {
@@ -1904,6 +2079,7 @@
 
     const state = {
       sessionActive: false,
+      recommendedPanel: true,
       tabs: [],
       activeTabId: null,
       nextTabId: 1,
@@ -2104,7 +2280,7 @@
       qsa('[data-open-info="portfolio"]').forEach((el) =>
         el.addEventListener("click", (e) => {
           e.stopPropagation();
-          openInfoTab("Портфель", "portfolio");
+          openInfoTab("Продукты", "portfolio");
           closeAllDropdowns();
         }),
       );
@@ -2118,7 +2294,7 @@
       qsa('[data-open-info="cases"]').forEach((el) =>
         el.addEventListener("click", (e) => {
           e.stopPropagation();
-          openInfoTab("Обращения и коммуникации", "cases");
+          openInfoTab("События", "cases");
           closeAllDropdowns();
         }),
       );
@@ -2526,144 +2702,120 @@
     function renderMainTabHTML() {
       return `
         <div class="columns-main">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">
-                  <i class="fa-solid fa-lightbulb"></i>
-                  Рекомендованные операции
-                </div>
-                <div class="card-subtitle">На основе профиля клиента</div>
-              </div>
-            </div>
-            <div class="recommended-list" id="recommended-list"></div>
-
-            <div class="search-row">
-              <div class="search-container">
-                <i class="fa-solid fa-search search-icon-left"></i>
-                <input
-                  type="text"
-                  class="search-input"
-                  id="operation-search"
-                  placeholder="Поиск по названию операции"
-                />
-              </div>
-            </div>
-
-            <div class="operations-columns">
-              <div class="operations-column">
-                <div class="operations-column-title">
-                  <i class="fa-solid fa-chart-line"></i> Продажные
-                </div>
-                <div class="operations-grid" id="ops-sales"></div>
-              </div>
-              <div class="operations-column">
-                <div class="operations-column-title">
-                  <i class="fa-solid fa-wrench"></i> Сервисные
-                </div>
-                <div class="operations-grid" id="ops-service"></div>
-              </div>
-            </div>
-
-            <div class="tab-content-wrapper" id="main-tab-extra"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">
-                  <i class="fa-solid fa-folder-open"></i>
-                  Открытые обращения
-                </div>
-                <div class="card-subtitle">
-                  Текущие запросы клиента
+          <div class="card main-ops-card">
+            <div class="panel-mode-row">
+              <span class="panel-mode-label">Рекомендованная панель</span>
+              <label class="toggle-switch" title="Рекомендованная панель">
+                <input type="checkbox" id="recommended-panel-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <div class="search-row">
+                <div class="search-container">
+                  <i class="fa-solid fa-search search-icon-left"></i>
+                  <input
+                    type="text"
+                    class="search-input"
+                    id="operation-search"
+                    placeholder="Умный поиск по названию операции"
+                  />
                 </div>
               </div>
             </div>
-            <ul class="requests-list" id="requests-list"></ul>
+
+            <div id="ops-recommended-panel" class="product-ops-section"></div>
+            <div id="ops-classic-panel" class="operations-columns" style="display:none;">
+              <div class="operations-column" style="grid-column: 1 / -1;">
+                <div class="operations-grid" id="ops-classic-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
       `;
     }
 
-    function initMainTabInteractions() {
-      // recommended
-      const recommendedContainer = qs("#recommended-list");
-      const recommended = [
-        "Оформление брокерского счета",
-        "Заказ наличных",
-      ];
-      recommendedContainer.innerHTML = "";
-      recommended.forEach((name) => {
-        const card = document.createElement("div");
-        card.className = "recommended-card";
-        card.textContent = name;
-        card.addEventListener("click", () => handleOperationClick(name));
-        recommendedContainer.appendChild(card);
-      });
-
-      // search + operation tiles
-      const searchInput = qs("#operation-search");
-      function renderTiles() {
-        const q = (searchInput.value || "").trim().toLowerCase();
-        const salesHost = qs("#ops-sales");
-        const serviceHost = qs("#ops-service");
-        salesHost.innerHTML = "";
-        serviceHost.innerHTML = "";
-
-        const addTiles = (names, host) => {
-          names
-            .filter(
-              (n) => !q || n.toLowerCase().includes(q),
-            )
-            .forEach((name) => {
-              const tile = document.createElement("div");
-              tile.className = "operation-tile";
-              const desc = operationDescriptions[name] || "";
-              tile.innerHTML = desc
-                ? `<span>${name}</span><span class="operation-tile-desc">${desc}</span>`
-                : name;
-              tile.addEventListener("click", () => handleOperationClick(name));
-              host.appendChild(tile);
-            });
-        };
-        addTiles(operationsSales, salesHost);
-        addTiles(operationsService, serviceHost);
-      }
-      searchInput.addEventListener("input", renderTiles);
-      renderTiles();
-
-      // open requests
-      const reqList = qs("#requests-list");
-      reqList.innerHTML = "";
-      openRequestsData.forEach((r) => {
-        const li = document.createElement("li");
-        li.className = "request-item";
-
-        const statusClass =
-          r.status === "оформить"
-            ? "badge-success"
-            : r.status === "отклонено"
-            ? "badge-error"
-            : r.status === "в обработке"
-            ? "badge-warning"
-            : "badge-info";
-
-        li.innerHTML = `
-          <div class="request-icon">
-            <i class="fa-solid fa-inbox"></i>
-          </div>
-          <div class="request-content">
-            <div class="request-title">${r.title}</div>
-            <div class="request-meta">
-              <span class="request-date">${r.date}</span>
-              <span class="badge ${statusClass}">${r.status}</span>
-            </div>
-          </div>
+    function renderProductOperationsPanel(host, query) {
+      const q = (query || "").trim().toLowerCase();
+      host.innerHTML = "";
+      getRankedProductOperations().forEach((group) => {
+        const filtered = group.operations.filter(
+          (op) =>
+            !q ||
+            op.name.toLowerCase().includes(q) ||
+            group.category.toLowerCase().includes(q),
+        );
+        if (!filtered.length) return;
+        const section = document.createElement("div");
+        section.className = "product-ops-group";
+        section.innerHTML = `
+          <div class="product-ops-group-title">${group.category}</div>
+          <div class="product-ops-group-subtitle">Доступные операции</div>
         `;
-        li.addEventListener("click", () => showRequestModal(r));
-        reqList.appendChild(li);
+        const pills = document.createElement("div");
+        pills.className = "product-ops-pills";
+        filtered.forEach((op) => {
+          const pill = document.createElement("button");
+          pill.type = "button";
+          pill.className = "product-op-pill" + (op.limited ? " limited" : "");
+          pill.textContent = op.name;
+          if (op.hint) pill.title = op.hint;
+          if (op.limited) {
+            pill.disabled = true;
+          } else {
+            pill.addEventListener("click", () => handleOperationClick(op.name));
+          }
+          pills.appendChild(pill);
+        });
+        section.appendChild(pills);
+        host.appendChild(section);
       });
+    }
+
+    function renderClassicOperationsPanel(host, query) {
+      const q = (query || "").trim().toLowerCase();
+      host.innerHTML = "";
+      allClassicOperations
+        .filter((n) => !q || n.toLowerCase().includes(q))
+        .forEach((name) => {
+          const tile = document.createElement("div");
+          tile.className = "operation-tile";
+          const desc = operationDescriptions[name] || "";
+          tile.innerHTML = desc
+            ? `<span>${name}</span><span class="operation-tile-desc">${desc}</span>`
+            : name;
+          tile.addEventListener("click", () => handleOperationClick(name));
+          host.appendChild(tile);
+        });
+    }
+
+    function initMainTabInteractions() {
+      const toggle = qs("#recommended-panel-toggle");
+      const recommendedHost = qs("#ops-recommended-panel");
+      const classicPanel = qs("#ops-classic-panel");
+      const classicHost = qs("#ops-classic-grid");
+      const searchInput = qs("#operation-search");
+
+      toggle.checked = state.recommendedPanel;
+
+      function renderOperations() {
+        const q = searchInput.value;
+        if (state.recommendedPanel) {
+          recommendedHost.style.display = "";
+          classicPanel.style.display = "none";
+          renderProductOperationsPanel(recommendedHost, q);
+        } else {
+          recommendedHost.style.display = "none";
+          classicPanel.style.display = "";
+          renderClassicOperationsPanel(classicHost, q);
+        }
+      }
+
+      toggle.addEventListener("change", () => {
+        state.recommendedPanel = toggle.checked;
+        renderOperations();
+      });
+
+      searchInput.addEventListener("input", renderOperations);
+      renderOperations();
     }
 
     // open request modal
@@ -2721,8 +2873,11 @@
             </div>
             <table class="info-table">
               <tr><td>ФИО</td><td>${c.fio}</td></tr>
+              <tr><td>Дата рождения</td><td>${c.birthDate || "—"}</td></tr>
               <tr><td>Возраст</td><td>${c.age}</td></tr>
               <tr><td>Пол</td><td>${c.gender}</td></tr>
+              <tr><td>Сегмент</td><td>${c.segment || "—"}</td></tr>
+              <tr><td>Город</td><td>${c.city || "—"}</td></tr>
               <tr><td colspan="2" style="background-color: #f0f0f0;"><strong>Паспортные данные</strong></td></tr>
               <tr><td>Серия паспорта</td><td>${c.passportSeries}</td></tr>
               <tr><td>Номер паспорта</td><td>${c.passportNumber}</td></tr>
@@ -2746,28 +2901,45 @@
           <div class="card">
             <div class="info-title">
               <i class="fa-solid fa-wallet"></i>
-              <span>Портфель</span>
+              <span>Продукты</span>
             </div>
             <div class="portfolio-section">
-              <strong>Alfa Only</strong>
+              <strong>${p.debitCard.name}</strong>
               <table class="info-table">
-                <tr><td>Номер</td><td>${p.alfaOnly.number}</td></tr>
-                <tr><td>Срок действия</td><td>${p.alfaOnly.expiry}</td></tr>
-                <tr><td>Платёжная система</td><td>${p.alfaOnly.system}</td></tr>
-                <tr><td>Дата выпуска</td><td>${p.alfaOnly.issueDate}</td></tr>
-                <tr><td>Статус</td><td>${p.alfaOnly.status}</td></tr>
+                <tr><td>Статус</td><td>${p.debitCard.status}</td></tr>
+                <tr><td>Дата открытия</td><td>${p.debitCard.issueDate}</td></tr>
+                <tr><td>Платёжная система</td><td>${p.debitCard.system}</td></tr>
               </table>
             </div>
             <div class="portfolio-section">
-              <strong>Кредитная карта</strong>
+              <strong>${p.savings.name}</strong>
               <table class="info-table">
-                <tr><td>Номер</td><td>${p.creditCard.number}</td></tr>
+                <tr><td>Статус</td><td>${p.savings.status}</td></tr>
+                <tr><td>Остаток</td><td>${p.savings.balance}</td></tr>
+                <tr><td>Ставка</td><td>${p.savings.rate}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
+              <strong>Вклад «${p.deposit.name}»</strong>
+              <table class="info-table">
+                <tr><td>Статус</td><td>${p.deposit.status}</td></tr>
+                <tr><td>Сумма</td><td>${p.deposit.amount}</td></tr>
+                <tr><td>Срок</td><td>${p.deposit.term}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
+              <strong>Кредитная карта «${p.creditCard.name}»</strong>
+              <table class="info-table">
                 <tr><td>Лимит</td><td>${p.creditCard.limit}</td></tr>
-                <tr><td>Процентная ставка</td><td>${p.creditCard.rate}</td></tr>
-                <tr><td>Дата выдачи</td><td>${p.creditCard.issueDate}</td></tr>
                 <tr><td>Задолженность</td><td>${p.creditCard.debt}</td></tr>
-                <tr><td>Доступный остаток</td><td>${p.creditCard.available}</td></tr>
                 <tr><td>Статус</td><td>${p.creditCard.status}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
+              <strong>${p.alfaSim.name}</strong>
+              <table class="info-table">
+                <tr><td>Статус</td><td>${p.alfaSim.status}</td></tr>
+                <tr><td>Дата заявки</td><td>${p.alfaSim.date}</td></tr>
               </table>
             </div>
           </div>
@@ -2819,7 +2991,7 @@
 			  </div>
 			  <div class="info-title">
 				<i class="fa-solid fa-comments"></i>
-				<span>Обращения и коммуникации</span>
+				<span>События</span>
 			  </div>
 			  <table class="transactions-table">
 				<thead>
@@ -2881,6 +3053,11 @@
 
     // ---------------- OPERATION HANDLING ----------------
 
+    function isRecommendedStubOperation(name) {
+      if (!state.recommendedPanel) return false;
+      return getAllProductOperationNames().includes(name);
+    }
+
     function handleOperationClick(name) {
       // Проверка: если уже открыта какая-либо операционная вкладка
       const existingOpTab = state.tabs.find(t => t.type === 'operation');
@@ -2900,6 +3077,10 @@
       }
 
       const openOperation = () => {
+        if (isRecommendedStubOperation(name)) {
+          createTab(name, "operation", { operationName: name });
+          return;
+        }
         if (name === "Карты") {
           // Восстанавливаем прогресс из сохранённого или создаём новый
           if (state.savedCardWizard) {
@@ -3094,13 +3275,12 @@
         currentStep: 1,
         applicationNumber: null,
         data: {
-          fio: "Иванов Иван Иванович",
-          birthDate: "1979-01-01",
-          passportNumber: "52 60 378175",
-          passportIssuer:
-            "ОТДЕЛОМ ВНУТРЕННИХ ДЕЛ ОКТЯБРСКОГО ОКРУГА ГОРОДА АРХАНГЕЛЬСКА",
-          passportIssueDate: "2024-09-05",
-          passportDeptCode: "292-000",
+          fio: clientInfoFull.fio,
+          birthDate: clientInfoFull.birthDate,
+          passportNumber: `${clientInfoFull.passportSeries} ${clientInfoFull.passportNumber}`,
+          passportIssuer: clientInfoFull.passportIssuer || "—",
+          passportIssueDate: clientInfoFull.passportIssueDate,
+          passportDeptCode: clientInfoFull.passportDeptCode,
           confirmPersonal: false,
 
           income: "",
@@ -4081,9 +4261,26 @@
 
     // ---------------- INIT ----------------
 
+    function renderStickyPreview() {
+      const c = clientInfoFull;
+      qs("#sticky-personal").innerHTML = `
+        <div class="sticky-col-fio">${c.fio}</div>
+        <div class="sticky-col-line">${c.birthDate} — ${c.age}</div>
+        <div class="sticky-col-line">Пол — ${c.gender}</div>
+        <div class="sticky-col-line">Сегмент: ${c.segment}</div>
+      `;
+      qs("#sticky-document-preview").innerHTML = `
+        ${c.docType}<br>
+        серия ${c.passportSeries}, номер ${c.passportNumber}
+      `;
+      qs("#sticky-products-preview").innerHTML = productsStickyLines
+        .map((line) => `<span class="sticky-product-line">${line}</span>`)
+        .join("");
+    }
+
     function init() {
       ensureMainTab();
-      qs("#client-fio").textContent = clientInfoFull.fio;
+      renderStickyPreview();
       renderTabs();
       renderDropdowns();
       initDropdownClicks();
