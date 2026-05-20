@@ -171,111 +171,213 @@
       position: sticky;
       top: 46px;
       z-index: 190;
-      background-color: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      padding: 10px 20px 12px;
+      padding: 12px 20px 14px;
       border-top: 1px solid #f0f0f0;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
     }
 
     .sticky-panel {
       display: flex;
       align-items: stretch;
       gap: 0;
-      min-height: 88px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-card);
+      min-height: 108px;
+      border-radius: 16px;
       overflow: visible;
-      background-color: #fff;
+      background: #ffffff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+      border: 1px solid rgba(0, 0, 0, 0.06);
     }
 
     .sticky-photo {
-      flex: 0 0 96px;
+      flex: 0 0 100px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px;
-      border-right: 1px solid var(--border-soft);
-      background-color: #fafafa;
+      padding: 12px;
+      background: linear-gradient(145deg, #ffebee 0%, #ffffff 55%);
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px 0 0 16px;
     }
 
     .sticky-photo img {
-      width: 72px;
-      height: 72px;
-      border-radius: 10px;
+      width: 76px;
+      height: 76px;
+      border-radius: 14px;
       object-fit: cover;
-      border: 1px solid var(--border-soft);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(198, 40, 40, 0.18);
     }
 
     .sticky-col {
       flex: 1 1 0;
       min-width: 0;
-      padding: 10px 12px;
-      border-right: 1px solid var(--border-soft);
+      padding: 12px 14px;
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
       font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.4;
       position: relative;
     }
 
     .sticky-col:last-child {
       border-right: none;
+      border-radius: 0 16px 16px 0;
     }
 
     .sticky-col-personal {
-      flex: 1.1 1 140px;
+      flex: 1.05 1 150px;
       cursor: default;
+      background: linear-gradient(180deg, transparent, rgba(255, 235, 238, 0.35));
+    }
+
+    .sticky-col-products {
+      flex: 1.35 1 200px;
     }
 
     .sticky-col-title {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.02em;
-      margin-bottom: 4px;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
     }
 
     .sticky-col-fio {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 4px;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      line-height: 1.25;
     }
 
     .sticky-col-line {
       color: var(--text-main);
+      font-size: 12px;
+      margin-bottom: 2px;
     }
 
     .sticky-col-preview {
       color: var(--text-main);
+      margin-top: 0;
+    }
+
+    .sticky-preview-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sticky-preview-item {
+      font-size: 11px;
+      line-height: 1.35;
+      padding: 4px 0;
+      border-bottom: 1px solid #f0f0f0;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sticky-preview-item:last-child {
+      border-bottom: none;
+    }
+
+    .passport-sticky {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .passport-sticky-type {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .passport-sticky-series {
+      font-size: 12px;
+      color: var(--text-main);
+    }
+
+    .passport-sticky-number-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin-top: 2px;
     }
 
-    .sticky-col-products .sticky-product-line {
+    .passport-sticky-number {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+      user-select: all;
+      cursor: text;
+    }
+
+    .passport-copy-btn {
+      border: none;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+    }
+
+    .passport-copy-btn:hover {
+      background: #f8c1c1;
+    }
+
+    .sticky-product-card {
+      margin-bottom: 12px;
+    }
+
+    .sticky-product-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .sticky-product-name {
       display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .sticky-product-meta {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.3;
     }
 
     .sticky-item {
       cursor: pointer;
-      transition: var(--transition-fast);
+      transition: background-color var(--transition-fast);
     }
 
     .sticky-item:hover {
-      background-color: #fafafa;
+      background-color: rgba(255, 235, 238, 0.45);
     }
 
-    .sticky-item-label {
-      pointer-events: none;
-    }
-
-    .sticky-col-empty .sticky-col-preview {
+    .sticky-preview-empty {
       color: var(--text-muted);
       font-style: italic;
+      font-size: 11px;
     }
 
     /* Dropdowns */
 
     .sticky-col .dropdown {
-      top: calc(100% + 6px);
+      top: calc(100% + 8px);
+    }
+
+    .sticky-col-last .dropdown {
+      left: auto;
+      right: 0;
     }
 
     .dropdown {
@@ -283,10 +385,11 @@
       top: 34px;
       left: 0;
       min-width: 260px;
+      max-width: min(360px, 92vw);
       background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
-      padding: 8px 10px;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+      padding: 10px 12px;
       font-size: 12px;
       color: var(--text-main);
       display: none;
@@ -297,9 +400,20 @@
       display: block;
     }
 
-    /* Только для дропдауна транзакций – уменьшенная ширина */
     #dropdown-transactions {
-      min-width: 200px;
+      min-width: 248px;
+    }
+
+    #dropdown-sms {
+      max-height: min(65vh, 380px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-width: 280px;
+    }
+
+    #dropdown-sms .dropdown-line span {
+      font-size: 11px;
+      line-height: 1.35;
     }
 
     /* Строка с иконкой и текстом */
@@ -352,14 +466,27 @@
     .dropdown-transaction-group .transaction-detail {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 10px;
       color: var(--text-muted);
-      padding-left: 8px;
-      margin-bottom: 2px;
+      padding-left: 4px;
+      margin-bottom: 3px;
+    }
+
+    .dropdown-transaction-group .detail-card {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .dropdown-transaction-group .detail-amount {
       font-weight: 600;
+      flex-shrink: 0;
+      white-space: nowrap;
+      font-size: 10px;
     }
     .dropdown-transaction-group .detail-amount.amount-positive {
       color: var(--success);
@@ -450,13 +577,19 @@
 
     /* Recommended panel toggle */
 
-    .panel-mode-row {
+    .panel-controls {
+      margin-bottom: 14px;
+    }
+
+    .panel-controls .search-row {
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .panel-toggle-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .panel-mode-label {
@@ -501,7 +634,7 @@
     }
 
     .toggle-switch input:checked + .toggle-slider {
-      background-color: #7b1fa2;
+      background-color: var(--primary);
     }
 
     .toggle-switch input:checked + .toggle-slider::before {
@@ -522,12 +655,6 @@
       font-size: 13px;
       font-weight: 600;
       color: var(--primary-dark);
-      margin-bottom: 4px;
-    }
-
-    .product-ops-group-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
       margin-bottom: 8px;
     }
 
@@ -586,9 +713,7 @@
 
     .search-row {
       margin-top: 0;
-      margin-bottom: 12px;
-      flex: 1;
-      min-width: 220px;
+      margin-bottom: 0;
     }
 
     .search-container {
@@ -1368,11 +1493,7 @@
       .operations-columns {
         grid-template-columns: 1fr;
       }
-      .panel-mode-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .search-row {
+      .panel-controls .search-row {
         width: 100%;
       }
     }
@@ -1397,7 +1518,7 @@
   <div class="sticky-info">
     <div class="sticky-panel">
       <div class="sticky-photo">
-        <img id="client-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=144&h=144&fit=crop" alt="Фото клиента" />
+        <img id="client-photo" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&crop=face" alt="Фото клиента" />
       </div>
       <div class="sticky-col sticky-col-personal" id="sticky-personal"></div>
       <div class="sticky-col sticky-item" data-info="client">
@@ -1412,17 +1533,17 @@
       </div>
       <div class="sticky-col sticky-item" data-info="transactions">
         <div class="sticky-col-title">Транзакции</div>
-        <div class="sticky-col-preview sticky-col-empty" id="sticky-transactions-preview">—</div>
+        <div class="sticky-col-preview" id="sticky-transactions-preview"></div>
         <div class="dropdown" id="dropdown-transactions"></div>
       </div>
       <div class="sticky-col sticky-item" data-info="cases">
         <div class="sticky-col-title">События</div>
-        <div class="sticky-col-preview sticky-col-empty" id="sticky-events-preview">—</div>
+        <div class="sticky-col-preview" id="sticky-events-preview"></div>
         <div class="dropdown" id="dropdown-cases"></div>
       </div>
-      <div class="sticky-col sticky-item" data-info="sms">
+      <div class="sticky-col sticky-item sticky-col-last" data-info="sms">
         <div class="sticky-col-title">СМС и уведомления</div>
-        <div class="sticky-col-preview sticky-col-empty" id="sticky-sms-preview">—</div>
+        <div class="sticky-col-preview" id="sticky-sms-preview"></div>
         <div class="dropdown" id="dropdown-sms"></div>
       </div>
     </div>
@@ -1547,9 +1668,6 @@
       { icon: "fa-id-card", text: "Паспорт РФ: 6518 482731" },
       { icon: "fa-calendar", text: "Дата выдачи: 21.09.2018" },
       { icon: "fa-hashtag", text: "Код подразделения: 660-021" },
-      { icon: "fa-shield-halved", text: "Подтверждение: через Госуслуги" },
-      { icon: "fa-user", text: "ФИО: Смирнов Артём Игоревич" },
-      { icon: "fa-location-dot", text: "Город: Екатеринбург" },
     ];
 
     const clientInfoFull = {
@@ -1577,19 +1695,28 @@
       email: "smirnov@example.com",
     };
 
-    const productsStickyLines = [
-      "Счёт «Альфа-Счет»",
-      "Альфа-Сим",
-      "Вклад «Максимальный доход»",
+    const productsStickyCards = [
+      { name: "Альфа-Карта Premium", meta: "активна · МИР" },
+      { name: "Альфа-Счет", meta: "412 800 ₽ · 12%" },
+      { name: "Вклад «Максимальный доход»", meta: "700 000 ₽ · 12 мес." },
+      { name: "Кредитная карта «365 дней без %»", meta: "лимит 280 000 ₽ · долг 41 200 ₽" },
+      { name: "Брокерский счёт", meta: "активен · умеренный профиль" },
+      { name: "Альфа-Сим", meta: "заявка в обработке" },
+      { name: "Альфа-Стикер", meta: "ожидает подтверждения" },
+      { name: "Подписка «Альфа-Смарт»", meta: "активна с 07.04.2025" },
     ];
+
+    const STICKY_PREVIEW_COUNT = 5;
 
     const portfolioDropdown = [
       { icon: "fa-credit-card", text: "Альфа-Карта Premium — активна" },
       { icon: "fa-piggy-bank", text: "Альфа-Счет — 412 800 ₽" },
       { icon: "fa-vault", text: "Вклад «Максимальный доход» — 700 000 ₽" },
       { icon: "fa-credit-card", text: "Кредитная карта «365 дней без %»" },
-      { icon: "fa-chart-line", text: "Брокерский счет — активен" },
+      { icon: "fa-chart-line", text: "Брокерский счёт — активен" },
       { icon: "fa-sim-card", text: "Альфа-Сим — заявка в обработке" },
+      { icon: "fa-mobile-screen", text: "Альфа-Стикер — ожидает подтверждения" },
+      { icon: "fa-star", text: "Подписка «Альфа-Смарт» — активна" },
     ];
 
     const portfolioFull = {
@@ -1627,7 +1754,7 @@
     const transactionsDropdown = [
       { date: "19.05", card: "Яндекс Go", amount: "-742 ₽" },
       { date: "18.05", card: "Перевод И. Крылову", amount: "-15 000 ₽" },
-      { date: "18.05", card: "Зарплата ТехноЛайн", amount: "+184 000 ₽" },
+      { date: "18.05", card: "Зарплата", amount: "+184 000 ₽" },
       { date: "18.05", card: "Lufthansa", amount: "-48 900 ₽" },
       { date: "17.05", card: "Steam", amount: "-2 399 ₽" },
     ];
@@ -1657,66 +1784,66 @@
 	const casesFull = [
 	  {
 		title: "Заявка на Альфа-Сим",
+		product: "Альфа-Сим",
 		date: "18.05.2026",
 		status: "в обработке",
-		place: "",
-		manager: "",
+		manager: "Козлова Мария Владимировна",
+		source: "Мобильное приложение",
 		extra: "Требуется подтверждение переноса номера от текущего оператора",
-		source: "CRM",
 	  },
 	  {
 		title: "Выпуск Альфа-Стикера",
+		product: "Альфа-Стикер",
 		date: "16.05.2026",
 		status: "ожидает подтверждения",
-		place: "",
-		manager: "",
+		manager: "Петров Алексей Сергеевич",
+		source: "Мобильное приложение",
 		extra: "Не подтвержден адрес доставки",
-		source: "CRM",
 	  },
 	  {
 		title: "Запрос увеличения кредитного лимита",
+		product: "Кредитная карта «365 дней без %»",
 		date: "15.05.2026",
 		status: "требуется действие",
-		place: "",
-		manager: "",
+		manager: "Соколова Елена Николаевна",
+		source: "Браузер",
 		extra: "Необходимо загрузить подтверждение дохода",
-		source: "CRM",
 	  },
 	  {
 		title: "Подтверждение нового устройства",
+		product: "Мобильное приложение",
 		date: "13.05.2026",
 		status: "завершено",
-		place: "",
-		manager: "",
+		manager: "Автоматически",
+		source: "Мобильное приложение",
 		extra: "Устройство iPhone 15 Pro подтверждено",
-		source: "CRM",
 	  },
 	  {
 		title: "Попытка подключения Alfa Only",
+		product: "Alfa Only",
 		date: "12.05.2026",
 		status: "отклонено",
-		place: "",
-		manager: "",
+		manager: "Волков Дмитрий Игоревич",
+		source: "Браузер",
 		extra: "Клиент не соответствует требованиям сегмента",
-		source: "CRM",
 	  },
 	  {
 		title: "Обращение в поддержку",
+		product: "—",
 		date: "09.05.2026",
 		status: "завершено",
-		place: "",
-		manager: "",
+		manager: "Морозова Анна Павловна",
+		source: "Мобильное приложение",
 		extra: "Вопрос по комиссии за SWIFT-перевод",
-		source: "CRM",
 	  },
 	  {
 		title: "Изменение контактного номера",
+		product: "Персональные данные",
 		date: "01.05.2026",
 		status: "завершено",
-		place: "",
-		manager: "",
+		manager: "Козлова Мария Владимировна",
+		source: "Отделение",
 		extra: "Номер успешно обновлен",
-		source: "CRM",
 	  },
 	];
 
@@ -2260,12 +2387,13 @@
       const dropdownSms = qs("#dropdown-sms");
       dropdownSms.innerHTML =
         smsDropdown
-          .map(
-            (s) =>
-              `<div class="dropdown-line"><i class="fa-solid ${
-                s.type === "sms" ? "fa-sms" : "fa-bell"
-              }"></i><span>${s.date} – ${s.text}</span></div>`
-          )
+          .map((s) => {
+            const short =
+              s.text.length > 52 ? s.text.slice(0, 52) + "…" : s.text;
+            return `<div class="dropdown-line"><i class="fa-solid ${
+              s.type === "sms" ? "fa-sms" : "fa-bell"
+            }"></i><span>${s.date.slice(0, 5)} — ${short}</span></div>`;
+          })
           .join("") +
         `<div class="dropdown-more"><a data-open-info="sms">…</a></div>`;
 
@@ -2314,6 +2442,7 @@
     function initDropdownClicks() {
       qsa(".sticky-item").forEach((item) => {
         item.addEventListener("click", (e) => {
+          if (e.target.closest(".passport-copy-btn")) return;
           const dropdown = item.querySelector(".dropdown");
           const isOpen = dropdown.classList.contains("open");
           closeAllDropdowns();
@@ -2323,6 +2452,7 @@
           e.stopPropagation();
         });
       });
+
       document.addEventListener("click", () => {
         closeAllDropdowns();
       });
@@ -2703,12 +2833,7 @@
       return `
         <div class="columns-main">
           <div class="card main-ops-card">
-            <div class="panel-mode-row">
-              <span class="panel-mode-label">Рекомендованная панель</span>
-              <label class="toggle-switch" title="Рекомендованная панель">
-                <input type="checkbox" id="recommended-panel-toggle" checked />
-                <span class="toggle-slider"></span>
-              </label>
+            <div class="panel-controls">
               <div class="search-row">
                 <div class="search-container">
                   <i class="fa-solid fa-search search-icon-left"></i>
@@ -2719,6 +2844,13 @@
                     placeholder="Умный поиск по названию операции"
                   />
                 </div>
+              </div>
+              <div class="panel-toggle-row">
+                <span class="panel-mode-label">Рекомендованная панель</span>
+                <label class="toggle-switch" title="Рекомендованная панель">
+                  <input type="checkbox" id="recommended-panel-toggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
             </div>
 
@@ -2746,10 +2878,7 @@
         if (!filtered.length) return;
         const section = document.createElement("div");
         section.className = "product-ops-group";
-        section.innerHTML = `
-          <div class="product-ops-group-title">${group.category}</div>
-          <div class="product-ops-group-subtitle">Доступные операции</div>
-        `;
+        section.innerHTML = `<div class="product-ops-group-title">${group.category}</div>`;
         const pills = document.createElement("div");
         pills.className = "product-ops-pills";
         filtered.forEach((op) => {
@@ -3009,10 +3138,10 @@
 					<tr>
 					  <td>${c.title}</td>
 					  <td>${c.date}</td>
-					  <td><span class="badge ${c.status === 'оформить' ? 'badge-success' : c.status === 'отклонено' ? 'badge-error' : c.status === 'в обработке' ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
+					  <td><span class="badge ${c.status === 'отклонено' ? 'badge-error' : (c.status === 'в обработке' || c.status === 'ожидает подтверждения' || c.status === 'требуется действие') ? 'badge-warning' : 'badge-info'}">${c.status}</span></td>
 					  <td>${c.manager || '—'}</td>
 					  <td>${c.source || '—'}</td>
-					  <td>${c.productType === 'card' ? 'Карта ' + c.productNumber : (c.productType === 'account' ? 'Счёт ' + c.productNumber : '—')}</td>
+					  <td>${c.product || '—'}</td>
 					</tr>
 				  `).join('')}
 				</tbody>
@@ -4261,21 +4390,82 @@
 
     // ---------------- INIT ----------------
 
+    function renderStickyPreviewList(items, formatter) {
+      const slice = items.slice(0, STICKY_PREVIEW_COUNT);
+      if (!slice.length) return '<span class="sticky-preview-empty">—</span>';
+      return `<ul class="sticky-preview-list">${slice
+        .map((item) => `<li class="sticky-preview-item">${formatter(item)}</li>`)
+        .join("")}</ul>`;
+    }
+
     function renderStickyPreview() {
       const c = clientInfoFull;
+      const passportFull = `${c.passportSeries} ${c.passportNumber}`;
+
       qs("#sticky-personal").innerHTML = `
+        <div class="sticky-col-title">Клиент</div>
         <div class="sticky-col-fio">${c.fio}</div>
         <div class="sticky-col-line">${c.birthDate} — ${c.age}</div>
         <div class="sticky-col-line">Пол — ${c.gender}</div>
         <div class="sticky-col-line">Сегмент: ${c.segment}</div>
       `;
+
       qs("#sticky-document-preview").innerHTML = `
-        ${c.docType}<br>
-        серия ${c.passportSeries}, номер ${c.passportNumber}
+        <div class="passport-sticky">
+          <span class="passport-sticky-type">${c.docType}</span>
+          <span class="passport-sticky-series">Серия ${c.passportSeries}</span>
+          <div class="passport-sticky-number-row">
+            <span class="passport-sticky-number" id="passport-number-text" title="Выделите или нажмите «Копировать»">${c.passportNumber}</span>
+            <button type="button" class="passport-copy-btn" id="passport-copy-btn" title="Копировать номер">Копировать</button>
+          </div>
+        </div>
       `;
-      qs("#sticky-products-preview").innerHTML = productsStickyLines
-        .map((line) => `<span class="sticky-product-line">${line}</span>`)
+
+      qs("#sticky-products-preview").innerHTML = productsStickyCards
+        .map(
+          (p) => `
+          <div class="sticky-product-card">
+            <span class="sticky-product-name">${p.name}</span>
+            <span class="sticky-product-meta">${p.meta}</span>
+          </div>`,
+        )
         .join("");
+
+      qs("#sticky-transactions-preview").innerHTML = renderStickyPreviewList(
+        transactionsDropdown,
+        (t) => {
+          const sign = t.amount.startsWith("+") ? "+" : "";
+          return `${t.date} · ${t.card} · <strong>${sign}${t.amount.replace(/^\+/, "")}</strong>`;
+        },
+      );
+
+      qs("#sticky-events-preview").innerHTML = renderStickyPreviewList(
+        casesDropdown,
+        (e) => e.text,
+      );
+
+      qs("#sticky-sms-preview").innerHTML = renderStickyPreviewList(
+        smsDropdown,
+        (s) => `${s.date.slice(0, 5)} · ${s.text.length > 42 ? s.text.slice(0, 42) + "…" : s.text}`,
+      );
+
+      initPassportCopy(passportFull);
+    }
+
+    function initPassportCopy(passportFull) {
+      const btn = qs("#passport-copy-btn");
+      if (!btn) return;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const text = passportFull.replace(/\s+/g, " ").trim();
+        navigator.clipboard.writeText(text).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = "Скопировано";
+          setTimeout(() => {
+            btn.textContent = prev;
+          }, 1500);
+        });
+      });
     }
 
     function init() {
