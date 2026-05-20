@@ -171,89 +171,88 @@
       position: sticky;
       top: 46px;
       z-index: 190;
-      padding: 12px 20px 14px;
+      padding: 6px 20px 8px;
       border-top: 1px solid #f0f0f0;
-      background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
     }
 
     .sticky-panel {
       display: flex;
       align-items: stretch;
       gap: 0;
-      min-height: 108px;
-      border-radius: 16px;
+      min-height: 0;
+      border-radius: 12px;
       overflow: visible;
       background: #ffffff;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-soft);
     }
 
     .sticky-photo {
-      flex: 0 0 100px;
+      flex: 0 0 80px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
-      background: linear-gradient(145deg, #ffebee 0%, #ffffff 55%);
-      border-right: 1px solid rgba(0, 0, 0, 0.05);
-      border-radius: 16px 0 0 16px;
+      padding: 6px 8px;
+      background: linear-gradient(145deg, #ffebee 0%, #ffffff 60%);
+      border-right: 1px solid var(--border-soft);
+      border-radius: 12px 0 0 12px;
     }
 
     .sticky-photo img {
-      width: 76px;
-      height: 76px;
-      border-radius: 14px;
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
       object-fit: cover;
-      border: 2px solid #ffffff;
-      box-shadow: 0 4px 14px rgba(198, 40, 40, 0.18);
+      border: 1px solid #fff;
+      box-shadow: 0 2px 8px rgba(198, 40, 40, 0.12);
     }
 
     .sticky-col {
       flex: 1 1 0;
       min-width: 0;
-      padding: 12px 14px;
-      border-right: 1px solid rgba(0, 0, 0, 0.06);
-      font-size: 12px;
-      line-height: 1.4;
+      padding: 6px 10px 7px;
+      border-right: 1px solid var(--border-soft);
+      font-size: 11px;
+      line-height: 1.3;
       position: relative;
     }
 
     .sticky-col:last-child {
       border-right: none;
-      border-radius: 0 16px 16px 0;
+      border-radius: 0 12px 12px 0;
     }
 
     .sticky-col-personal {
-      flex: 1.05 1 150px;
+      flex: 1 1 128px;
       cursor: default;
-      background: linear-gradient(180deg, transparent, rgba(255, 235, 238, 0.35));
     }
 
     .sticky-col-products {
-      flex: 1.35 1 200px;
+      flex: 1.4 1 180px;
     }
 
     .sticky-col-title {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      margin-bottom: 3px;
     }
 
     .sticky-col-fio {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--primary-dark);
-      margin-bottom: 6px;
-      line-height: 1.25;
+      margin-bottom: 2px;
+      line-height: 1.2;
     }
 
     .sticky-col-line {
       color: var(--text-main);
-      font-size: 12px;
-      margin-bottom: 2px;
+      font-size: 11px;
+      margin-bottom: 0;
     }
 
     .sticky-col-preview {
@@ -268,10 +267,10 @@
     }
 
     .sticky-preview-item {
-      font-size: 11px;
-      line-height: 1.35;
-      padding: 4px 0;
-      border-bottom: 1px solid #f0f0f0;
+      font-size: 10px;
+      line-height: 1.25;
+      padding: 2px 0;
+      border-bottom: 1px solid #f5f5f5;
       color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
@@ -285,30 +284,31 @@
     .passport-sticky {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 1px;
     }
 
     .passport-sticky-type {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
+      line-height: 1.2;
     }
 
     .passport-sticky-series {
-      font-size: 12px;
+      font-size: 10px;
       color: var(--text-main);
     }
 
     .passport-sticky-number-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-top: 2px;
+      gap: 4px;
+      margin-top: 1px;
     }
 
     .passport-sticky-number {
-      font-size: 15px;
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       font-variant-numeric: tabular-nums;
       user-select: all;
       cursor: text;
@@ -318,40 +318,51 @@
       border: none;
       background: var(--primary-soft);
       color: var(--primary-dark);
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 11px;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 9px;
       cursor: pointer;
       flex-shrink: 0;
       transition: var(--transition-fast);
+      line-height: 1.2;
     }
 
     .passport-copy-btn:hover {
       background: #f8c1c1;
     }
 
-    .sticky-product-card {
-      margin-bottom: 12px;
+    .sticky-products-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 8px;
+      row-gap: 4px;
     }
 
-    .sticky-product-card:last-child {
+    .sticky-product-card {
       margin-bottom: 0;
+      min-width: 0;
     }
 
     .sticky-product-name {
       display: block;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-main);
-      margin-bottom: 6px;
-      line-height: 1.3;
+      margin-bottom: 2px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sticky-product-meta {
       display: block;
-      font-size: 11px;
+      font-size: 9px;
       color: var(--text-muted);
-      line-height: 1.3;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sticky-item {
@@ -1706,7 +1717,7 @@
       { name: "Подписка «Альфа-Смарт»", meta: "активна с 07.04.2025" },
     ];
 
-    const STICKY_PREVIEW_COUNT = 5;
+    const STICKY_PREVIEW_COUNT = 3;
 
     const portfolioDropdown = [
       { icon: "fa-credit-card", text: "Альфа-Карта Premium — активна" },
@@ -4403,10 +4414,8 @@
       const passportFull = `${c.passportSeries} ${c.passportNumber}`;
 
       qs("#sticky-personal").innerHTML = `
-        <div class="sticky-col-title">Клиент</div>
         <div class="sticky-col-fio">${c.fio}</div>
-        <div class="sticky-col-line">${c.birthDate} — ${c.age}</div>
-        <div class="sticky-col-line">Пол — ${c.gender}</div>
+        <div class="sticky-col-line">${c.birthDate} — ${c.age} · ${c.gender}</div>
         <div class="sticky-col-line">Сегмент: ${c.segment}</div>
       `;
 
@@ -4421,15 +4430,16 @@
         </div>
       `;
 
-      qs("#sticky-products-preview").innerHTML = productsStickyCards
-        .map(
-          (p) => `
+      qs("#sticky-products-preview").innerHTML =
+        `<div class="sticky-products-grid">${productsStickyCards
+          .map(
+            (p) => `
           <div class="sticky-product-card">
             <span class="sticky-product-name">${p.name}</span>
             <span class="sticky-product-meta">${p.meta}</span>
           </div>`,
-        )
-        .join("");
+          )
+          .join("")}</div>`;
 
       qs("#sticky-transactions-preview").innerHTML = renderStickyPreviewList(
         transactionsDropdown,
