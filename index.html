@@ -421,27 +421,33 @@
     #dropdown-transactions .transaction-date {
       font-size: 10px;
       margin-bottom: 2px;
-      text-align: left;
+      text-align: center;
     }
 
     #dropdown-transactions .transaction-detail {
-      display: block;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
       font-size: 10px;
       padding-left: 0;
       margin-bottom: 2px;
       line-height: 1.35;
-      white-space: nowrap;
     }
 
     #dropdown-transactions .detail-card {
-      display: inline;
+      flex: 1 1 auto;
+      min-width: 0;
       max-width: none;
-      flex: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     #dropdown-transactions .detail-amount {
-      display: inline;
-      margin-left: 6px;
+      flex: 0 0 auto;
+      text-align: right;
+      white-space: nowrap;
     }
 
     #dropdown-sms {
@@ -1719,7 +1725,7 @@
       fio: "Смирнов Артём Игоревич",
       birthDate: "14.08.1998",
       age: "27 лет",
-      gender: "мужской",
+      gender: "м",
       segment: "Mass",
       city: "Екатеринбург",
       docType: "Паспорт РФ",
