@@ -236,6 +236,10 @@
       text-align: center;
     }
 
+    .sticky-panel:not(.session-active) .sticky-col:not(.sticky-col-personal) {
+      filter: blur(5px);
+    }
+
     .sticky-col-products {
       flex: 1.4 1 180px;
     }
@@ -407,59 +411,12 @@
       display: block;
     }
 
-    #dropdown-transactions {
-      width: max-content;
-      min-width: 0;
-      max-width: 168px;
-      padding: 6px 8px;
-    }
-
-    #dropdown-transactions .dropdown-transaction-group {
-      margin-bottom: 5px;
-    }
-
-    #dropdown-transactions .transaction-date {
-      font-size: 10px;
-      margin-bottom: 2px;
-      text-align: center;
-    }
-
-    #dropdown-transactions .transaction-detail {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 6px;
-      font-size: 10px;
-      padding-left: 0;
-      margin-bottom: 2px;
-      line-height: 1.35;
-    }
-
-    #dropdown-transactions .detail-card {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    #dropdown-transactions .detail-amount {
-      flex: 0 0 auto;
-      text-align: right;
-      white-space: nowrap;
-    }
-
+    #dropdown-transactions,
     #dropdown-sms {
-      max-height: min(65vh, 380px);
+      max-height: min(65vh, 420px);
       overflow-y: auto;
       overflow-x: hidden;
       min-width: 280px;
-    }
-
-    #dropdown-sms .dropdown-line span {
-      font-size: 11px;
-      line-height: 1.35;
     }
 
     /* Строка с иконкой и текстом */
@@ -479,9 +436,23 @@
     }
 
     .dropdown-line span {
+      font-size: 12px;
       line-height: 1.4;
       white-space: normal;
       word-break: break-word;
+    }
+
+    .dropdown-line .detail-amount {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dropdown-line .detail-amount.amount-positive {
+      color: var(--success);
+    }
+
+    .dropdown-line .detail-amount.amount-negative {
+      color: var(--error);
     }
 
     /* Для транзакций без иконок */
@@ -495,51 +466,6 @@
 
     .dropdown-line.no-icon span {
       text-align: left;
-    }
-
-    /* Транзакции в выпадающем списке: сгруппированы по дате */
-    .dropdown-transaction-group {
-      margin-bottom: 10px;
-    }
-
-    .dropdown-transaction-group .transaction-date {
-      font-weight: 700;
-      text-align: center;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .dropdown-transaction-group .transaction-detail {
-      display: flex;
-      justify-content: flex-start;
-      align-items: baseline;
-      gap: 4px;
-      font-size: 10px;
-      color: var(--text-muted);
-      padding-left: 4px;
-      margin-bottom: 3px;
-    }
-
-    .dropdown-transaction-group .detail-card {
-      flex: 0 1 auto;
-      min-width: 0;
-      max-width: 58%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .dropdown-transaction-group .detail-amount {
-      font-weight: 600;
-      flex: 0 0 auto;
-      white-space: nowrap;
-      font-size: 10px;
-    }
-    .dropdown-transaction-group .detail-amount.amount-positive {
-      color: var(--success);
-    }
-    .dropdown-transaction-group .detail-amount.amount-negative {
-      color: var(--error);
     }
 
     .dropdown-more {
@@ -2405,27 +2331,13 @@
         `<div class="dropdown-more"><a data-open-info="portfolio">…</a></div>`;
 
       const dropdownTransactions = qs("#dropdown-transactions");
-      const byDate = {};
-      transactionsDropdown.forEach((t) => {
-        if (!byDate[t.date]) byDate[t.date] = [];
-        byDate[t.date].push(t);
-      });
-      const datesOrder = [...new Set(transactionsDropdown.map((t) => t.date))];
       dropdownTransactions.innerHTML =
-        datesOrder
-          .map((date) => {
-            const items = byDate[date];
-            return `
-              <div class="dropdown-transaction-group">
-                <div class="transaction-date">${date}</div>
-                ${items.map((t) => {
-                  const amountClass = t.amount.startsWith('+') ? 'amount-positive' : 'amount-negative';
-                  return `<div class="transaction-detail">
-                    <span class="detail-card">${t.card}</span>
-                    <span class="detail-amount ${amountClass}">${t.amount}</span>
-                  </div>`;
-                }).join("")}
-              </div>`;
+        transactionsDropdown
+          .map((t) => {
+            const amountClass = t.amount.startsWith("+")
+              ? "amount-positive"
+              : "amount-negative";
+            return `<div class="dropdown-line"><i class="fa-solid fa-receipt"></i><span>${t.date} · ${t.card} <span class="detail-amount ${amountClass}">${t.amount}</span></span></div>`;
           })
           .join("") +
         `<div class="dropdown-more"><a data-open-info="transactions">…</a></div>`;
@@ -4410,12 +4322,15 @@
 
     function updateSessionIndicator() {
       const btn = qs("#session-btn");
+      const panel = qs(".sticky-panel");
       if (state.sessionActive) {
+        panel.classList.add("session-active");
         btn.textContent = `${CLIENT_SHORT_NAME} | В сессии`;
         btn.classList.remove("secondary");
         btn.classList.add("outline");
         btn.disabled = true;
       } else {
+        panel.classList.remove("session-active");
         btn.innerHTML =
           '<i class="fa-solid fa-play"></i> Начать сессию';
         btn.classList.add("secondary");
@@ -4484,10 +4399,7 @@
 
       qs("#sticky-transactions-preview").innerHTML = renderStickyPreviewList(
         transactionsDropdown,
-        (t) => {
-          const sign = t.amount.startsWith("+") ? "+" : "";
-          return `${t.date} · ${t.card} <strong>${sign}${t.amount.replace(/^\+/, "")}</strong>`;
-        },
+        (t) => `${t.date} · ${t.card} ${t.amount}`,
       );
 
       qs("#sticky-events-preview").innerHTML = renderStickyPreviewList(
