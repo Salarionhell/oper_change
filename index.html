@@ -1940,6 +1940,29 @@
       },
     ];
 
+    /** Продукты клиента из CRM (id совпадают с productOperationsCatalog) */
+    const clientProductIds = [
+      "debit-card",
+      "credit-card",
+      "savings",
+      "deposit",
+      "broker",
+      "alfa-sim",
+      "alfa-sticker",
+      "personal",
+    ];
+
+    const PRODUCT_OPERATION_CATEGORY_GROUPS = [
+      { id: "debit-card", title: "Дебетовая карта", productIds: ["debit-card"] },
+      { id: "credit-card", title: "Кредитная карта", productIds: ["credit-card"] },
+      { id: "savings", title: "Накопительный счёт", productIds: ["savings"] },
+      {
+        id: "other",
+        title: "Другое",
+        productIds: ["alfa-sim", "alfa-sticker", "deposit", "broker", "personal"],
+      },
+    ];
+
     const OP_PRIORITY_SCORE = { high: 30, medium: 20, low: 10 };
 
     function scoreProductOperation(op, productId) {
@@ -1953,7 +1976,8 @@
     }
 
     function getRankedProductOperations() {
-      return productOperationsCatalog
+      const rankedProducts = productOperationsCatalog
+        .filter((product) => clientProductIds.includes(product.id))
         .map((product) => ({
           ...product,
           operations: [...product.operations]
@@ -1962,7 +1986,38 @@
               rankScore: scoreProductOperation(op, product.id),
             }))
             .sort((a, b) => b.rankScore - a.rankScore),
-        }))
+        }));
+
+      return PRODUCT_OPERATION_CATEGORY_GROUPS.map((cat) => {
+        const productsInCategory = rankedProducts.filter((product) =>
+          cat.productIds.includes(product.id),
+        );
+        if (!productsInCategory.length) return null;
+
+        const operationsByName = new Map();
+        productsInCategory.forEach((product) => {
+          product.operations.forEach((op) => {
+            const existing = operationsByName.get(op.name);
+            if (!existing || op.rankScore > existing.rankScore) {
+              operationsByName.set(op.name, op);
+            }
+          });
+        });
+
+        const operations = [...operationsByName.values()].sort(
+          (a, b) => b.rankScore - a.rankScore,
+        );
+
+        return {
+          id: cat.id,
+          category: cat.title,
+          productRank: Math.max(
+            ...productsInCategory.map((product) => product.productRank),
+          ),
+          operations,
+        };
+      })
+        .filter(Boolean)
         .sort((a, b) => b.productRank - a.productRank);
     }
 
