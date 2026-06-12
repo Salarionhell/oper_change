@@ -238,6 +238,11 @@
 
     .sticky-panel:not(.session-active) .sticky-col:not(.sticky-col-personal) {
       filter: blur(5px);
+      user-select: none;
+    }
+
+    .sticky-panel:not(.session-active) .sticky-col:not(.sticky-col-personal).sticky-item {
+      cursor: pointer;
     }
 
     .sticky-col-products {
@@ -2410,13 +2415,19 @@
     function initDropdownClicks() {
       qsa(".sticky-item").forEach((item) => {
         item.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!state.sessionActive) {
+            closeAllDropdowns();
+            pendingOperationAfterSms = null;
+            openSmsModal();
+            return;
+          }
           const dropdown = item.querySelector(".dropdown");
           const isOpen = dropdown.classList.contains("open");
           closeAllDropdowns();
           if (!isOpen) {
             dropdown.classList.add("open");
           }
-          e.stopPropagation();
         });
       });
 
@@ -4323,6 +4334,9 @@
     function updateSessionIndicator() {
       const btn = qs("#session-btn");
       const panel = qs(".sticky-panel");
+      if (!state.sessionActive) {
+        closeAllDropdowns();
+      }
       if (state.sessionActive) {
         panel.classList.add("session-active");
         btn.textContent = `${CLIENT_SHORT_NAME} | В сессии`;
