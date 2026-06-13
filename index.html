@@ -3032,6 +3032,67 @@
 
     const SEMANTIC_SEARCH_API = "https://salarion-witch-operation-search-api.hf.space";
 
+    // Явные синонимы/ключевые слова, которые перебивают семантический поиск.
+    // Если запрос содержит ключ (как подстроку), операции из списка
+    // принудительно ставятся в начало выдачи (в указанном порядке).
+    const KEYWORD_BOOST = {
+      "паспорт": ["update-passport"],
+      "снилс": ["update-passport"],
+      "инн": ["update-passport"],
+      "удостоверение личности": ["update-passport"],
+      "пароль": ["reset-online-bank-password"],
+      "кодовое слово": ["change-codeword"],
+      "доверенность": ["issue-power-of-attorney", "revoke-power-of-attorney"],
+      "адрес регистрации": ["change-registration-address"],
+      "адрес проживания": ["change-residential-address"],
+      "прописка": ["change-registration-address"],
+      "телефон": ["change-phone", "register-trusted-phone"],
+      "почта": ["change-email"],
+      "email": ["change-email"],
+      "доход": ["income-certificate", "update-income-info"],
+      "остаток": ["balance-certificate"],
+      "выписка": ["account-statement", "card-statement", "credit-statement", "deposit-statement"],
+      "справка о счет": ["account-existence-certificate"],
+      "справка о наличии счет": ["account-existence-certificate"],
+      "kyc": ["update-kyc"],
+      "анкета": ["update-kyc"],
+      "место работы": ["update-employment-info"],
+      "устройство": ["register-new-device"],
+      "интернет-банк": ["connect-online-bank", "restore-online-bank-access", "reset-online-bank-password"],
+      "мобильный банк": ["restore-mobile-bank-access"],
+    };
+
+    // Возвращает массив id операций, которые нужно поставить в начало
+    // выдачи на основании явных ключевых слов из запроса.
+    function getKeywordBoostIds(query) {
+      const q = query.toLowerCase();
+      const ids = [];
+      Object.entries(KEYWORD_BOOST).forEach(([keyword, boostIds]) => {
+        if (q.includes(keyword)) {
+          boostIds.forEach((id) => {
+            if (!ids.includes(id)) ids.push(id);
+          });
+        }
+      });
+      return ids;
+    }
+
+    // Переставляет результаты так, чтобы операции из getKeywordBoostIds
+    // шли первыми (в заданном порядке), а остальные — следом в исходном порядке.
+    function applyKeywordBoost(query, items, getId) {
+      const boostIds = getKeywordBoostIds(query);
+      if (!boostIds.length) return items;
+
+      const boosted = [];
+      boostIds.forEach((id) => {
+        const found = items.find((item) => getId(item) === id);
+        if (found) boosted.push(found);
+      });
+      const rest = items.filter((item) => !boostIds.includes(getId(item)));
+      return [...boosted, ...rest];
+    }
+
+
     function loadOperationsCatalog() {
       fetch("operations-catalog-frontend.json")
         .then((r) => r.json())
@@ -3054,7 +3115,7 @@
         ignoreLocation: true,
       });
 
-      smartSearchFn = async function (query, { topK = 7, alpha = 0.25 } = {}) {
+      smartSearchFn = async function (query, { topK = 4, alpha = 0.25 } = {}) {
         const fuseResults = fuse.search(query);
         const fuseScores = new Map();
         fuseResults.forEach((r) => {
@@ -3071,11 +3132,7 @@
           });
           if (response.ok) {
             const data = await response.json();
-            const topSim = data.results.length ? data.results[0].similarity : 0;
-            const minSim = Math.max(topSim - 0.05, 0.78);
-            data.results.forEach((r) => {
-              if (r.similarity >= minSim) cosineScores.set(r.id, r.similarity);
-            });
+            data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
           }
         } catch (err) {
           // fallback на Fuse только
@@ -3094,7 +3151,8 @@
         });
 
         merged.sort((a, b) => b.finalScore - a.finalScore);
-        return merged.slice(0, topK).filter((r) => r.item);
+        const boosted = applyKeywordBoost(query, merged, (r) => r.item && r.item.id);
+        return boosted.slice(0, topK).filter((r) => r.item);
       };
     }
 
@@ -3149,13 +3207,7 @@
         });
         if (response.ok) {
           const data = await response.json();
-          const topSim = data.results.length ? data.results[0].similarity : 0;
-          // Берём только результаты, близкие к лучшему по смыслу,
-          // и не ниже разумного абсолютного порога
-          const minSim = Math.max(topSim - 0.05, 0.78);
-          data.results.forEach((r) => {
-            if (r.similarity >= minSim) cosineScores.set(r.id, r.similarity);
-          });
+          data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
         }
       } catch (err) {
         // fallback на Fuse только
@@ -3172,7 +3224,8 @@
         return { item, finalScore };
       });
       merged.sort((a, b) => b.finalScore - a.finalScore);
-      const results = merged.slice(0, 7).filter((r) => r.item);
+      const boosted = applyKeywordBoost(q, merged, (r) => r.item && r.item.id);
+      const results = boosted.slice(0, 4).filter((r) => r.item);
 
       if (!results.length) {
         suggestionsEl.style.display = "none";
