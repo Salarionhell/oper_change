@@ -724,6 +724,34 @@
       font-size: 13px;
     }
 
+    .search-clear-btn {
+      display: none;
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 0;
+    }
+
+    .search-clear-btn:hover {
+      background-color: var(--bg-soft, #f0f0f0);
+      color: var(--text-main, #1a1a1a);
+    }
+
+    .search-input:not(:placeholder-shown) ~ .search-clear-btn {
+      display: flex;
+    }
+
     .search-suggestions {
       display: none;
       position: absolute;
@@ -2297,6 +2325,8 @@
       personalDataWizard: null,
       personalDataWizardFinished: false,
       savedPersonalDataWizard: null,
+      /** Текущий поисковый запрос в умном поиске операций */
+      operationSearchQuery: "",
     };
 
     // ---------------- CUSTOM CONFIRM ----------------
@@ -2918,6 +2948,9 @@
                     placeholder="Умный поиск по названию операции"
                     autocomplete="off"
                   />
+                  <button type="button" id="operation-search-clear" class="search-clear-btn" title="Очистить" aria-label="Очистить поиск">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
                   <div id="search-suggestions" class="search-suggestions"></div>
                 </div>
               </div>
@@ -3161,6 +3194,11 @@
 
       toggle.checked = state.recommendedPanel;
 
+      // Восстанавливаем сохранённый поисковый запрос
+      if (state.operationSearchQuery) {
+        searchInput.value = state.operationSearchQuery;
+      }
+
       function renderOperations() {
         const q = searchInput.value;
         if (state.recommendedPanel) {
@@ -3183,11 +3221,27 @@
 
       let suggestDebounce;
       searchInput.addEventListener("input", () => {
+        state.operationSearchQuery = searchInput.value;
         clearTimeout(suggestDebounce);
         suggestDebounce = setTimeout(() => {
           showSearchSuggestions(searchInput.value);
         }, 250);
       });
+
+      const clearBtn = qs("#operation-search-clear");
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          searchInput.value = "";
+          state.operationSearchQuery = "";
+          renderOperations();
+          const suggestionsEl = qs("#search-suggestions");
+          if (suggestionsEl) {
+            suggestionsEl.style.display = "none";
+            suggestionsEl.innerHTML = "";
+          }
+          searchInput.focus();
+        });
+      }
 
       document.addEventListener("click", (e) => {
         const suggestionsEl = qs("#search-suggestions");
@@ -3198,6 +3252,11 @@
       });
 
       renderOperations();
+
+      // Если есть сохранённый запрос — повторно показываем подсказки
+      if (state.operationSearchQuery) {
+        showSearchSuggestions(state.operationSearchQuery);
+      }
     }
 
     // open request modal
