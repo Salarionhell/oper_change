@@ -1728,10 +1728,24 @@
         debt: "41 200 ₽",
         status: "активна",
       },
+      broker: {
+        name: "Брокерский счёт",
+        status: "активен",
+        profile: "умеренный",
+      },
       alfaSim: {
         name: "Альфа-Сим",
         status: "заявка в обработке",
         date: "18.05.2026",
+      },
+      alfaSticker: {
+        name: "Альфа-Стикер",
+        status: "ожидает выдачи",
+      },
+      alfaSmart: {
+        name: "Подписка «Альфа-Смарт»",
+        status: "активна",
+        date: "07.04.2025",
       },
     };
 
@@ -3078,10 +3092,30 @@
               </table>
             </div>
             <div class="portfolio-section">
+              <strong>${p.broker.name}</strong>
+              <table class="info-table">
+                <tr><td>Статус</td><td>${p.broker.status}</td></tr>
+                <tr><td>Профиль</td><td>${p.broker.profile}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
               <strong>${p.alfaSim.name}</strong>
               <table class="info-table">
                 <tr><td>Статус</td><td>${p.alfaSim.status}</td></tr>
                 <tr><td>Дата заявки</td><td>${p.alfaSim.date}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
+              <strong>${p.alfaSticker.name}</strong>
+              <table class="info-table">
+                <tr><td>Статус</td><td>${p.alfaSticker.status}</td></tr>
+              </table>
+            </div>
+            <div class="portfolio-section">
+              <strong>${p.alfaSmart.name}</strong>
+              <table class="info-table">
+                <tr><td>Статус</td><td>${p.alfaSmart.status}</td></tr>
+                <tr><td>Дата подключения</td><td>${p.alfaSmart.date}</td></tr>
               </table>
             </div>
           </div>
