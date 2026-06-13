@@ -1860,9 +1860,6 @@
         productRank: 100,
         operations: [
           { name: "Завершить оформление Альфа-Сим", source: "crm", priority: "high", hint: "Заявка 18.05, перенос номера" },
-          { name: "Завершить видеоидентификацию", source: "crm", priority: "high", hint: "Заявка не завершена" },
-          { name: "Выбрать тариф", source: "crm", priority: "medium", limited: true, hint: "Обработка заявки не завершена" },
-          { name: "Выпустить eSIM", source: "crm", priority: "medium", limited: true, hint: "Обработка заявки не завершена" },
         ],
       },
       {
@@ -1878,9 +1875,7 @@
         category: "Кредитная карта «365 дней без %»",
         productRank: 90,
         operations: [
-          { name: "Загрузить документы для увеличения лимита", source: "crm", priority: "high", hint: "Запрос банка 15.05" },
-          { name: "Завершить увеличение лимита", source: "crm", priority: "high", hint: "Незавершённая заявка" },
-          { name: "Увеличение лимита", source: "available", priority: "medium", hint: "Крупные покупки, задолженность 41 200 ₽" },
+          { name: "Завершить увеличение лимита", source: "crm", priority: "high", hint: "Незавершённая заявка от 15.05, ожидает подтверждение дохода" },
           { name: "Подключение рассрочки", source: "available", priority: "medium", hint: "Покупки Lufthansa, Booking" },
           { name: "Выпуск дополнительной карты", source: "available", priority: "low" },
         ],
@@ -1891,10 +1886,8 @@
         productRank: 85,
         operations: [
           { name: "Настройка лимитов", source: "available", priority: "high", hint: "Отклонён перевод 650 000 ₽ 17.05" },
-          { name: "Подключение страховки", source: "available", priority: "medium", hint: "Частые travel-операции" },
+          { name: "Настройка уведомлений по операциям", source: "available", priority: "medium", hint: "Активное использование карты: travel-покупки, регулярные поступления и переводы" },
           { name: "Перевыпуск карты", source: "available", priority: "low" },
-          { name: "Добавление в Mir Pay", source: "available", priority: "low" },
-          { name: "Смена PIN", source: "available", priority: "low" },
         ],
       },
       {
@@ -1904,30 +1897,20 @@
         operations: [
           { name: "Настройка автопополнения", source: "available", priority: "high", hint: "Регулярная зарплата 184 000 ₽" },
           { name: "Повышение ставки при выполнении условий", source: "available", priority: "medium", hint: "Остаток 412 800 ₽" },
-          { name: "Пополнение", source: "available", priority: "medium" },
-          { name: "Вывод средств", source: "available", priority: "low" },
+          { name: "Подключение уведомлений по счёту", source: "available", priority: "medium", hint: "Регулярные пополнения и изменения остатка" },
         ],
       },
       {
         id: "deposit",
         category: "Вклад «Максимальный доход»",
         productRank: 70,
-        operations: [
-          { name: "Продление вклада", source: "available", priority: "medium", hint: "Срок 12 мес., открыт 15.01.2026" },
-          { name: "Повышение ставки", source: "available", priority: "medium", hint: "Условия активности выполняются" },
-          { name: "Частичное досрочное закрытие", source: "available", priority: "low" },
-        ],
+        operations: [],
       },
       {
         id: "broker",
         category: "Брокерский счёт",
         productRank: 65,
-        operations: [
-          { name: "Подключение аналитики", source: "available", priority: "medium", hint: "Пополнения 16.05, профиль умеренный" },
-          { name: "Пополнение брокерского счета", source: "available", priority: "medium", hint: "Последнее пополнение 50 000 ₽" },
-          { name: "Покупка активов", source: "available", priority: "low" },
-          { name: "Открыть ИИС", source: "crm", priority: "medium", hint: "Подходит по профилю инвестора" },
-        ],
+        operations: [],
       },
       {
         id: "personal",
@@ -1935,7 +1918,6 @@
         productRank: 40,
         operations: [
           { name: "Обновить адрес проживания", source: "crm", priority: "low", hint: "Адрес доставки стикера не подтверждён" },
-          { name: "Проверить контактные данные", source: "crm", priority: "low", hint: "Смена номера 01.05.2026" },
         ],
       },
     ];
