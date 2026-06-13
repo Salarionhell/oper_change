@@ -3050,11 +3050,11 @@
           { name: "name", weight: 0.6 },
           { name: "embeddingText", weight: 0.4 },
         ],
-        threshold: 0.4,
+        threshold: 0.3,
         ignoreLocation: true,
       });
 
-      smartSearchFn = async function (query, { topK = 7, alpha = 0.5 } = {}) {
+      smartSearchFn = async function (query, { topK = 7, alpha = 0.25 } = {}) {
         const fuseResults = fuse.search(query);
         const fuseScores = new Map();
         fuseResults.forEach((r) => {
@@ -3067,11 +3067,13 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query, top_k: smartOperationsCatalog.length }),
-            signal: AbortSignal.timeout(2000),
+            signal: AbortSignal.timeout(8000),
           });
           if (response.ok) {
             const data = await response.json();
-            data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
+            data.results.forEach((r) => {
+              if (r.similarity >= 0.75) cosineScores.set(r.id, r.similarity);
+            });
           }
         } catch (err) {
           // fallback на Fuse только
@@ -3128,7 +3130,7 @@
           { name: "name", weight: 0.6 },
           { name: "embeddingText", weight: 0.4 },
         ],
-        threshold: 0.4,
+        threshold: 0.3,
         ignoreLocation: true,
       });
       const fuseResults = fuse.search(q);
@@ -3141,11 +3143,13 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: q, top_k: previousCatalog.length }),
-          signal: AbortSignal.timeout(2000),
+          signal: AbortSignal.timeout(8000),
         });
         if (response.ok) {
           const data = await response.json();
-          data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
+          data.results.forEach((r) => {
+            if (r.similarity >= 0.75) cosineScores.set(r.id, r.similarity);
+          });
         }
       } catch (err) {
         // fallback на Fuse только
@@ -3158,7 +3162,7 @@
         const fuseScore = fuseScores.get(id) ?? 0;
         const cosineScore = cosineScores.get(id) ?? 0;
         const finalScore =
-          cosineScores.size > 0 ? 0.5 * fuseScore + 0.5 * cosineScore : fuseScore;
+          cosineScores.size > 0 ? 0.25 * fuseScore + 0.75 * cosineScore : fuseScore;
         return { item, finalScore };
       });
       merged.sort((a, b) => b.finalScore - a.finalScore);
