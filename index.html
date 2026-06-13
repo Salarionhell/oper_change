@@ -2017,8 +2017,7 @@
           operations,
         };
       })
-        .filter(Boolean)
-        .sort((a, b) => b.productRank - a.productRank);
+        .filter(Boolean);
     }
 
     function getAllProductOperationNames() {
