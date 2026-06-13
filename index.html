@@ -2916,6 +2916,7 @@
                     class="search-input"
                     id="operation-search"
                     placeholder="Умный поиск по названию операции"
+                    autocomplete="off"
                   />
                   <div id="search-suggestions" class="search-suggestions"></div>
                 </div>
@@ -3145,8 +3146,6 @@
           handleOperationClick(r.item.name);
           suggestionsEl.style.display = "none";
           suggestionsEl.innerHTML = "";
-          const input = qs("#operation-search");
-          if (input) input.value = "";
         });
         suggestionsEl.appendChild(row);
       });
