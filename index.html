@@ -3152,7 +3152,14 @@
 
         merged.sort((a, b) => b.finalScore - a.finalScore);
         const boosted = applyKeywordBoost(query, merged, (r) => r.item && r.item.id);
-        return boosted.slice(0, topK).filter((r) => r.item);
+        const seenNames = new Set();
+        const deduped = boosted.filter((r) => {
+          if (!r.item) return false;
+          if (seenNames.has(r.item.name)) return false;
+          seenNames.add(r.item.name);
+          return true;
+        });
+        return deduped.slice(0, topK);
       };
     }
 
@@ -3225,7 +3232,14 @@
       });
       merged.sort((a, b) => b.finalScore - a.finalScore);
       const boosted = applyKeywordBoost(q, merged, (r) => r.item && r.item.id);
-      const results = boosted.slice(0, 5).filter((r) => r.item);
+      const seenNames = new Set();
+      const deduped = boosted.filter((r) => {
+        if (!r.item) return false;
+        if (seenNames.has(r.item.name)) return false;
+        seenNames.add(r.item.name);
+        return true;
+      });
+      const results = deduped.slice(0, 5);
 
       if (!results.length) {
         suggestionsEl.style.display = "none";
