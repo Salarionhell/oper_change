@@ -3152,13 +3152,16 @@
 
         merged.sort((a, b) => b.finalScore - a.finalScore);
         const boosted = applyKeywordBoost(query, merged, (r) => r.item && r.item.id);
-        const seenNames = new Set();
-        const deduped = boosted.filter((r) => {
-          if (!r.item) return false;
-          if (seenNames.has(r.item.name)) return false;
-          seenNames.add(r.item.name);
-          return true;
+        const seenNames = new Map();
+        boosted.forEach((r) => {
+          if (!r.item) return;
+          const existing = seenNames.get(r.item.name);
+          const isRec = r.item.id && r.item.id.startsWith("rec-");
+          if (!existing || (isRec && !existing.item.id.startsWith("rec-"))) {
+            seenNames.set(r.item.name, r);
+          }
         });
+        const deduped = boosted.filter((r) => r.item && seenNames.get(r.item.name) === r);
         return deduped.slice(0, topK);
       };
     }
@@ -3232,13 +3235,16 @@
       });
       merged.sort((a, b) => b.finalScore - a.finalScore);
       const boosted = applyKeywordBoost(q, merged, (r) => r.item && r.item.id);
-      const seenNames = new Set();
-      const deduped = boosted.filter((r) => {
-        if (!r.item) return false;
-        if (seenNames.has(r.item.name)) return false;
-        seenNames.add(r.item.name);
-        return true;
+      const seenNames = new Map();
+      boosted.forEach((r) => {
+        if (!r.item) return;
+        const existing = seenNames.get(r.item.name);
+        const isRec = r.item.id && r.item.id.startsWith("rec-");
+        if (!existing || (isRec && !existing.item.id.startsWith("rec-"))) {
+          seenNames.set(r.item.name, r);
+        }
       });
+      const deduped = boosted.filter((r) => r.item && seenNames.get(r.item.name) === r);
       const results = deduped.slice(0, 5);
 
       if (!results.length) {
