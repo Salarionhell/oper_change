@@ -3291,6 +3291,12 @@
         }, 250);
       });
 
+      searchInput.addEventListener("focus", () => {
+        if (searchInput.value.trim()) {
+          showSearchSuggestions(searchInput.value);
+        }
+      });
+
       const clearBtn = qs("#operation-search-clear");
       if (clearBtn) {
         clearBtn.addEventListener("click", () => {
