@@ -724,6 +724,52 @@
       font-size: 13px;
     }
 
+    .search-suggestions {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .search-suggestion-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .search-suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-suggestion-item:hover {
+      background-color: var(--bg-soft, #f5f5f5);
+    }
+
+    .search-suggestion-name {
+      font-weight: 500;
+      color: var(--text-main, #1a1a1a);
+    }
+
+    .search-suggestion-category {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
     /* Operation tiles – увеличенные окошки */
     .operations-columns {
       display: grid;
@@ -1604,6 +1650,7 @@
   <!-- Markdown renderer (safe) for chat messages -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7/dist/fuse.min.js"></script>
 
   <script>
     // ---------------- CHAT BOT CONFIG (подключение AI) ----------------
@@ -2870,6 +2917,7 @@
                     id="operation-search"
                     placeholder="Умный поиск по названию операции"
                   />
+                  <div id="search-suggestions" class="search-suggestions"></div>
                 </div>
               </div>
               <div class="panel-toggle-row">
@@ -2943,6 +2991,168 @@
         });
     }
 
+    // ---------------- SMART SEARCH (Fuse + semantic) ----------------
+
+    let smartOperationsCatalog = [];
+    let smartSearchFn = null;
+
+    const SEMANTIC_SEARCH_API = "https://salarion-witch-operation-search-api.hf.space";
+
+    function loadOperationsCatalog() {
+      fetch("operations-catalog-frontend.json")
+        .then((r) => r.json())
+        .then((data) => {
+          smartOperationsCatalog = data;
+          initSmartSearch();
+        })
+        .catch((err) => {
+          console.warn("Не удалось загрузить каталог операций для умного поиска:", err);
+        });
+    }
+
+    function initSmartSearch() {
+      const fuse = new Fuse(smartOperationsCatalog, {
+        keys: [
+          { name: "name", weight: 0.6 },
+          { name: "embeddingText", weight: 0.4 },
+        ],
+        threshold: 0.4,
+        ignoreLocation: true,
+      });
+
+      smartSearchFn = async function (query, { topK = 7, alpha = 0.5 } = {}) {
+        const fuseResults = fuse.search(query);
+        const fuseScores = new Map();
+        fuseResults.forEach((r) => {
+          fuseScores.set(r.item.id, 1 - (r.score ?? 1));
+        });
+
+        let cosineScores = new Map();
+        try {
+          const response = await fetch(`${SEMANTIC_SEARCH_API}/search`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query, top_k: smartOperationsCatalog.length }),
+            signal: AbortSignal.timeout(2000),
+          });
+          if (response.ok) {
+            const data = await response.json();
+            data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
+          }
+        } catch (err) {
+          // fallback на Fuse только
+        }
+
+        const allIds = new Set([...fuseScores.keys(), ...cosineScores.keys()]);
+        const merged = [...allIds].map((id) => {
+          const item = smartOperationsCatalog.find((c) => c.id === id);
+          const fuseScore = fuseScores.get(id) ?? 0;
+          const cosineScore = cosineScores.get(id) ?? 0;
+          const finalScore =
+            cosineScores.size > 0
+              ? alpha * fuseScore + (1 - alpha) * cosineScore
+              : fuseScore;
+          return { item, finalScore };
+        });
+
+        merged.sort((a, b) => b.finalScore - a.finalScore);
+        return merged.slice(0, topK).filter((r) => r.item);
+      };
+    }
+
+    function getRecommendedOperationsForSearch() {
+      return getRankedProductOperations().flatMap((group) =>
+        group.operations
+          .filter((op) => !op.limited)
+          .map((op) => ({
+            id: `rec-${op.name}`,
+            name: op.name,
+            category: group.category,
+            embeddingText: op.hint ? `${op.name}. ${op.hint}` : op.name,
+          })),
+      );
+    }
+
+    async function showSearchSuggestions(query) {
+      const suggestionsEl = qs("#search-suggestions");
+      const q = (query || "").trim();
+
+      if (!q || !smartSearchFn) {
+        suggestionsEl.style.display = "none";
+        suggestionsEl.innerHTML = "";
+        return;
+      }
+
+      const recommended = getRecommendedOperationsForSearch();
+      const combined = [...smartOperationsCatalog, ...recommended];
+
+      // временно используем объединённый каталог для этого запроса
+      const previousCatalog = smartOperationsCatalog;
+      smartOperationsCatalog = combined;
+      const fuse = new Fuse(combined, {
+        keys: [
+          { name: "name", weight: 0.6 },
+          { name: "embeddingText", weight: 0.4 },
+        ],
+        threshold: 0.4,
+        ignoreLocation: true,
+      });
+      const fuseResults = fuse.search(q);
+      const fuseScores = new Map();
+      fuseResults.forEach((r) => fuseScores.set(r.item.id, 1 - (r.score ?? 1)));
+
+      let cosineScores = new Map();
+      try {
+        const response = await fetch(`${SEMANTIC_SEARCH_API}/search`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: q, top_k: previousCatalog.length }),
+          signal: AbortSignal.timeout(2000),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          data.results.forEach((r) => cosineScores.set(r.id, r.similarity));
+        }
+      } catch (err) {
+        // fallback на Fuse только
+      }
+      smartOperationsCatalog = previousCatalog;
+
+      const allIds = new Set([...fuseScores.keys(), ...cosineScores.keys()]);
+      const merged = [...allIds].map((id) => {
+        const item = combined.find((c) => c.id === id);
+        const fuseScore = fuseScores.get(id) ?? 0;
+        const cosineScore = cosineScores.get(id) ?? 0;
+        const finalScore =
+          cosineScores.size > 0 ? 0.5 * fuseScore + 0.5 * cosineScore : fuseScore;
+        return { item, finalScore };
+      });
+      merged.sort((a, b) => b.finalScore - a.finalScore);
+      const results = merged.slice(0, 7).filter((r) => r.item);
+
+      if (!results.length) {
+        suggestionsEl.style.display = "none";
+        suggestionsEl.innerHTML = "";
+        return;
+      }
+
+      suggestionsEl.innerHTML = "";
+      results.forEach((r) => {
+        const row = document.createElement("div");
+        row.className = "search-suggestion-item";
+        row.innerHTML = `<span class="search-suggestion-name">${r.item.name}</span><span class="search-suggestion-category">${r.item.category}</span>`;
+        row.addEventListener("click", () => {
+          handleOperationClick(r.item.name);
+          suggestionsEl.style.display = "none";
+          suggestionsEl.innerHTML = "";
+          const input = qs("#operation-search");
+          if (input) input.value = "";
+        });
+        suggestionsEl.appendChild(row);
+      });
+      suggestionsEl.style.display = "";
+    }
+
     function initMainTabInteractions() {
       const toggle = qs("#recommended-panel-toggle");
       const recommendedHost = qs("#ops-recommended-panel");
@@ -2971,6 +3181,23 @@
       });
 
       searchInput.addEventListener("input", renderOperations);
+
+      let suggestDebounce;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(suggestDebounce);
+        suggestDebounce = setTimeout(() => {
+          showSearchSuggestions(searchInput.value);
+        }, 250);
+      });
+
+      document.addEventListener("click", (e) => {
+        const suggestionsEl = qs("#search-suggestions");
+        const container = searchInput.closest(".search-container");
+        if (suggestionsEl && container && !container.contains(e.target)) {
+          suggestionsEl.style.display = "none";
+        }
+      });
+
       renderOperations();
     }
 
@@ -4498,6 +4725,7 @@
     }
 
     function init() {
+      loadOperationsCatalog();
       ensureMainTab();
       renderStickyPreview();
       renderTabs();
