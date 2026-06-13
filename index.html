@@ -3115,7 +3115,7 @@
         ignoreLocation: true,
       });
 
-      smartSearchFn = async function (query, { topK = 4, alpha = 0.25 } = {}) {
+      smartSearchFn = async function (query, { topK = 5, alpha = 0.25 } = {}) {
         const fuseResults = fuse.search(query);
         const fuseScores = new Map();
         fuseResults.forEach((r) => {
@@ -3225,7 +3225,7 @@
       });
       merged.sort((a, b) => b.finalScore - a.finalScore);
       const boosted = applyKeywordBoost(q, merged, (r) => r.item && r.item.id);
-      const results = boosted.slice(0, 4).filter((r) => r.item);
+      const results = boosted.slice(0, 5).filter((r) => r.item);
 
       if (!results.length) {
         suggestionsEl.style.display = "none";
