@@ -3071,8 +3071,10 @@
           });
           if (response.ok) {
             const data = await response.json();
+            const topSim = data.results.length ? data.results[0].similarity : 0;
+            const minSim = Math.max(topSim - 0.05, 0.78);
             data.results.forEach((r) => {
-              if (r.similarity >= 0.75) cosineScores.set(r.id, r.similarity);
+              if (r.similarity >= minSim) cosineScores.set(r.id, r.similarity);
             });
           }
         } catch (err) {
@@ -3147,8 +3149,12 @@
         });
         if (response.ok) {
           const data = await response.json();
+          const topSim = data.results.length ? data.results[0].similarity : 0;
+          // Берём только результаты, близкие к лучшему по смыслу,
+          // и не ниже разумного абсолютного порога
+          const minSim = Math.max(topSim - 0.05, 0.78);
           data.results.forEach((r) => {
-            if (r.similarity >= 0.75) cosineScores.set(r.id, r.similarity);
+            if (r.similarity >= minSim) cosineScores.set(r.id, r.similarity);
           });
         }
       } catch (err) {
